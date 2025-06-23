@@ -1,0 +1,18 @@
+/* Стили для админ-панели WP Price Manager */
+.wrap table.form-table {
+    max-width: 600px;
+}
+.wp-list-table {
+    width: 100%;
+    margin-top: 20px;
+}
+.wp-list-table th, .wp-list-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+.wppm-drag-handle {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
