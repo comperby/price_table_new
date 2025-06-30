@@ -150,28 +150,51 @@ class Elementor_Price_List_Widget extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
-			'header_alignment',
-			[
-				'label'   => __( 'Выравнивание заголовка', 'wp-price-manager' ),
-				'type'    => Controls_Manager::CHOOSE,
-				'options' => [
-					'left'   => [
-						'title' => __( 'Left', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-left',
-					],
-					'center' => [
-						'title' => __( 'Center', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-center',
-					],
-					'right'  => [
-						'title' => __( 'Right', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-right',
-					],
-				],
-				'default' => 'left',
-			]
-		);
+                $this->add_control(
+                        'header_alignment',
+                        [
+                                'label'   => __( 'Выравнивание заголовка', 'wp-price-manager' ),
+                                'type'    => Controls_Manager::CHOOSE,
+                                'options' => [
+                                        'left'   => [
+                                                'title' => __( 'Left', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-left',
+                                        ],
+                                        'center' => [
+                                                'title' => __( 'Center', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-center',
+                                        ],
+                                        'right'  => [
+                                                'title' => __( 'Right', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-right',
+                                        ],
+                                ],
+                                'default' => 'left',
+                        ]
+                );
+
+                $this->add_control(
+                        'row_alignment',
+                        [
+                                'label'   => __( 'Выравнивание строк', 'wp-price-manager' ),
+                                'type'    => Controls_Manager::CHOOSE,
+                                'options' => [
+                                        'left'   => [
+                                                'title' => __( 'Left', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-left',
+                                        ],
+                                        'center' => [
+                                                'title' => __( 'Center', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-center',
+                                        ],
+                                        'right'  => [
+                                                'title' => __( 'Right', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-right',
+                                        ],
+                                ],
+                                'default' => 'left',
+                        ]
+                );
 
 		$this->end_controls_section();
 	}
@@ -223,13 +246,13 @@ class Elementor_Price_List_Widget extends Widget_Base {
 						<th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
 					</tr>
 				</thead>
-				<tbody>
-					<?php if ( ! empty( $services ) ) : ?>
-						<?php foreach ( $services as $index => $service ) : ?>
-							<?php
-							$display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
-							?>
-							<tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $settings['even_row_bg_color'] ) : esc_attr( $settings['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $settings['row_height'] ); ?>;">
+                                <tbody>
+                                        <?php if ( ! empty( $services ) ) : ?>
+                                                <?php foreach ( $services as $index => $service ) : ?>
+                                                        <?php
+                                                        $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
+                                                        ?>
+                                                        <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $settings['even_row_bg_color'] ) : esc_attr( $settings['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $settings['row_height'] ); ?>; text-align: <?php echo esc_attr( $settings['row_alignment'] ); ?>;">
 								<td>
 									<a href="<?php echo esc_url( $service['link'] ); ?>" target="_blank">
 										<?php echo esc_html( $service['name'] ); ?>

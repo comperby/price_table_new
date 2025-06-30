@@ -157,6 +157,66 @@ function wppm_add_service() {
 }
 add_action( 'admin_post_wppm_add_service', 'wppm_add_service' );
 
+// Форма быстрого добавления услуги из категории
+function wppm_add_service_form() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( __( 'Недостаточно прав', 'wp-price-manager' ) );
+    }
+    global $wpdb;
+    $cat_table = $wpdb->prefix . 'wppm_categories';
+
+    $prefill_category = isset( $_GET['category_id'] ) ? intval( $_GET['category_id'] ) : 0;
+    $category = null;
+    if ( $prefill_category ) {
+        $category = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $cat_table WHERE id = %d", $prefill_category ) );
+    }
+    ?>
+    <div class="wrap">
+        <h1><?php _e( 'Добавить услугу', 'wp-price-manager' ); ?></h1>
+        <form id="wppm-add-service-form" method="post" action="">
+            <input type="hidden" name="action" value="wppm_add_service">
+            <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
+            <table class="form-table">
+                <tr>
+                    <th><label for="service_name"><?php _e( 'Название услуги', 'wp-price-manager' ); ?></label></th>
+                    <td><input type="text" id="service_name" name="service_name" required></td>
+                </tr>
+                <tr>
+                    <th><label for="service_description"><?php _e( 'Описание', 'wp-price-manager' ); ?></label></th>
+                    <td><textarea id="service_description" name="service_description" required></textarea></td>
+                </tr>
+                <tr>
+                    <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
+                    <td><input type="url" id="service_link" name="service_link" required></td>
+                </tr>
+                <tr>
+                    <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
+                    <td><input type="number" step="0.01" id="service_price" name="service_price" required></td>
+                </tr>
+                <tr>
+                    <th><label for="price_group"><?php _e( 'Группа цен', 'wp-price-manager' ); ?></label></th>
+                    <td><input type="text" id="price_group" name="price_group" required></td>
+                </tr>
+                <tr>
+                    <th><label for="service_category"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>
+                    <td>
+                        <?php if ( $category ) : ?>
+                            <input type="hidden" name="service_category_id" value="<?php echo intval( $category->id ); ?>">
+                            <input type="text" value="<?php echo esc_attr( $category->name ); ?>" disabled>
+                        <?php else : ?>
+                            <input type="text" id="service_category" name="service_category" required>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+            <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить услугу', 'wp-price-manager' ); ?>"></p>
+        </form>
+    </div>
+    <?php
+    exit;
+}
+add_action( 'admin_post_wppm_add_service_form', 'wppm_add_service_form' );
+
 // Форма редактирования услуги
 function wppm_edit_service_form() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -175,7 +235,7 @@ function wppm_edit_service_form() {
     ?>
     <div class="wrap">
         <h1><?php _e( 'Редактировать услугу', 'wp-price-manager' ); ?></h1>
-        <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+        <form id="wppm-edit-service-form" method="post" action="">
             <input type="hidden" name="action" value="wppm_edit_service">
             <input type="hidden" name="service_id" value="<?php echo intval($service['id']); ?>">
             <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
@@ -330,7 +390,7 @@ function wppm_edit_price_group_form() {
     ?>
     <div class="wrap">
         <h1><?php _e( 'Редактировать группу цен', 'wp-price-manager' ); ?></h1>
-        <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+        <form id="wppm-edit-price-group-form" method="post" action="">
             <input type="hidden" name="action" value="wppm_edit_price_group">
             <input type="hidden" name="price_group_id" value="<?php echo intval($group['id']); ?>">
             <?php wp_nonce_field( 'wppm_price_group_nonce', 'wppm_price_group_nonce_field' ); ?>
