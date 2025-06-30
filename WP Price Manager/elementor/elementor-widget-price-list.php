@@ -213,9 +213,10 @@ class Elementor_Price_List_Widget extends Widget_Base {
 		return $options;
 	}
 
-	protected function render() {
-		$settings = $this->get_settings_for_display();
-		// Получаем услуги по выбранной категории
+        protected function render() {
+                $settings = $this->get_settings_for_display();
+                $styles   = wppm_get_style_settings();
+                // Получаем услуги по выбранной категории
 		global $wpdb;
 		$srv_table = $wpdb->prefix . 'wppm_services';
 		$cat_id = intval( $settings['selected_category'] );
@@ -230,17 +231,29 @@ class Elementor_Price_List_Widget extends Widget_Base {
 			$services = [];
 		}
 		?>
-		<div class="wppm-price-list-widget" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
-			<table style="
-				border-collapse: collapse;
-				width: 100%;
-				font-family: <?php echo esc_attr( $settings['typography']['family'] ); ?>;
-				font-size: <?php echo esc_attr( $settings['typography']['size'] ); ?>px;
-				font-weight: <?php echo esc_attr( $settings['typography']['weight'] ); ?>;
-				border: <?php echo esc_attr( $settings['border_width'] ); ?> solid <?php echo esc_attr( $settings['border_color'] ); ?>;
-				border-radius: <?php echo esc_attr( $settings['border_radius'] ); ?>;
-			">
-				<thead style="background: <?php echo esc_attr( $settings['header_bg_color'] ); ?>; color: <?php echo esc_attr( $settings['header_text_color'] ); ?>; text-align: <?php echo esc_attr( $settings['header_alignment'] ); ?>;">
+                <div class="wppm-price-list-widget" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
+                        <style>
+                        #wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
+                            background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['icon_color'] ); ?>;
+                        }
+                        #wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                            background: <?php echo esc_attr( $styles['tooltip_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
+                            border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
+                        }
+                        </style>
+                        <table id="wppm-table-<?php echo $this->get_id(); ?>" style="
+                                border-collapse: collapse;
+                                width: 100%;
+                                font-family: <?php echo esc_attr( $styles['text_font'] ); ?>;
+                                font-size: <?php echo esc_attr( $styles['text_size'] ); ?>;
+                                color: <?php echo esc_attr( $styles['text_color'] ); ?>;
+                                font-weight: 400;
+                                border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;
+                                border-radius: <?php echo esc_attr( $styles['border_radius'] ); ?>;
+                        ">
+                                <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
 					<tr>
 						<th><?php _e( 'Услуга', 'wp-price-manager' ); ?></th>
 						<th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
@@ -252,14 +265,14 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                         <?php
                                                         $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
                                                         ?>
-                                                        <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $settings['even_row_bg_color'] ) : esc_attr( $settings['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $settings['row_height'] ); ?>; text-align: <?php echo esc_attr( $settings['row_alignment'] ); ?>;">
+                                                        <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
 								<td>
 									<a href="<?php echo esc_url( $service['link'] ); ?>" target="_blank">
 										<?php echo esc_html( $service['name'] ); ?>
 									</a>
-									<span class="wppm-info-icon" data-description="<?php echo esc_attr( $service['description'] ); ?>">
-										&#x2753;
-									</span>
+                                                                        <span class="wppm-info-icon" data-description="<?php echo esc_attr( $service['description'] ); ?>">
+                                                                               <?php echo esc_html( $styles['icon_char'] ); ?>
+                                                                        </span>
 								</td>
 								<td><?php echo esc_html( $display_price ); ?></td>
 							</tr>

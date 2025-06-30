@@ -58,6 +58,31 @@ function wppm_install() {
     dbDelta( $sql_price_groups );
 
     add_option( 'wppm_db_version', $wppm_db_version );
+
+    // Значения стилей по умолчанию
+    $default_styles = array(
+        'border_color'          => '#ccc',
+        'border_width'          => '1px',
+        'border_radius'         => '5px',
+        'header_bg_color'       => '#f1f1f1',
+        'header_text_color'     => '#333',
+        'header_height'         => '50px',
+        'even_row_bg_color'     => '#ffffff',
+        'odd_row_bg_color'      => '#f9f9f9',
+        'text_font'             => 'Arial',
+        'text_size'             => '14px',
+        'text_color'            => '#333',
+        'row_height'            => '50px',
+        'header_alignment'      => 'left',
+        'row_alignment'         => 'left',
+        'icon_char'             => '\u2753',
+        'icon_color'            => '#fff',
+        'icon_bg_color'         => '#0073aa',
+        'tooltip_bg_color'      => '#333',
+        'tooltip_text_color'    => '#fff',
+        'tooltip_border_radius' => '4px'
+    );
+    add_option( 'wppm_style_settings', $default_styles );
 }
 register_activation_hook( __FILE__, 'wppm_install' );
 
@@ -80,9 +105,10 @@ function wppm_check_elementor() {
 function wppm_admin_enqueue_scripts( $hook ) {
     // Для страниц плагина можно проверять, содержит ли $hook нужное значение.
     if ( strpos( $hook, 'price-manager' ) !== false ) {
-        wp_enqueue_script( 'wppm-admin-js', WPPM_PLUGIN_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-dialog', 'jquery-ui-autocomplete' ), '1.0', true );
+        wp_enqueue_script( 'wppm-admin-js', WPPM_PLUGIN_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-dialog', 'jquery-ui-autocomplete', 'wp-color-picker' ), '1.0', true );
         wp_enqueue_style( 'wppm-admin-css', WPPM_PLUGIN_URL . 'css/admin.css' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
+        wp_enqueue_style( 'wp-color-picker' );
         wp_localize_script( 'wppm-admin-js', 'wppm_ajax_obj', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'wppm_nonce' ),
@@ -106,3 +132,36 @@ function wppm_frontend_enqueue_scripts() {
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
 }
 add_action( 'wp_enqueue_scripts', 'wppm_frontend_enqueue_scripts' );
+
+// Получить настройки стилей с учетом значений по умолчанию
+function wppm_get_style_settings() {
+    $defaults = array(
+        'border_color'          => '#ccc',
+        'border_width'          => '1px',
+        'border_radius'         => '5px',
+        'header_bg_color'       => '#f1f1f1',
+        'header_text_color'     => '#333',
+        'header_height'         => '50px',
+        'even_row_bg_color'     => '#ffffff',
+        'odd_row_bg_color'      => '#f9f9f9',
+        'text_font'             => 'Arial',
+        'text_size'             => '14px',
+        'text_color'            => '#333',
+        'row_height'            => '50px',
+        'header_alignment'      => 'left',
+        'row_alignment'         => 'left',
+        'icon_char'             => '\u2753',
+        'icon_color'            => '#fff',
+        'icon_bg_color'         => '#0073aa',
+        'tooltip_bg_color'      => '#333',
+        'tooltip_text_color'    => '#fff',
+        'tooltip_border_radius' => '4px'
+    );
+
+    $saved = get_option( 'wppm_style_settings', array() );
+    if ( ! is_array( $saved ) ) {
+        $saved = array();
+    }
+
+    return wp_parse_args( $saved, $defaults );
+}

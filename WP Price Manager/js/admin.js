@@ -1,5 +1,7 @@
 jQuery(document).ready(function($) {
 
+    $('.wppm-color-field').wpColorPicker();
+
     var wppmCategories = [];
     var wppmPriceGroups = [];
 

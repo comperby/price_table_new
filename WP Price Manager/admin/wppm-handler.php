@@ -502,3 +502,29 @@ function wppm_update_services_order() {
     exit;
 }
 add_action( 'admin_post_wppm_update_services_order', 'wppm_update_services_order' );
+
+// Сохранение настроек стиля таблицы
+function wppm_save_style_settings() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( __( 'Недостаточно прав', 'wp-price-manager' ) );
+    }
+    check_admin_referer( 'wppm_style_settings' );
+    $options = get_option( 'wppm_style_settings', array() );
+    foreach ( array(
+        'border_width', 'border_color', 'border_radius',
+        'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
+        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_color', 'row_height', 'row_alignment',
+        'icon_char', 'icon_color', 'icon_bg_color',
+        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius'
+    ) as $key ) {
+        if ( isset( $_POST[ $key ] ) ) {
+            $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+        }
+    }
+    update_option( 'wppm_style_settings', $options );
+    $tab = isset( $_POST['current_tab'] ) ? sanitize_text_field( $_POST['current_tab'] ) : 'table';
+    $msg = urlencode( __( 'Настройки сохранены', 'wp-price-manager' ) );
+    wp_redirect( admin_url( 'admin.php?page=price-manager-style&tab=' . $tab . '&msg=' . $msg ) );
+    exit;
+}
+add_action( 'admin_post_wppm_save_style_settings', 'wppm_save_style_settings' );
