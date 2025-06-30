@@ -96,16 +96,18 @@ class Price_Manager_Admin {
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
+                        <th></th>
                         <th><?php _e( 'ID', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Название', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Действия', 'wp-price-manager' ); ?></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="wppm-categories-list">
                     <?php if ( $categories ) : ?>
                         <?php foreach ( $categories as $cat ) : ?>
-                            <tr>
+                            <tr id="<?php echo intval( $cat['id'] ); ?>">
+                                <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
                                 <td><?php echo esc_html( $cat['id'] ); ?></td>
                                 <td><?php echo esc_html( $cat['name'] ); ?></td>
                                 <td><?php echo esc_html( $cat['display_order'] ); ?></td>
@@ -119,7 +121,7 @@ class Price_Manager_Admin {
                         <?php endforeach; ?>
                     <?php else : ?>
                         <tr>
-                            <td colspan="4"><?php _e( 'Категории не найдены', 'wp-price-manager' ); ?></td>
+                            <td colspan="5"><?php _e( 'Категории не найдены', 'wp-price-manager' ); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -153,7 +155,7 @@ class Price_Manager_Admin {
     <div class="wrap">
         <h1><?php _e( 'Все услуги', 'wp-price-manager' ); ?></h1>
         <h2><?php _e( 'Добавить новую услугу', 'wp-price-manager' ); ?></h2>
-        <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+        <form id="wppm-add-service-form" method="post" action="">
             <input type="hidden" name="action" value="wppm_add_service">
             <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
             <table class="form-table">
@@ -188,15 +190,7 @@ class Price_Manager_Admin {
                                 echo '<input type="text" value="' . esc_attr($cat->name) . '" disabled>';
                             }
                         } else {
-                            $categories = $wpdb->get_results( "SELECT * FROM $cat_table ORDER BY display_order ASC", ARRAY_A );
-                            echo '<select name="service_category_id" required>';
-                            echo '<option value="">' . __( 'Выберите категорию', 'wp-price-manager' ) . '</option>';
-                            if ( $categories ) {
-                                foreach ( $categories as $cat_item ) {
-                                    echo '<option value="' . intval($cat_item['id']) . '">' . esc_html($cat_item['name']) . '</option>';
-                                }
-                            }
-                            echo '</select>';
+                            echo '<input type="text" id="service_category" name="service_category" required>';
                         }
                         ?>
                     </td>
@@ -206,6 +200,15 @@ class Price_Manager_Admin {
         </form>
         <hr>
         <h2><?php _e( 'Список услуг', 'wp-price-manager' ); ?></h2>
+        <?php if ( !$prefill_category ) : ?>
+        <form id="wppm-service-filter-form" method="post" action="">
+            <input type="text" id="wppm-filter-name" placeholder="<?php _e( 'Название', 'wp-price-manager' ); ?>">
+            <input type="text" id="wppm-filter-description" placeholder="<?php _e( 'Описание', 'wp-price-manager' ); ?>">
+            <input type="text" id="wppm-filter-price-group" placeholder="<?php _e( 'Группа цен', 'wp-price-manager' ); ?>">
+            <input type="text" id="wppm-filter-category" placeholder="<?php _e( 'Категория', 'wp-price-manager' ); ?>">
+            <button type="submit" class="button"><?php _e( 'Фильтровать', 'wp-price-manager' ); ?></button>
+        </form>
+        <?php endif; ?>
         <?php if ( isset($_GET['msg']) ) echo '<div class="updated"><p>' . esc_html($_GET['msg']) . '</p></div>'; ?>
         <?php if ( $prefill_category ) : ?>
             <p><?php _e( 'Перетащите строки для изменения порядка услуг (для выбранной категории)', 'wp-price-manager' ); ?></p>
@@ -226,7 +229,7 @@ class Price_Manager_Admin {
                     <th><?php _e( 'Действия', 'wp-price-manager' ); ?></th>
                 </tr>
             </thead>
-            <tbody <?php if ( $prefill_category ) echo 'id="wppm-services-sortable"'; ?>>
+            <tbody id="<?php echo $prefill_category ? 'wppm-services-sortable' : 'wppm-services-table'; ?>">
                 <?php if ( $services ) : ?>
                     <?php foreach ( $services as $srv ) : ?>
                         <tr data-id="<?php echo intval($srv['id']); ?>">
@@ -282,7 +285,7 @@ class Price_Manager_Admin {
         <div class="wrap">
             <h1><?php _e( 'Группа цен', 'wp-price-manager' ); ?></h1>
             <h2><?php _e( 'Добавить новую группу цен', 'wp-price-manager' ); ?></h2>
-            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+            <form id="wppm-add-price-group-form" method="post" action="">
                 <input type="hidden" name="action" value="wppm_add_price_group">
                 <?php wp_nonce_field( 'wppm_price_group_nonce', 'wppm_price_group_nonce_field' ); ?>
                 <table class="form-table">
