@@ -135,4 +135,68 @@ jQuery(document).ready(function($) {
             $('#wppm-new-order').val(order.join(','));
         });
     }
+
+    // ============================
+    // Autocomplete for service form
+    // ============================
+    var catNames = [];
+    var pgNames  = [];
+
+    function loadAutocomplete() {
+        $.ajax({
+            url: wppm_ajax_obj.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'wppm_ajax_action',
+                nonce: wppm_ajax_obj.nonce,
+                wppm_type: 'get_categories'
+            },
+            success: function(res){
+                if(res.success){
+                    catNames = $.map(res.categories, function(c){ return c.name; });
+                    $('#service_category').autocomplete({ source: catNames, minLength: 0 });
+                }
+            }
+        });
+
+        $.ajax({
+            url: wppm_ajax_obj.ajax_url,
+            method: 'POST',
+            data: {
+                action: 'wppm_ajax_action',
+                nonce: wppm_ajax_obj.nonce,
+                wppm_type: 'get_price_groups'
+            },
+            success: function(res){
+                if(res.success){
+                    var groups = res.get_price_groups || res.price_groups || res.priceGroups;
+                    pgNames = $.map(groups, function(pg){ return pg.name; });
+                    $('#price_group').autocomplete({ source: pgNames, minLength: 0 });
+                }
+            }
+        });
+    }
+
+    loadAutocomplete();
+
+    $(document).on('focus', '#service_category, #price_group', function(){
+        $(this).autocomplete('search', '');
+    });
+
+    $(document).on('submit', '#wppm-add-service-form, #wppm-edit-service-form', function(e){
+        var cat = $('#service_category').val();
+        var pg  = $('#price_group').val();
+        if(cat && $.inArray(cat, catNames) === -1){
+            if(!confirm('Создать новую категорию "' + cat + '"?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        if(pg && $.inArray(pg, pgNames) === -1){
+            if(!confirm('Создать новую группу цен "' + pg + '"?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
 });

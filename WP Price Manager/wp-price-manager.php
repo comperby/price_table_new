@@ -65,6 +65,7 @@ register_activation_hook( __FILE__, 'wppm_install' );
 if ( is_admin() ) {
     require_once WPPM_PLUGIN_DIR . 'admin/class-price-manager-admin.php';
     require_once WPPM_PLUGIN_DIR . 'admin/wppm-handler.php';
+    require_once WPPM_PLUGIN_DIR . 'admin/wppm-ajax-handler.php';
 }
 
 // Подключаем виджет для Elementor (если плагин Elementor активен)
@@ -79,11 +80,15 @@ function wppm_check_elementor() {
 function wppm_admin_enqueue_scripts( $hook ) {
     // Для страниц плагина можно проверять, содержит ли $hook нужное значение.
     if ( strpos( $hook, 'price-manager' ) !== false ) {
-        wp_enqueue_script( 'wppm-admin-js', WPPM_PLUGIN_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-autocomplete' ), '1.0', true );
+        wp_enqueue_script( 'wppm-autocomplete-js', WPPM_PLUGIN_URL . 'admin/js/admin.js', array( 'jquery', 'jquery-ui-autocomplete' ), '1.0', true );
+        wp_enqueue_script( 'wppm-admin-js', WPPM_PLUGIN_URL . 'js/admin.js', array( 'wppm-autocomplete-js', 'jquery', 'jquery-ui-sortable', 'jquery-ui-dialog' ), '1.0', true );
         wp_enqueue_style( 'wppm-admin-css', WPPM_PLUGIN_URL . 'css/admin.css' );
+        wp_enqueue_style( 'wp-jquery-ui-dialog' );
         wp_localize_script( 'wppm-admin-js', 'wppm_ajax_obj', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'wppm_nonce' )
+            'nonce'    => wp_create_nonce( 'wppm_nonce' ),
+            'confirm_price_change_title'   => __( 'Подтверждение', 'wp-price-manager' ),
+            'confirm_price_change_message' => __( 'Изменение цены повлияет на все связанные услуги. Подтвердить?', 'wp-price-manager' )
         ) );
     }
 }
