@@ -245,6 +245,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         </style>
                         <table id="wppm-table-<?php echo $this->get_id(); ?>" style="
                                 border-collapse: collapse;
+                                border-spacing: 0;
                                 width: 100%;
                                 font-family: <?php echo esc_attr( $styles['text_font'] ); ?>;
                                 font-size: <?php echo esc_attr( $styles['text_size'] ); ?>;
@@ -253,12 +254,16 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                 border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;
                                 border-radius: <?php echo esc_attr( $styles['border_radius'] ); ?>;
                         ">
-                                <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
-					<tr>
-						<th><?php _e( 'Услуга', 'wp-price-manager' ); ?></th>
-						<th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
-					</tr>
-				</thead>
+                                <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
+                                        <tr>
+                                                <th style="text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>; border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;">
+                                                        <?php _e( 'Услуга', 'wp-price-manager' ); ?>
+                                                </th>
+                                                <th style="text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>; border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;">
+                                                        <?php _e( 'Цена', 'wp-price-manager' ); ?>
+                                                </th>
+                                        </tr>
+                                </thead>
                                 <tbody>
                                         <?php if ( ! empty( $services ) ) : ?>
                                                 <?php foreach ( $services as $index => $service ) : ?>
@@ -266,16 +271,18 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                         $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
                                                         ?>
                                                         <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
-								<td>
-									<a href="<?php echo esc_url( $service['link'] ); ?>" target="_blank">
-										<?php echo esc_html( $service['name'] ); ?>
-									</a>
+                                                                <td style="border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;">
+                                                                        <a href="<?php echo esc_url( $service['link'] ); ?>" target="_blank" style="color: <?php echo esc_attr( $styles['link_color'] ); ?>;">
+                                                                                <?php echo esc_html( $service['name'] ); ?>
+                                                                        </a>
                                                                         <span class="wppm-info-icon" data-description="<?php echo esc_attr( $service['description'] ); ?>">
-                                                                               <?php echo esc_html( $styles['icon_char'] ); ?>
+                                                                                <?php echo esc_html( $styles['icon_char'] ); ?>
                                                                         </span>
-								</td>
-								<td><?php echo esc_html( $display_price ); ?></td>
-							</tr>
+                                                                </td>
+                                                                <td style="border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;">
+                                                                    <?php echo esc_html( $display_price ); ?>
+                                                                </td>
+                                                        </tr>
 						<?php endforeach; ?>
 					<?php else : ?>
 						<tr>

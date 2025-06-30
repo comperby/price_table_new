@@ -69,9 +69,10 @@ function wppm_install() {
         'header_height'         => '50px',
         'even_row_bg_color'     => '#ffffff',
         'odd_row_bg_color'      => '#f9f9f9',
-        'text_font'             => 'Arial',
+        'text_font'             => 'Montserrat',
         'text_size'             => '14px',
         'text_color'            => '#333',
+        'link_color'            => '#0073aa',
         'row_height'            => '50px',
         'header_alignment'      => 'left',
         'row_alignment'         => 'left',
@@ -130,6 +131,7 @@ add_action( 'admin_enqueue_scripts', 'wppm_admin_enqueue_scripts' );
 function wppm_frontend_enqueue_scripts() {
     wp_enqueue_script( 'wppm-front-end-js', WPPM_PLUGIN_URL . 'js/front-end.js', array('jquery'), '1.0', true );
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
+    wp_enqueue_style( 'wppm-fonts', 'https://fonts.googleapis.com/css?family=Montserrat&display=swap', array(), null );
 }
 add_action( 'wp_enqueue_scripts', 'wppm_frontend_enqueue_scripts' );
 
@@ -144,9 +146,10 @@ function wppm_get_style_settings() {
         'header_height'         => '50px',
         'even_row_bg_color'     => '#ffffff',
         'odd_row_bg_color'      => '#f9f9f9',
-        'text_font'             => 'Arial',
+        'text_font'             => 'Montserrat',
         'text_size'             => '14px',
         'text_color'            => '#333',
+        'link_color'            => '#0073aa',
         'row_height'            => '50px',
         'header_alignment'      => 'left',
         'row_alignment'         => 'left',

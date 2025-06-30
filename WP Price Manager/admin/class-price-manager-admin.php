@@ -411,7 +411,14 @@ class Price_Manager_Admin {
                         </tr>
                         <tr>
                             <th><label for="text_font"><?php _e( 'Шрифт', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="text_font" id="text_font" value="<?php echo esc_attr( $options['text_font'] ?? '' ); ?>"></td>
+                            <td>
+                                <select name="text_font" id="text_font">
+                                    <?php $fonts = array( 'Montserrat', 'Arial', 'Georgia', 'Times New Roman' ); ?>
+                                    <?php foreach ( $fonts as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['text_font'] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="text_size"><?php _e( 'Размер текста (px)', 'wp-price-manager' ); ?></label></th>
@@ -420,6 +427,10 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="text_color"><?php _e( 'Цвет текста', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="text_color" id="text_color" value="<?php echo esc_attr( $options['text_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="link_color"><?php _e( 'Цвет ссылок', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="link_color" id="link_color" value="<?php echo esc_attr( $options['link_color'] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="row_height"><?php _e( 'Высота строк', 'wp-price-manager' ); ?></label></th>

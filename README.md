@@ -19,6 +19,6 @@ After activation new menu items appear under **Price Manager**:
 
 ### Elementor Widget
 
-In the Elementor editor search for **Price List**. Drop the widget onto the page and select a service category in the **Content** tab. Style the table in the **Style** tab (colors, borders, alignment, etc.). Each row displays an info icon; hover or tap it to view the service description.
+In the Elementor editor search for **Price List**. Drop the widget onto the page and select a service category in the **Content** tab. Style the table in the **Style** tab (colors, borders, typography, link color, alignment, etc.). Each row displays an info icon; hover or tap it to view the service description. The default font is **Montserrat**.
 
 The admin interface loads `js/admin.js` and exposes AJAX parameters via `wppm_ajax_obj` for all asynchronous operations.

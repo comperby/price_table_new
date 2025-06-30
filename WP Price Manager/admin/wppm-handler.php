@@ -513,7 +513,7 @@ function wppm_save_style_settings() {
     foreach ( array(
         'border_width', 'border_color', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
-        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_color', 'row_height', 'row_alignment',
+        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_color', 'link_color', 'row_height', 'row_alignment',
         'icon_char', 'icon_color', 'icon_bg_color',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius'
     ) as $key ) {
