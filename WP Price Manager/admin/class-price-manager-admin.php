@@ -106,13 +106,13 @@ class Price_Manager_Admin {
                 <tbody id="wppm-categories-list">
                     <?php if ( $categories ) : ?>
                         <?php foreach ( $categories as $cat ) : ?>
-                            <tr id="<?php echo intval( $cat['id'] ); ?>">
+                            <tr id="<?php echo intval( $cat['id'] ); ?>" data-id="<?php echo intval( $cat['id'] ); ?>" data-name="<?php echo esc_attr( $cat['name'] ); ?>">
                                 <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
                                 <td><?php echo esc_html( $cat['id'] ); ?></td>
-                                <td><?php echo esc_html( $cat['name'] ); ?></td>
+                                <td class="cat-name"><?php echo esc_html( $cat['name'] ); ?></td>
                                 <td><?php echo esc_html( $cat['display_order'] ); ?></td>
-                                <td>
-                                    <a href="<?php echo admin_url('admin-post.php?action=wppm_edit_category_form&id=' . intval($cat['id'])); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
+                                <td class="cat-actions">
+                                    <a href="#" class="edit-category" data-id="<?php echo intval( $cat['id'] ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_category&id=' . intval($cat['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_category_' . intval($cat['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin.php?page=price-manager-services&prefill_category=' . intval($cat['id'])); ?>"><?php _e( 'Посмотреть услуги', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin-post.php?action=wppm_add_service_form&category_id=' . intval($cat['id'])); ?>"><?php _e( 'Быстро добавить услугу', 'wp-price-manager' ); ?></a>
@@ -232,25 +232,25 @@ class Price_Manager_Admin {
             <tbody id="<?php echo $prefill_category ? 'wppm-services-sortable' : 'wppm-services-table'; ?>">
                 <?php if ( $services ) : ?>
                     <?php foreach ( $services as $srv ) : ?>
-                        <tr data-id="<?php echo intval($srv['id']); ?>">
+                        <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>">
                             <?php if ( $prefill_category ) : ?>
                                 <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
                             <?php endif; ?>
                             <td><?php echo esc_html( $srv['id'] ); ?></td>
-                            <td><?php echo esc_html( $srv['name'] ); ?></td>
-                            <td><?php echo esc_html( $srv['description'] ); ?></td>
-                            <td>
+                            <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
+                            <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
+                            <td class="srv-link">
                                 <?php if( ! empty( $srv['link'] ) ): ?>
                                     <a href="<?php echo esc_url( $srv['link'] ); ?>" target="_blank"><?php echo esc_html( $srv['link'] ); ?></a>
                                 <?php else: ?>
                                     <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo esc_html( $srv['price'] ); ?></td>
-                            <td><?php echo esc_html( $srv['category_name'] ); ?></td>
-                            <td><?php echo esc_html( $srv['price_group_name'] ); ?></td>
-                            <td>
-                                <a href="<?php echo admin_url('admin-post.php?action=wppm_edit_service_form&id=' . intval($srv['id'])); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
+                            <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                            <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
+                            <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
+                            <td class="srv-actions">
+                                <a href="#" class="edit-service" data-id="<?php echo intval($srv['id']); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                 <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_service&id=' . intval($srv['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_service_' . intval($srv['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a>
                             </td>
                         </tr>
@@ -315,12 +315,12 @@ class Price_Manager_Admin {
                 <tbody>
                     <?php if ( $price_groups ) : ?>
                         <?php foreach ( $price_groups as $pg ) : ?>
-                            <tr>
+                            <tr data-id="<?php echo intval( $pg['id'] ); ?>" data-name="<?php echo esc_attr( $pg['name'] ); ?>" data-price="<?php echo esc_attr( $pg['default_price'] ); ?>">
                                 <td><?php echo esc_html( $pg['id'] ); ?></td>
-                                <td><?php echo esc_html( $pg['name'] ); ?></td>
-                                <td><?php echo esc_html( $pg['default_price'] ); ?></td>
-                                <td>
-                                    <a href="<?php echo admin_url('admin-post.php?action=wppm_edit_price_group_form&id=' . intval($pg['id'])); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
+                                <td class="pg-name-cell"><?php echo esc_html( $pg['name'] ); ?></td>
+                                <td class="pg-price-cell"><?php echo esc_html( $pg['default_price'] ); ?></td>
+                                <td class="pg-actions">
+                                    <a href="#" class="edit-price-group" data-id="<?php echo intval( $pg['id'] ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_price_group&id=' . intval($pg['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_price_group_' . intval($pg['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a>
                                 </td>
                             </tr>

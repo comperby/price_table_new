@@ -290,22 +290,22 @@ function wppm_handle_ajax() {
             if ( $services ) {
                 foreach ( $services as $srv ) {
                     ?>
-                    <tr data-id="<?php echo intval( $srv['id'] ); ?>">
+                    <tr data-id="<?php echo intval( $srv['id'] ); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>">
                         <td><?php echo esc_html( $srv['id'] ); ?></td>
-                        <td><?php echo esc_html( $srv['name'] ); ?></td>
-                        <td><?php echo esc_html( $srv['description'] ); ?></td>
-                        <td>
+                        <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
+                        <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
+                        <td class="srv-link">
                             <?php if ( ! empty( $srv['link'] ) ) : ?>
                                 <a href="<?php echo esc_url( $srv['link'] ); ?>" target="_blank"><?php echo esc_html( $srv['link'] ); ?></a>
                             <?php else : ?>
                                 <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
                             <?php endif; ?>
                         </td>
-                        <td><?php echo esc_html( $srv['price'] ); ?></td>
-                        <td><?php echo esc_html( $srv['category_name'] ); ?></td>
-                        <td><?php echo esc_html( $srv['price_group_name'] ); ?></td>
-                        <td>
-                            <a href="<?php echo admin_url( 'admin-post.php?action=wppm_edit_service_form&id=' . intval( $srv['id'] ) ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
+                        <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                        <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
+                        <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
+                        <td class="srv-actions">
+                            <a href="#" class="edit-service" data-id="<?php echo intval( $srv['id'] ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                             <a href="<?php echo admin_url( 'admin-post.php?action=wppm_delete_service&id=' . intval( $srv['id'] ) . '&_wpnonce=' . wp_create_nonce( 'wppm_delete_service_' . intval( $srv['id'] ) ) ); ?>" onclick="return confirm('<?php _e( 'Вы уверены?', 'wp-price-manager' ); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a>
                         </td>
                     </tr>

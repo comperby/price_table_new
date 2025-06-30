@@ -69,17 +69,17 @@ jQuery(document).ready(function($) {
                     var list = $('#wppm-categories-list');
                     list.empty();
                     $.each(response.categories, function(index, category) {
-                        var row = $('<tr id="'+category.id+'"></tr>');
+                        var row = $('<tr id="'+category.id+'" data-id="'+category.id+'" data-name="'+category.name+'"></tr>');
                         row.append('<td class="wppm-drag-handle" style="cursor: move;">⇅</td>');
                         row.append('<td>'+category.id+'</td>');
-                        row.append('<td>'+category.name+'</td>');
+                        row.append('<td class="cat-name">'+category.name+'</td>');
                         row.append('<td>'+category.display_order+'</td>');
                         var actions =
                             '<a href="#" class="edit-category" data-id="'+category.id+'">'+wppm_ajax_obj.edit_label+'</a> | ' +
                             '<a href="#" class="delete-category" data-id="'+category.id+'">'+wppm_ajax_obj.delete_label+'</a> | ' +
                             '<a href="'+wppm_ajax_obj.view_services_base+category.id+'">'+wppm_ajax_obj.view_label+'</a> | ' +
                             '<a href="'+wppm_ajax_obj.add_service_base+category.id+'">'+wppm_ajax_obj.quick_add_label+'</a>';
-                        row.append('<td>'+actions+'</td>');
+                        row.append('<td class="cat-actions">'+actions+'</td>');
                         list.append(row);
                     });
                     if(list.hasClass('ui-sortable')){ list.sortable('refresh'); }
@@ -89,27 +89,40 @@ jQuery(document).ready(function($) {
     }
     loadCategories();
 
-    // Редактирование категории
-    $(document).on('click', '.edit-category', function() {
-        var id = $(this).data('id');
-        var newName = prompt('Введите новое название категории:');
-        if(newName) {
-            $.ajax({
-                url: wppm_ajax_obj.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'wppm_ajax_action',
-                    nonce: wppm_ajax_obj.nonce,
-                    wppm_type: 'edit_category',
-                    id: id,
-                    category_name: newName
-                },
-                success: function(response) {
-                    alert(response.message);
-                    loadCategories();
-                }
-            });
-        }
+    // Редактирование категории inline
+    $(document).on('click', '.edit-category', function(e) {
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        if(row.hasClass('editing')) return;
+        row.addClass('editing');
+        var nameCell = row.find('.cat-name');
+        var current = nameCell.text();
+        nameCell.html('<input type="text" class="edit-cat-name" value="'+current+'">');
+        var actions = row.find('.cat-actions');
+        actions.data('orig', actions.html());
+        actions.html('<button class="save-category button button-primary" data-id="'+row.data('id')+'">'+wppm_ajax_obj.save_label+'</button>');
+    });
+
+    $(document).on('click', '.save-category', function(e){
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+        var newName = row.find('.edit-cat-name').val();
+        $.ajax({
+            url: wppm_ajax_obj.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'wppm_ajax_action',
+                nonce: wppm_ajax_obj.nonce,
+                wppm_type: 'edit_category',
+                id: id,
+                category_name: newName
+            },
+            success: function(response){
+                alert(response.message);
+                loadCategories();
+            }
+        });
     });
 
     // Удаление категории
@@ -215,6 +228,48 @@ jQuery(document).ready(function($) {
         submitServiceForm('edit_service', {service_id: $('input[name="service_id"]').val()});
     });
 
+    // Inline editing for services
+    $(document).on('click', '.edit-service', function(e){
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        if(row.hasClass('editing')) return;
+        row.addClass('editing');
+        row.find('.srv-name').html('<input type="text" class="srv-edit-name" value="'+row.data('name')+'">');
+        row.find('.srv-description').html('<textarea class="srv-edit-description">'+row.data('description')+'</textarea>');
+        row.find('.srv-link').html('<input type="url" class="srv-edit-link" value="'+row.data('link')+'">');
+        row.find('.srv-price').html('<input type="text" class="srv-edit-price" value="'+row.data('price')+'">');
+        row.find('.srv-category').html('<input type="text" class="srv-edit-category" value="'+row.data('category')+'">');
+        row.find('.srv-price-group').html('<input type="text" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
+        var actions = row.find('.srv-actions');
+        actions.data('orig', actions.html());
+        actions.html('<button class="save-service button button-primary">'+wppm_ajax_obj.save_label+'</button>');
+
+        row.find('.srv-edit-category').autocomplete({source:wppmCategories,minLength:0}).focus(function(){ $(this).autocomplete('search', this.value); });
+        row.find('.srv-edit-price-group').autocomplete({source:wppmPriceGroups,minLength:0}).focus(function(){ $(this).autocomplete('search', this.value); });
+    });
+
+    $(document).on('click', '.save-service', function(e){
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+        var data = {
+            action: 'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type: 'edit_service',
+            service_id: id,
+            service_name: row.find('.srv-edit-name').val(),
+            service_description: row.find('.srv-edit-description').val(),
+            service_link: row.find('.srv-edit-link').val(),
+            service_price: row.find('.srv-edit-price').val(),
+            price_group: row.find('.srv-edit-price-group').val(),
+            service_category: row.find('.srv-edit-category').val()
+        };
+        $.post(wppm_ajax_obj.ajax_url, data, function(res){
+            alert(res.message);
+            if(res.success){ location.reload(); }
+        });
+    });
+
     // ============================
     // Confirm and submit price group forms via AJAX
     // ============================
@@ -262,6 +317,33 @@ jQuery(document).ready(function($) {
             sendPriceGroup(data);
         });
     }
+
+    // Inline editing for price groups
+    $(document).on('click', '.edit-price-group', function(e){
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        if(row.hasClass('editing')) return;
+        row.addClass('editing');
+        row.find('.pg-name-cell').html('<input type="text" class="pg-edit-name" value="'+row.data('name')+'">');
+        row.find('.pg-price-cell').html('<input type="text" class="pg-edit-price" value="'+row.data('price')+'">');
+        var actions = row.find('.pg-actions');
+        actions.data('orig', actions.html());
+        actions.html('<button class="save-price-group button button-primary">'+wppm_ajax_obj.save_label+'</button>');
+    });
+
+    $(document).on('click', '.save-price-group', function(e){
+        e.preventDefault();
+        var row = $(this).closest('tr');
+        var data = {
+            action:'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type:'edit_price_group',
+            id: row.data('id'),
+            price_group_name: row.find('.pg-edit-name').val(),
+            default_price: row.find('.pg-edit-price').val()
+        };
+        sendPriceGroup(data);
+    });
 
     // ============================
     // Autocomplete fields
