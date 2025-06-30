@@ -39,8 +39,20 @@ jQuery(document).ready(function($) {
                     var list = $('#wppm-categories-list');
                     list.empty();
                     $.each(response.categories, function(index, category) {
-                        list.append('<li id="'+category.id+'">'+category.name+' <button class="edit-category" data-id="'+category.id+'">Edit</button> <button class="delete-category" data-id="'+category.id+'">Delete</button></li>');
+                        var row = $('<tr id="'+category.id+'"></tr>');
+                        row.append('<td class="wppm-drag-handle" style="cursor: move;">⇅</td>');
+                        row.append('<td>'+category.id+'</td>');
+                        row.append('<td>'+category.name+'</td>');
+                        row.append('<td>'+category.display_order+'</td>');
+                        var actions =
+                            '<a href="#" class="edit-category" data-id="'+category.id+'">'+wppm_ajax_obj.edit_label+'</a> | ' +
+                            '<a href="#" class="delete-category" data-id="'+category.id+'">'+wppm_ajax_obj.delete_label+'</a> | ' +
+                            '<a href="'+wppm_ajax_obj.view_services_base+category.id+'">'+wppm_ajax_obj.view_label+'</a> | ' +
+                            '<a href="'+wppm_ajax_obj.add_service_base+category.id+'">'+wppm_ajax_obj.quick_add_label+'</a>';
+                        row.append('<td>'+actions+'</td>');
+                        list.append(row);
                     });
+                    if(list.hasClass('ui-sortable')){ list.sortable('refresh'); }
                 }
             }
         });

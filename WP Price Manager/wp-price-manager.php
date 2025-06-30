@@ -88,7 +88,13 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'wppm_nonce' ),
             'confirm_price_change_title'   => __( 'Подтверждение', 'wp-price-manager' ),
-            'confirm_price_change_message' => __( 'Изменение цены повлияет на все связанные услуги. Подтвердить?', 'wp-price-manager' )
+            'confirm_price_change_message' => __( 'Изменение цены повлияет на все связанные услуги. Подтвердить?', 'wp-price-manager' ),
+            'view_services_base' => admin_url( 'admin.php?page=price-manager-services&prefill_category=' ),
+            'add_service_base'  => admin_url( 'admin-post.php?action=wppm_add_service_form&category_id=' ),
+            'edit_label'        => __( 'Редактировать', 'wp-price-manager' ),
+            'delete_label'      => __( 'Удалить', 'wp-price-manager' ),
+            'view_label'        => __( 'Посмотреть услуги', 'wp-price-manager' ),
+            'quick_add_label'   => __( 'Быстро добавить услугу', 'wp-price-manager' )
         ) );
     }
 }

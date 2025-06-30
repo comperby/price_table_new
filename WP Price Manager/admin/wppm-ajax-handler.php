@@ -61,7 +61,7 @@ function wppm_handle_ajax() {
 
         case 'get_categories':
             $table = $wpdb->prefix . 'wppm_categories';
-            $categories = $wpdb->get_results( "SELECT id, name FROM $table ORDER BY display_order ASC", ARRAY_A );
+            $categories = $wpdb->get_results( "SELECT id, name, display_order FROM $table ORDER BY display_order ASC", ARRAY_A );
             $response = array( 'success' => true, 'categories' => $categories );
             break;
 
