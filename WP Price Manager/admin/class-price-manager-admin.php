@@ -295,7 +295,7 @@ class Price_Manager_Admin {
                     </tr>
                     <tr>
                         <th><label for="default_price"><?php _e( 'Цена по умолчанию', 'wp-price-manager' ); ?></label></th>
-                        <td><input type="number" step="0.01" id="default_price" name="default_price" required></td>
+                        <td><input type="text" id="default_price" name="default_price" required></td>
                     </tr>
                 </table>
                 <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить группу', 'wp-price-manager' ); ?>"></p>

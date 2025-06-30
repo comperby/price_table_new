@@ -37,7 +37,7 @@ function wppm_install() {
         name varchar(255) NOT NULL,
         description text,
         link varchar(255),
-        price decimal(10,2) DEFAULT NULL,
+        price varchar(255) DEFAULT '',
         manual_price tinyint(1) DEFAULT 0,
         category_id mediumint(9) DEFAULT 0,
         price_group_id mediumint(9) DEFAULT 0,
@@ -49,7 +49,7 @@ function wppm_install() {
     $sql_price_groups = "CREATE TABLE $table_price_groups (
         id mediumint(9) NOT NULL AUTO_INCREMENT,
         name varchar(255) NOT NULL,
-        default_price decimal(10,2) DEFAULT NULL,
+        default_price varchar(255) DEFAULT '',
         PRIMARY KEY  (id)
     ) $charset_collate;";
 

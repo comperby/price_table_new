@@ -68,12 +68,12 @@ function wppm_handle_ajax() {
         // --- Группа цен ---
         case 'add_price_group':
             $name          = sanitize_text_field( $_POST['price_group_name'] );
-            $default_price = floatval( $_POST['default_price'] );
+            $default_price = sanitize_text_field( $_POST['default_price'] );
             $pg_table = $wpdb->prefix . 'wppm_price_groups';
             $result = $wpdb->insert( $pg_table, array(
                 'name'          => $name,
                 'default_price' => $default_price,
-            ), array( '%s', '%f' ) );
+            ), array( '%s', '%s' ) );
             if ( $result ) {
                 $response = array( 'success' => true, 'message' => __( 'Группа цен добавлена.', 'wp-price-manager' ) );
             } else {
@@ -84,7 +84,7 @@ function wppm_handle_ajax() {
         case 'edit_price_group':
             $id            = intval( $_POST['id'] );
             $name          = sanitize_text_field( $_POST['price_group_name'] );
-            $default_price = floatval( $_POST['default_price'] );
+            $default_price = sanitize_text_field( $_POST['default_price'] );
             $pg_table = $wpdb->prefix . 'wppm_price_groups';
             $confirm = isset( $_POST['confirm'] ) ? intval( $_POST['confirm'] ) : 0;
             if ( ! $confirm ) {
@@ -103,11 +103,11 @@ function wppm_handle_ajax() {
             $result = $wpdb->update( $pg_table, array(
                 'name'          => $name,
                 'default_price' => $default_price,
-            ), array( 'id' => $id ), array( '%s', '%f' ), array( '%d' ) );
+            ), array( 'id' => $id ), array( '%s', '%s' ), array( '%d' ) );
             if ( $result !== false ) {
                 $srv_table = $wpdb->prefix . 'wppm_services';
                 $wpdb->query( $wpdb->prepare(
-                    "UPDATE $srv_table SET price = %f WHERE price_group_id = %d AND manual_price = 0",
+                    "UPDATE $srv_table SET price = %s WHERE price_group_id = %d AND manual_price = 0",
                     $default_price, $id
                 ) );
                 $response = array( 'success' => true, 'message' => __( 'Группа цен обновлена.', 'wp-price-manager' ) );
@@ -140,10 +140,10 @@ function wppm_handle_ajax() {
             $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
             $name        = sanitize_text_field( $_POST['service_name'] );
-            $description = sanitize_textarea_field( $_POST['service_description'] );
-            $link        = esc_url_raw( $_POST['service_link'] );
-            $price       = floatval( $_POST['service_price'] );
-            $pg_name     = sanitize_text_field( $_POST['price_group'] );
+            $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
+            $link        = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
+            $price       = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
+            $pg_name     = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
 
             if ( isset( $_POST['service_category_id'] ) && ! empty( $_POST['service_category_id'] ) ) {
                 $category_id = intval( $_POST['service_category_id'] );
@@ -158,12 +158,25 @@ function wppm_handle_ajax() {
                 }
             }
 
-            $existing_pg = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $pg_table WHERE name = %s", $pg_name ) );
-            if ( $existing_pg ) {
-                $price_group_id = $existing_pg->id;
-            } else {
-                $wpdb->insert( $pg_table, array( 'name' => $pg_name, 'default_price' => $price ), array( '%s', '%f' ) );
-                $price_group_id = $wpdb->insert_id;
+            $price_group_id = 0;
+            $manual = 1;
+            if ( $pg_name ) {
+                $existing_pg = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $pg_table WHERE name = %s", $pg_name ) );
+                if ( $existing_pg ) {
+                    $price_group_id = $existing_pg->id;
+                    if ( $price === '' ) {
+                        $price = $existing_pg->default_price;
+                        $manual = 0;
+                    }
+                } else {
+                    $wpdb->insert( $pg_table, array( 'name' => $pg_name, 'default_price' => $price ), array( '%s', '%s' ) );
+                    $price_group_id = $wpdb->insert_id;
+                    if ( $price === '' ) {
+                        $manual = 0;
+                    } else {
+                        $manual = 1;
+                    }
+                }
             }
 
             $result = $wpdb->insert( $srv_table, array(
@@ -171,11 +184,11 @@ function wppm_handle_ajax() {
                 'description'   => $description,
                 'link'          => $link,
                 'price'         => $price,
-                'manual_price'  => 1,
+                'manual_price'  => $manual,
                 'category_id'   => $category_id,
                 'price_group_id'=> $price_group_id,
                 'display_order' => 0,
-            ), array( '%s','%s','%s','%f','%d','%d','%d','%d' ) );
+            ), array( '%s','%s','%s','%s','%d','%d','%d','%d' ) );
 
             if ( $result ) {
                 $response = array( 'success' => true, 'message' => __( 'Услуга добавлена.', 'wp-price-manager' ) );
@@ -191,10 +204,10 @@ function wppm_handle_ajax() {
 
             $id          = intval( $_POST['service_id'] );
             $name        = sanitize_text_field( $_POST['service_name'] );
-            $description = sanitize_textarea_field( $_POST['service_description'] );
-            $link        = esc_url_raw( $_POST['service_link'] );
-            $price       = floatval( $_POST['service_price'] );
-            $pg_name     = sanitize_text_field( $_POST['price_group'] );
+            $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
+            $link        = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
+            $price       = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
+            $pg_name     = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
             $cat_name    = sanitize_text_field( $_POST['service_category'] );
 
             $existing_cat = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $cat_table WHERE name = %s", $cat_name ) );
@@ -205,12 +218,25 @@ function wppm_handle_ajax() {
                 $category_id = $wpdb->insert_id;
             }
 
-            $existing_pg = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $pg_table WHERE name = %s", $pg_name ) );
-            if ( $existing_pg ) {
-                $price_group_id = $existing_pg->id;
-            } else {
-                $wpdb->insert( $pg_table, array( 'name' => $pg_name, 'default_price' => $price ), array( '%s', '%f' ) );
-                $price_group_id = $wpdb->insert_id;
+            $price_group_id = 0;
+            $manual = 1;
+            if ( $pg_name ) {
+                $existing_pg = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $pg_table WHERE name = %s", $pg_name ) );
+                if ( $existing_pg ) {
+                    $price_group_id = $existing_pg->id;
+                    if ( $price === '' ) {
+                        $price = $existing_pg->default_price;
+                        $manual = 0;
+                    }
+                } else {
+                    $wpdb->insert( $pg_table, array( 'name' => $pg_name, 'default_price' => $price ), array( '%s', '%s' ) );
+                    $price_group_id = $wpdb->insert_id;
+                    if ( $price === '' ) {
+                        $manual = 0;
+                    } else {
+                        $manual = 1;
+                    }
+                }
             }
 
             $result = $wpdb->update( $srv_table, array(
@@ -218,10 +244,10 @@ function wppm_handle_ajax() {
                 'description'   => $description,
                 'link'          => $link,
                 'price'         => $price,
-                'manual_price'  => 1,
+                'manual_price'  => $manual,
                 'category_id'   => $category_id,
                 'price_group_id'=> $price_group_id,
-            ), array( 'id' => $id ), array( '%s','%s','%s','%f','%d','%d','%d' ), array( '%d' ) );
+            ), array( 'id' => $id ), array( '%s','%s','%s','%s','%d','%d','%d' ), array( '%d' ) );
 
             if ( $result !== false ) {
                 $response = array( 'success' => true, 'message' => __( 'Услуга обновлена.', 'wp-price-manager' ) );
