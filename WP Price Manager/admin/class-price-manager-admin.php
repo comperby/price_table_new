@@ -165,19 +165,19 @@ class Price_Manager_Admin {
                 </tr>
                 <tr>
                     <th><label for="service_description"><?php _e( 'Описание', 'wp-price-manager' ); ?></label></th>
-                    <td><textarea id="service_description" name="service_description" required></textarea></td>
+                    <td><textarea id="service_description" name="service_description"></textarea></td>
                 </tr>
                 <tr>
                     <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="url" id="service_link" name="service_link" required></td>
+                    <td><input type="url" id="service_link" name="service_link"></td>
                 </tr>
                 <tr>
                     <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="number" step="0.01" id="service_price" name="service_price" required></td>
+                    <td><input type="text" id="service_price" name="service_price"></td>
                 </tr>
                 <tr>
                     <th><label for="price_group"><?php _e( 'Группа цен', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="text" id="price_group" name="price_group" required></td>
+                    <td><input type="text" id="price_group" name="price_group"></td>
                 </tr>
                 <tr>
                     <th><label for="service_category"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>

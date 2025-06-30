@@ -1,5 +1,35 @@
 jQuery(document).ready(function($) {
 
+    var wppmCategories = [];
+    var wppmPriceGroups = [];
+
+    function loadCategorySuggestions(cb) {
+        $.post(wppm_ajax_obj.ajax_url, {
+            action: 'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type: 'get_categories'
+        }, function(res) {
+            if (res.success) {
+                wppmCategories = $.map(res.categories, function(c) { return c.name; });
+                if (cb) cb();
+            }
+        });
+    }
+
+    function loadPriceGroupSuggestions(cb) {
+        $.post(wppm_ajax_obj.ajax_url, {
+            action: 'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type: 'get_price_groups'
+        }, function(res) {
+            if (res.success) {
+                wppmPriceGroups = $.map(res.get_price_groups, function(pg) { return pg.name; });
+                if (cb) cb();
+            }
+        });
+    }
+
+
     // ============================
     // Обработка категорий (AJAX)
     // ============================
@@ -230,6 +260,45 @@ jQuery(document).ready(function($) {
                 default_price: $('#default_price').val()
             };
             sendPriceGroup(data);
+        });
+    }
+
+    // ============================
+    // Autocomplete fields
+    // ============================
+    if ($('#service_category').length) {
+        loadCategorySuggestions(function(){
+            $('#service_category').autocomplete({
+                source: wppmCategories,
+                minLength: 0
+            }).on('focus', function(){ $(this).autocomplete('search', this.value); });
+        });
+    }
+
+    if ($('#price_group').length) {
+        loadPriceGroupSuggestions(function(){
+            $('#price_group').autocomplete({
+                source: wppmPriceGroups,
+                minLength: 0
+            }).on('focus', function(){ $(this).autocomplete('search', this.value); });
+        });
+    }
+
+    if ($('#wppm-filter-category').length) {
+        loadCategorySuggestions(function(){
+            $('#wppm-filter-category').autocomplete({
+                source: wppmCategories,
+                minLength: 0
+            }).on('focus', function(){ $(this).autocomplete('search', this.value); });
+        });
+    }
+
+    if ($('#wppm-filter-price-group').length) {
+        loadPriceGroupSuggestions(function(){
+            $('#wppm-filter-price-group').autocomplete({
+                source: wppmPriceGroups,
+                minLength: 0
+            }).on('focus', function(){ $(this).autocomplete('search', this.value); });
         });
     }
 
