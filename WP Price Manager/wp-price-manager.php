@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $wppm_db_version;
-$wppm_db_version = '1.1';
+$wppm_db_version = '1.2';
 
 define( 'WPPM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPPM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -45,6 +45,7 @@ function wppm_install() {
         category_id mediumint(9) DEFAULT 0,
         price_group_id mediumint(9) DEFAULT 0,
         display_order mediumint(9) NOT NULL DEFAULT 0,
+        extras text NOT NULL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
 

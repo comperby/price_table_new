@@ -203,7 +203,7 @@ class Price_Manager_Admin {
                 <tr>
                     <th><label for="service_category"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>
                     <td>
-                        <?php 
+                        <?php
                         if ( $prefill_category ) {
                             $cat = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $cat_table WHERE id = %d", $prefill_category ) );
                             if ( $cat ) {
@@ -216,9 +216,18 @@ class Price_Manager_Admin {
                         ?>
                     </td>
                 </tr>
+                <tr id="wppm-extras-row" style="display:none;">
+                    <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
+                    <td id="wppm-extras-container"></td>
+                </tr>
             </table>
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить услугу', 'wp-price-manager' ); ?>"></p>
         </form>
+        <?php if ( $prefill_category ) : ?>
+        <script type="text/javascript">
+        jQuery(function($){ if(window.wppm_load_extras){ wppm_load_extras(<?php echo intval($prefill_category); ?>); } });
+        </script>
+        <?php endif; ?>
         <hr>
         <h2><?php _e( 'Список услуг', 'wp-price-manager' ); ?></h2>
         <?php if ( !$prefill_category ) : ?>

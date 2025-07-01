@@ -31,6 +31,31 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function wppm_load_extras(category, preset){
+        var data = {
+            action:'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type:'get_category_info'
+        };
+        if($.isNumeric(category)) data.id = category; else data.name = category;
+        $.post(wppm_ajax_obj.ajax_url, data, function(res){
+            var row = $('#wppm-extras-row');
+            var container = $('#wppm-extras-container');
+            if(res.success && res.custom){
+                container.empty();
+                $.each(res.titles || [], function(i, title){
+                    var val = preset && preset[i] ? preset[i] : '';
+                    container.append('<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'"><br>');
+                });
+                row.show();
+            } else {
+                container.empty();
+                row.hide();
+            }
+        });
+    }
+    window.wppm_load_extras = wppm_load_extras;
+
     function updateColumnInputs(){
         var count = parseInt($('#column_count').val()) || 2;
         if(count < 2) count = 2;
@@ -215,6 +240,8 @@ jQuery(document).ready(function($) {
     function submitServiceForm(type, extra){
         var cat = $('#service_category').val();
         var pg  = $('#price_group').val();
+        var extras = [];
+        $('#wppm-extras-container input').each(function(){ extras.push($(this).val()); });
         var data = {
             action: 'wppm_ajax_action',
             nonce: wppm_ajax_obj.nonce,
@@ -225,7 +252,8 @@ jQuery(document).ready(function($) {
             service_price: $('#service_price').val(),
             price_group: pg,
             service_category: cat,
-            service_category_id: $('input[name="service_category_id"]').val() || ''
+            service_category_id: $('input[name="service_category_id"]').val() || '',
+            extras: extras
         };
         $.extend(data, extra || {});
         $.post(wppm_ajax_obj.ajax_url, data, function(res){
@@ -373,7 +401,9 @@ jQuery(document).ready(function($) {
             $('#service_category').autocomplete({
                 source: wppmCategories,
                 minLength: 0
-            }).on('focus', function(){ $(this).autocomplete('search', this.value); });
+            }).on('focus', function(){ $(this).autocomplete('search', this.value); })
+            .on('autocompleteselect', function(e,ui){ wppm_load_extras(ui.item.value); })
+            .on('change blur', function(){ wppm_load_extras(this.value); });
         });
     }
 

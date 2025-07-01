@@ -124,7 +124,8 @@ function wppm_add_service() {
     $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
     $link = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
     $price = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
-    $price_group = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
+   $price_group = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
+   $extras = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
 
     // Определяем категорию: если передано через выпадающий список – используем его, иначе пробуем по текстовому полю
     if ( isset($_POST['service_category_id']) && !empty($_POST['service_category_id']) ) {
@@ -167,7 +168,8 @@ function wppm_add_service() {
         'category_id' => $category_id,
         'price_group_id' => $price_group_id,
         'display_order' => 0,
-    ), array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d' ) );
+        'extras' => isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '',
+    ), array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s' ) );
     $msg = $result ? __( 'Услуга добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления услуги.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-services&msg=' . urlencode( $msg ) ) );
     exit;
@@ -225,9 +227,23 @@ function wppm_add_service_form() {
                         <?php endif; ?>
                     </td>
                 </tr>
+                <tr id="wppm-extras-row" style="display:none;">
+                    <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
+                    <td id="wppm-extras-container"></td>
+                </tr>
             </table>
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить услугу', 'wp-price-manager' ); ?>"></p>
         </form>
+        <script type="text/javascript">
+        jQuery(function($){
+            var catId = $('input[name="service_category_id"]').val() || $('#service_category').val();
+            if(catId){
+                if(window.wppm_load_extras){
+                    wppm_load_extras(catId);
+                }
+            }
+        });
+        </script>
     </div>
     <?php
     exit;
@@ -293,9 +309,22 @@ function wppm_edit_service_form() {
                         <input type="text" id="service_category" name="service_category" value="<?php echo esc_attr($cat_name); ?>" required>
                     </td>
                 </tr>
+                <tr id="wppm-extras-row" style="display:none;">
+                    <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
+                    <td id="wppm-extras-container"></td>
+                </tr>
             </table>
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Сохранить изменения', 'wp-price-manager' ); ?>"></p>
         </form>
+        <script type="text/javascript">
+        var wppm_initial_extras = <?php echo wp_json_encode( json_decode( $service['extras'], true ) ); ?>;
+        jQuery(function($){
+            var cat = $('#service_category').val();
+            if(cat && window.wppm_load_extras){
+                wppm_load_extras(cat, wppm_initial_extras);
+            }
+        });
+        </script>
     </div>
     <?php
     exit;
@@ -356,7 +385,8 @@ function wppm_edit_service() {
         'manual_price' => $manual,
         'category_id' => $category_id,
         'price_group_id' => $price_group_id,
-    ), array( 'id' => $id ), array( '%s', '%s', '%s', '%s', '%d', '%d', '%d' ), array( '%d' ) );
+        'extras' => $extras,
+    ), array( 'id' => $id ), array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s' ), array( '%d' ) );
     $msg = ($result !== false) ? __( 'Услуга обновлена.', 'wp-price-manager' ) : __( 'Ошибка обновления услуги.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-services&msg=' . urlencode( $msg ) ) );
     exit;
