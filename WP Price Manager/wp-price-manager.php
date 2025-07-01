@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $wppm_db_version;
-$wppm_db_version = '1.0';
+$wppm_db_version = '1.1';
 
 define( 'WPPM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPPM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -28,6 +28,9 @@ function wppm_install() {
         id mediumint(9) NOT NULL AUTO_INCREMENT,
         name varchar(255) NOT NULL,
         display_order mediumint(9) NOT NULL DEFAULT 0,
+        custom_table tinyint(1) NOT NULL DEFAULT 0,
+        column_count smallint(4) NOT NULL DEFAULT 2,
+        column_titles text NOT NULL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
 
@@ -71,7 +74,11 @@ function wppm_install() {
         'odd_row_bg_color'      => '#f9f9f9',
         'text_font'             => 'Montserrat',
         'text_size'             => '14px',
+        'text_weight'           => '400',
+        'text_padding'          => '8px',
         'text_color'            => '#333',
+        'header_text_size'      => '16px',
+        'header_text_weight'    => '600',
         'link_color'            => '#0073aa',
         'row_height'            => '50px',
         'header_alignment'      => 'left',
@@ -86,6 +93,16 @@ function wppm_install() {
     add_option( 'wppm_style_settings', $default_styles );
 }
 register_activation_hook( __FILE__, 'wppm_install' );
+
+// Обновление БД при изменении версии
+function wppm_update_db_check() {
+    global $wppm_db_version;
+    if ( get_option( 'wppm_db_version' ) !== $wppm_db_version ) {
+        wppm_install();
+        update_option( 'wppm_db_version', $wppm_db_version );
+    }
+}
+add_action( 'plugins_loaded', 'wppm_update_db_check' );
 
 // Подключаем файлы админ-панели и обработчика форм (синхронно)
 if ( is_admin() ) {
@@ -148,7 +165,11 @@ function wppm_get_style_settings() {
         'odd_row_bg_color'      => '#f9f9f9',
         'text_font'             => 'Montserrat',
         'text_size'             => '14px',
+        'text_weight'           => '400',
+        'text_padding'          => '8px',
         'text_color'            => '#333',
+        'header_text_size'      => '16px',
+        'header_text_weight'    => '600',
         'link_color'            => '#0073aa',
         'row_height'            => '50px',
         'header_alignment'      => 'left',

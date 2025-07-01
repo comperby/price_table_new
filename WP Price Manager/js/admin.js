@@ -31,6 +31,28 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function updateColumnInputs(){
+        var count = parseInt($('#column_count').val()) || 2;
+        if(count < 2) count = 2;
+        var container = $('#column_titles_container');
+        container.empty();
+        for(var i=1;i<=count;i++){
+            container.append('<input type="text" name="column_titles['+i+']" placeholder="'+i+'" /><br>');
+        }
+    }
+
+    $('#custom_table').on('change', function(){
+        if($(this).is(':checked')){
+            $('.wppm-custom-settings').show();
+            updateColumnInputs();
+        }else{
+            $('.wppm-custom-settings').hide();
+            $('#column_titles_container').empty();
+        }
+    });
+
+    $('#column_count').on('change', updateColumnInputs);
+
 
     // ============================
     // Обработка категорий (AJAX)
@@ -39,19 +61,15 @@ jQuery(document).ready(function($) {
     // Добавление категории через AJAX
     $('#wppm-category-form').on('submit', function(e) {
         e.preventDefault();
-        var categoryName = $(this).find('input[name="category_name"]').val();
-        $.ajax({
-            url: wppm_ajax_obj.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'wppm_ajax_action',
-                nonce: wppm_ajax_obj.nonce,
-                wppm_type: 'add_category',
-                category_name: categoryName
-            },
-            success: function(response) {
-                alert(response.message);
+        var data = $(this).serialize();
+        data += '&action=wppm_ajax_action&nonce=' + wppm_ajax_obj.nonce + '&wppm_type=add_category';
+        $.post(wppm_ajax_obj.ajax_url, data, function(response){
+            alert(response.message);
+            if(response.success){
                 loadCategories();
+                $('#wppm-category-form')[0].reset();
+                $('.wppm-custom-settings').hide();
+                $('#column_titles_container').empty();
             }
         });
     });

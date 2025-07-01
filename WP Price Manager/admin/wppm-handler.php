@@ -13,12 +13,18 @@ function wppm_add_category() {
     check_admin_referer( 'wppm_category_nonce', 'wppm_category_nonce_field' );
     global $wpdb;
     $table = $wpdb->prefix . 'wppm_categories';
-    $name = sanitize_text_field( $_POST['category_name'] );
+    $name  = sanitize_text_field( $_POST['category_name'] );
     $order = intval( $_POST['display_order'] );
+    $custom = isset( $_POST['custom_table'] ) ? 1 : 0;
+    $count  = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
+    $titles = $custom && isset( $_POST['column_titles'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['column_titles'] ) ) : '';
     $result = $wpdb->insert( $table, array(
         'name' => $name,
         'display_order' => $order,
-    ), array( '%s', '%d' ) );
+        'custom_table' => $custom,
+        'column_count' => $count,
+        'column_titles' => $titles,
+    ), array( '%s', '%d', '%d', '%d', '%s' ) );
     $msg = $result ? __( 'Категория добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления категории.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-categories&msg=' . urlencode( $msg ) ) );
     exit;
@@ -513,7 +519,7 @@ function wppm_save_style_settings() {
     foreach ( array(
         'border_width', 'border_color', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
-        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_color', 'link_color', 'row_height', 'row_alignment',
+        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'row_height', 'row_alignment',
         'icon_char', 'icon_color', 'icon_bg_color',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius'
     ) as $key ) {

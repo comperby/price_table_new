@@ -15,11 +15,18 @@ function wppm_handle_ajax() {
         // --- Категории ---
         case 'add_category':
             $name  = sanitize_text_field( $_POST['category_name'] );
+            $display_order = isset( $_POST['display_order'] ) ? intval( $_POST['display_order'] ) : 0;
+            $custom  = isset( $_POST['custom_table'] ) ? 1 : 0;
+            $count   = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
+            $titles  = $custom && isset( $_POST['column_titles'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['column_titles'] ) ) : '';
             $table = $wpdb->prefix . 'wppm_categories';
             $result = $wpdb->insert( $table, array(
                 'name'          => $name,
-                'display_order' => 0,
-            ), array( '%s', '%d' ) );
+                'display_order' => $display_order,
+                'custom_table'  => $custom,
+                'column_count'  => $count,
+                'column_titles' => $titles,
+            ), array( '%s', '%d', '%d', '%d', '%s' ) );
             if ( $result ) {
                 $response = array( 'success' => true, 'message' => __( 'Категория добавлена.', 'wp-price-manager' ) );
             } else {

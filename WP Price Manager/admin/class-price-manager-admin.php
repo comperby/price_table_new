@@ -75,7 +75,7 @@ class Price_Manager_Admin {
             
             <!-- Форма добавления новой категории -->
             <h2><?php _e( 'Добавить новую категорию', 'wp-price-manager' ); ?></h2>
-            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+            <form id="wppm-category-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="wppm_add_category">
                 <?php wp_nonce_field( 'wppm_category_nonce', 'wppm_category_nonce_field' ); ?>
                 <table class="form-table">
@@ -86,6 +86,18 @@ class Price_Manager_Admin {
                     <tr>
                         <th><label for="display_order"><?php _e( 'Порядок отображения', 'wp-price-manager' ); ?></label></th>
                         <td><input type="number" id="display_order" name="display_order" value="0" required></td>
+                    </tr>
+                    <tr>
+                        <th><label for="custom_table"><?php _e( 'Кастом', 'wp-price-manager' ); ?></label></th>
+                        <td><input type="checkbox" id="custom_table" name="custom_table" value="1"></td>
+                    </tr>
+                    <tr class="wppm-custom-settings" style="display:none;">
+                        <th><label for="column_count"><?php _e( 'Количество колонок', 'wp-price-manager' ); ?></label></th>
+                        <td><input type="number" id="column_count" name="column_count" min="2" value="2"></td>
+                    </tr>
+                    <tr class="wppm-custom-settings" id="column_titles_row" style="display:none;">
+                        <th><?php _e( 'Названия колонок', 'wp-price-manager' ); ?></th>
+                        <td id="column_titles_container"></td>
                     </tr>
                 </table>
                 <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить категорию', 'wp-price-manager' ); ?>"></p>
@@ -391,6 +403,14 @@ class Price_Manager_Admin {
                             <td><input type="text" name="header_height" id="header_height" value="<?php echo esc_attr( $options['header_height'] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
+                            <th><label for="header_text_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="header_text_size" id="header_text_size" value="<?php echo esc_attr( $options['header_text_size'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="header_text_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="header_text_weight" id="header_text_weight" value="<?php echo esc_attr( $options['header_text_weight'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
                             <th><label for="header_alignment"><?php _e( 'Выравнивание текста', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="header_alignment" id="header_alignment">
@@ -423,6 +443,14 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="text_size"><?php _e( 'Размер текста (px)', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="text_size" id="text_size" value="<?php echo esc_attr( $options['text_size'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="text_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="text_weight" id="text_weight" value="<?php echo esc_attr( $options['text_weight'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="text_padding"><?php _e( 'Отступы текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="text_padding" id="text_padding" value="<?php echo esc_attr( $options['text_padding'] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="text_color"><?php _e( 'Цвет текста', 'wp-price-manager' ); ?></label></th>
