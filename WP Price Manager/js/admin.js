@@ -41,6 +41,7 @@ jQuery(document).ready(function($) {
         $.post(wppm_ajax_obj.ajax_url, data, function(res){
             var row = $('#wppm-extras-row');
             var container = $('#wppm-extras-container');
+            var priceRow = $('#service_price_row');
             if(res.success && res.custom){
                 container.empty();
                 $.each(res.titles || [], function(i, title){
@@ -48,9 +49,11 @@ jQuery(document).ready(function($) {
                     container.append('<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'"><br>');
                 });
                 row.show();
+                if(priceRow.length){ priceRow.hide(); }
             } else {
                 container.empty();
                 row.hide();
+                if(priceRow.length){ priceRow.show(); }
             }
         });
     }

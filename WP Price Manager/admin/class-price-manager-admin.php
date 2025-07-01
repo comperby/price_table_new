@@ -158,23 +158,40 @@ class Price_Manager_Admin {
     $cat_table = $wpdb->prefix . 'wppm_categories';
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
     
-    // Если передана категория для быстрого добавления – фильтруем по ней
+    // Категория для отображения услуг
     $prefill_category = isset($_GET['prefill_category']) ? intval($_GET['prefill_category']) : 0;
-    
+    $categories = $wpdb->get_results( "SELECT * FROM $cat_table ORDER BY display_order ASC", ARRAY_A );
+
     if ( $prefill_category ) {
         $services = $wpdb->get_results( $wpdb->prepare(
-            "SELECT s.*, c.name as category_name, pg.name as price_group_name 
-             FROM $srv_table s 
-             LEFT JOIN $cat_table c ON s.category_id = c.id 
-             LEFT JOIN $pg_table pg ON s.price_group_id = pg.id 
+            "SELECT s.*, c.name as category_name, pg.name as price_group_name, c.custom_table, c.column_titles
+             FROM $srv_table s
+             LEFT JOIN $cat_table c ON s.category_id = c.id
+             LEFT JOIN $pg_table pg ON s.price_group_id = pg.id
              WHERE s.category_id = %d ORDER BY s.display_order ASC", $prefill_category
         ), ARRAY_A );
+        $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $cat_table WHERE id = %d", $prefill_category ), ARRAY_A );
     } else {
-        $services = $wpdb->get_results("SELECT s.*, c.name as category_name, pg.name as price_group_name FROM $srv_table s LEFT JOIN $cat_table c ON s.category_id = c.id LEFT JOIN $pg_table pg ON s.price_group_id = pg.id ORDER BY s.display_order ASC", ARRAY_A);
+        $services = array();
+        $cat_info = null;
     }
     ?>
     <div class="wrap">
         <h1><?php _e( 'Все услуги', 'wp-price-manager' ); ?></h1>
+        <form method="get" action="">
+            <input type="hidden" name="page" value="price-manager-services">
+            <select name="prefill_category" id="wppm-category-select">
+                <option value=""><?php _e( 'Выберите категорию', 'wp-price-manager' ); ?></option>
+                <?php foreach ( $categories as $cat ) : ?>
+                    <option value="<?php echo intval( $cat['id'] ); ?>" <?php selected( $prefill_category, intval( $cat['id'] ) ); ?>><?php echo esc_html( $cat['name'] ); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </form>
+        <script>jQuery(function($){ $('#wppm-category-select').on('change', function(){ $(this).closest('form').submit(); }); });</script>
+        <?php if ( ! $prefill_category ) : ?>
+            <p><?php _e( 'Выберите категорию для добавления и просмотра услуг.', 'wp-price-manager' ); ?></p>
+        </div>
+        <?php return; endif; ?>
         <h2><?php _e( 'Добавить новую услугу', 'wp-price-manager' ); ?></h2>
         <form id="wppm-add-service-form" method="post" action="">
             <input type="hidden" name="action" value="wppm_add_service">
@@ -192,7 +209,7 @@ class Price_Manager_Admin {
                     <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
                     <td><input type="url" id="service_link" name="service_link"></td>
                 </tr>
-                <tr>
+                <tr id="service_price_row">
                     <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
                     <td><input type="text" id="service_price" name="service_price"></td>
                 </tr>
@@ -251,34 +268,48 @@ class Price_Manager_Admin {
                     <?php endif; ?>
                     <th><?php _e( 'ID', 'wp-price-manager' ); ?></th>
                     <th><?php _e( 'Название услуги', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Описание', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Категория', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Группа цен', 'wp-price-manager' ); ?></th>
+                    <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
+                        <?php $titles = json_decode( $cat_info['column_titles'], true ); ?>
+                        <?php foreach ( (array) $titles as $title ) : ?>
+                            <th><?php echo esc_html( $title ); ?></th>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <th><?php _e( 'Описание', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Категория', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Группа цен', 'wp-price-manager' ); ?></th>
+                    <?php endif; ?>
                     <th><?php _e( 'Действия', 'wp-price-manager' ); ?></th>
                 </tr>
             </thead>
             <tbody id="<?php echo $prefill_category ? 'wppm-services-sortable' : 'wppm-services-table'; ?>">
                 <?php if ( $services ) : ?>
                     <?php foreach ( $services as $srv ) : ?>
-                        <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>">
+                        <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>" data-extras='<?php echo esc_attr( $srv['extras'] ); ?>'>
                             <?php if ( $prefill_category ) : ?>
                                 <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
                             <?php endif; ?>
                             <td><?php echo esc_html( $srv['id'] ); ?></td>
                             <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
-                            <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
-                            <td class="srv-link">
-                                <?php if( ! empty( $srv['link'] ) ): ?>
-                                    <a href="<?php echo esc_url( $srv['link'] ); ?>" target="_blank"><?php echo esc_html( $srv['link'] ); ?></a>
-                                <?php else: ?>
-                                    <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
-                                <?php endif; ?>
-                            </td>
-                            <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
-                            <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
-                            <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
+                            <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
+                                <?php $extras = json_decode( $srv['extras'], true ); ?>
+                                <?php foreach ( (array) $titles as $i => $t ) : ?>
+                                    <td><?php echo esc_html( $extras[$i] ?? '' ); ?></td>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
+                                <td class="srv-link">
+                                    <?php if( ! empty( $srv['link'] ) ): ?>
+                                        <a href="<?php echo esc_url( $srv['link'] ); ?>" target="_blank"><?php echo esc_html( $srv['link'] ); ?></a>
+                                    <?php else: ?>
+                                        <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                                <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
+                                <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
+                            <?php endif; ?>
                             <td class="srv-actions">
                                 <a href="#" class="edit-service" data-id="<?php echo intval($srv['id']); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                 <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_service&id=' . intval($srv['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_service_' . intval($srv['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a>
@@ -287,7 +318,14 @@ class Price_Manager_Admin {
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="<?php echo $prefill_category ? '9' : '8'; ?>"><?php _e( 'Услуги не найдены', 'wp-price-manager' ); ?></td>
+                        <?php
+                        if ( $prefill_category ) {
+                            $cnt = $cat_info && $cat_info['custom_table'] ? count( json_decode( $cat_info['column_titles'], true ) ) + 2 : 8;
+                        } else {
+                            $cnt = 8;
+                        }
+                        ?>
+                        <td colspan="<?php echo intval( $cnt ); ?>"><?php _e( 'Услуги не найдены', 'wp-price-manager' ); ?></td>
                     </tr>
                 <?php endif; ?>
             </tbody>

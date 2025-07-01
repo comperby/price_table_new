@@ -260,14 +260,14 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM {$wpdb->prefix}wppm_categories WHERE id = %d", $cat_id ), ARRAY_A );
                                                 $headers = array( __( 'Услуга', 'wp-price-manager' ), __( 'Цена', 'wp-price-manager' ) );
                                                 $column_count = 2;
+                                                $custom = false;
                                                 if ( $cat_info && $cat_info['custom_table'] ) {
-                                                    $column_count = max( 2, intval( $cat_info['column_count'] ) );
                                                     $decoded = json_decode( $cat_info['column_titles'], true );
                                                     if ( is_array( $decoded ) ) {
+                                                        $custom = true;
                                                         $headers = $decoded;
+                                                        $column_count = count( $headers );
                                                     }
-                                                } else {
-                                                    $column_count = 2;
                                                 }
                                                 for ( $i = 0; $i < $column_count; $i++ ) {
                                                     $title = $headers[$i] ?? '';
@@ -278,21 +278,25 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                 </thead>
                                 <tbody>
                                         <?php if ( ! empty( $services ) ) : ?>
-                                                <?php foreach ( $services as $index => $service ) : ?>
-                                                        <?php
-                                                        $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
-                                                        ?>
+                                        <?php foreach ( $services as $index => $service ) : ?>
+                                                <?php
+                                                $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
+                                                $extras = json_decode( $service['extras'], true );
+                                                ?>
                                                         <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
                                                             <?php
-                                                            for ( $c = 0; $c < $column_count; $c++ ) {
-                                                                echo '<td style="border:' . esc_attr( $styles['border_width'] ) . ' solid ' . esc_attr( $styles['border_color'] ) . ';padding:' . esc_attr( $styles['text_padding'] ) . ';">';
-                                                                if ( $c === 0 ) {
-                                                                    echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
-                                                                } elseif ( $c === 1 ) {
-                                                                    echo esc_html( $display_price );
-                                                                }
-                                                                echo '</td>';
-                                                            }
+                                                for ( $c = 0; $c < $column_count; $c++ ) {
+                                                    echo '<td style="border:' . esc_attr( $styles['border_width'] ) . ' solid ' . esc_attr( $styles['border_color'] ) . ';padding:' . esc_attr( $styles['text_padding'] ) . ';">';
+                                                    if ( $c === 0 ) {
+                                                        echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                    } elseif ( ! $custom && $c === 1 ) {
+                                                        echo esc_html( $display_price );
+                                                    } else {
+                                                        $val = $extras[ $custom ? $c - 1 : $c - 2 ] ?? '';
+                                                        echo esc_html( $val );
+                                                    }
+                                                    echo '</td>';
+                                                }
                                                             ?>
                                                         </tr>
 						<?php endforeach; ?>

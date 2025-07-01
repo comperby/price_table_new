@@ -208,7 +208,7 @@ function wppm_add_service_form() {
                     <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
                     <td><input type="url" id="service_link" name="service_link"></td>
                 </tr>
-                <tr>
+                <tr id="service_price_row">
                     <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
                     <td><input type="text" id="service_price" name="service_price"></td>
                 </tr>
@@ -285,7 +285,7 @@ function wppm_edit_service_form() {
                     <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
                     <td><input type="url" id="service_link" name="service_link" value="<?php echo esc_attr($service['link']); ?>"></td>
                 </tr>
-                <tr>
+                <tr id="service_price_row">
                     <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
                     <td><input type="text" id="service_price" name="service_price" value="<?php echo esc_attr($service['price']); ?>"></td>
                 </tr>
