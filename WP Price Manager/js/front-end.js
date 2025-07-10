@@ -53,4 +53,11 @@ jQuery(document).ready(function($) {
             hideTooltip();
         });
     });
+
+    $('.wppm-show-more').on('click', function(){
+        var $btn = $(this);
+        var table = $btn.prev('table');
+        table.find('tbody tr.wppm-hidden-row').slideToggle();
+        $btn.remove();
+    });
 });
