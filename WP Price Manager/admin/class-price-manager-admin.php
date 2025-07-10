@@ -118,9 +118,8 @@ class Price_Manager_Admin {
                 <thead>
                     <tr>
                         <th></th>
-                        <th><?php _e( 'ID', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Название', 'wp-price-manager' ); ?></th>
-                        <th><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
+                        <th class="wppm-order-col" style="width:6em;"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Действия', 'wp-price-manager' ); ?></th>
                     </tr>
                 </thead>
@@ -129,20 +128,18 @@ class Price_Manager_Admin {
                         <?php foreach ( $categories as $cat ) : ?>
                             <tr id="<?php echo intval( $cat['id'] ); ?>" data-id="<?php echo intval( $cat['id'] ); ?>" data-name="<?php echo esc_attr( $cat['name'] ); ?>">
                                 <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
-                                <td><?php echo esc_html( $cat['id'] ); ?></td>
                                 <td class="cat-name"><?php echo esc_html( $cat['name'] ); ?></td>
-                                <td><?php echo esc_html( $cat['display_order'] ); ?></td>
+                                <td class="wppm-order-col" style="width:6em;"><?php echo esc_html( $cat['display_order'] ); ?></td>
                                 <td class="cat-actions">
                                     <a href="#" class="edit-category" data-id="<?php echo intval( $cat['id'] ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_category&id=' . intval($cat['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_category_' . intval($cat['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a> |
-                                    <a href="<?php echo admin_url('admin.php?page=price-manager-services&prefill_category=' . intval($cat['id'])); ?>"><?php _e( 'Посмотреть услуги', 'wp-price-manager' ); ?></a> |
-                                    <a href="<?php echo admin_url('admin-post.php?action=wppm_add_service_form&category_id=' . intval($cat['id'])); ?>"><?php _e( 'Быстро добавить услугу', 'wp-price-manager' ); ?></a>
+                                    <a href="<?php echo admin_url('admin.php?page=price-manager-services&prefill_category=' . intval($cat['id'])); ?>"><?php _e( 'Посмотреть услуги', 'wp-price-manager' ); ?></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else : ?>
                         <tr>
-                            <td colspan="5"><?php _e( 'Категории не найдены', 'wp-price-manager' ); ?></td>
+                            <td colspan="4"><?php _e( 'Категории не найдены', 'wp-price-manager' ); ?></td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -197,7 +194,7 @@ class Price_Manager_Admin {
             <input type="hidden" name="action" value="wppm_add_service">
             <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
             <table class="form-table">
-                <tr>
+                <tr id="service_name_row">
                     <th><label for="service_name"><?php _e( 'Название услуги', 'wp-price-manager' ); ?></label></th>
                     <td><input type="text" id="service_name" name="service_name" required></td>
                 </tr>
@@ -264,10 +261,11 @@ class Price_Manager_Admin {
             <thead>
                 <tr>
                     <?php if ( $prefill_category ) : ?>
-                        <th><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
+                        <th class="wppm-order-col" style="width:6em;"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
                     <?php endif; ?>
-                    <th><?php _e( 'ID', 'wp-price-manager' ); ?></th>
-                    <th><?php _e( 'Название услуги', 'wp-price-manager' ); ?></th>
+                    <?php if ( ! ( $cat_info && $cat_info['custom_table'] ) ) : ?>
+                        <th><?php _e( 'Название услуги', 'wp-price-manager' ); ?></th>
+                    <?php endif; ?>
                     <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
                         <?php $titles = json_decode( $cat_info['column_titles'], true ); ?>
                         <?php foreach ( (array) $titles as $title ) : ?>
@@ -288,10 +286,11 @@ class Price_Manager_Admin {
                     <?php foreach ( $services as $srv ) : ?>
                         <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>" data-extras='<?php echo esc_attr( $srv['extras'] ); ?>'>
                             <?php if ( $prefill_category ) : ?>
-                                <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
+                                <td class="wppm-drag-handle wppm-order-col" style="cursor: move;width:6em;">⇅</td>
                             <?php endif; ?>
-                            <td><?php echo esc_html( $srv['id'] ); ?></td>
-                            <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
+                            <?php if ( ! ( $cat_info && $cat_info['custom_table'] ) ) : ?>
+                                <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
+                            <?php endif; ?>
                             <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
                                 <?php $extras = json_decode( $srv['extras'], true ); ?>
                                 <?php foreach ( (array) $titles as $i => $t ) : ?>
@@ -320,7 +319,11 @@ class Price_Manager_Admin {
                     <tr>
                         <?php
                         if ( $prefill_category ) {
-                            $cnt = $cat_info && $cat_info['custom_table'] ? count( json_decode( $cat_info['column_titles'], true ) ) + 2 : 8;
+                            if ( $cat_info && $cat_info['custom_table'] ) {
+                                $cnt = count( json_decode( $cat_info['column_titles'], true ) ) + 2;
+                            } else {
+                                $cnt = 8;
+                            }
                         } else {
                             $cnt = 8;
                         }
@@ -417,6 +420,7 @@ class Price_Manager_Admin {
                 <a href="?page=price-manager-style&tab=rows" class="nav-tab <?php echo $active_tab === 'rows' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Строки', 'wp-price-manager' ); ?></a>
                 <a href="?page=price-manager-style&tab=icon" class="nav-tab <?php echo $active_tab === 'icon' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Значок', 'wp-price-manager' ); ?></a>
                 <a href="?page=price-manager-style&tab=tooltip" class="nav-tab <?php echo $active_tab === 'tooltip' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Описание', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=button" class="nav-tab <?php echo $active_tab === 'button' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Кнопка', 'wp-price-manager' ); ?></a>
             </h2>
             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="wppm_save_style_settings">
@@ -546,6 +550,35 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="tooltip_border_radius"><?php _e( 'Скругление описания', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="tooltip_border_radius" id="tooltip_border_radius" value="<?php echo esc_attr( $options['tooltip_border_radius'] ?? '' ); ?>"></td>
+                        </tr>
+                    <?php elseif ( $active_tab === 'button' ) : ?>
+                        <tr>
+                            <th><label for="show_more_text"><?php _e( 'Текст кнопки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_text" id="show_more_text" value="<?php echo esc_attr( $options['show_more_text'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_bg"><?php _e( 'Фон кнопки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_bg" id="show_more_bg" value="<?php echo esc_attr( $options['show_more_bg'] ?? '' ); ?>" class="wppm-color-field"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_color"><?php _e( 'Цвет текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_color" id="show_more_color" value="<?php echo esc_attr( $options['show_more_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_padding"><?php _e( 'Отступы', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_padding" id="show_more_padding" value="<?php echo esc_attr( $options['show_more_padding'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_radius"><?php _e( 'Скругление', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_radius" id="show_more_radius" value="<?php echo esc_attr( $options['show_more_radius'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_font_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_font_size" id="show_more_font_size" value="<?php echo esc_attr( $options['show_more_font_size'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_limit"><?php _e( 'Количество строк', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="number" name="show_limit" id="show_limit" value="<?php echo esc_attr( $options['show_limit'] ?? '' ); ?>" min="1"></td>
                         </tr>
                     <?php endif; ?>
                 </table>

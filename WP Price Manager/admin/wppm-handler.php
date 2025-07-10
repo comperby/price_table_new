@@ -176,80 +176,6 @@ function wppm_add_service() {
 }
 add_action( 'admin_post_wppm_add_service', 'wppm_add_service' );
 
-// Форма быстрого добавления услуги из категории
-function wppm_add_service_form() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( __( 'Недостаточно прав', 'wp-price-manager' ) );
-    }
-    global $wpdb;
-    $cat_table = $wpdb->prefix . 'wppm_categories';
-
-    $prefill_category = isset( $_GET['category_id'] ) ? intval( $_GET['category_id'] ) : 0;
-    $category = null;
-    if ( $prefill_category ) {
-        $category = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $cat_table WHERE id = %d", $prefill_category ) );
-    }
-    ?>
-    <div class="wrap">
-        <h1><?php _e( 'Добавить услугу', 'wp-price-manager' ); ?></h1>
-        <form id="wppm-add-service-form" method="post" action="">
-            <input type="hidden" name="action" value="wppm_add_service">
-            <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
-            <table class="form-table">
-                <tr>
-                    <th><label for="service_name"><?php _e( 'Название услуги', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="text" id="service_name" name="service_name" required></td>
-                </tr>
-                <tr>
-                    <th><label for="service_description"><?php _e( 'Описание', 'wp-price-manager' ); ?></label></th>
-                    <td><textarea id="service_description" name="service_description"></textarea></td>
-                </tr>
-                <tr>
-                    <th><label for="service_link"><?php _e( 'Ссылка', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="url" id="service_link" name="service_link"></td>
-                </tr>
-                <tr id="service_price_row">
-                    <th><label for="service_price"><?php _e( 'Цена (BYN)', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="text" id="service_price" name="service_price"></td>
-                </tr>
-                <tr>
-                    <th><label for="price_group"><?php _e( 'Группа цен', 'wp-price-manager' ); ?></label></th>
-                    <td><input type="text" id="price_group" name="price_group"></td>
-                </tr>
-                <tr>
-                    <th><label for="service_category"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>
-                    <td>
-                        <?php if ( $category ) : ?>
-                            <input type="hidden" name="service_category_id" value="<?php echo intval( $category->id ); ?>">
-                            <input type="text" value="<?php echo esc_attr( $category->name ); ?>" disabled>
-                        <?php else : ?>
-                            <input type="text" id="service_category" name="service_category" required>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <tr id="wppm-extras-row" style="display:none;">
-                    <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
-                    <td id="wppm-extras-container"></td>
-                </tr>
-            </table>
-            <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить услугу', 'wp-price-manager' ); ?>"></p>
-        </form>
-        <script type="text/javascript">
-        jQuery(function($){
-            var catId = $('input[name="service_category_id"]').val() || $('#service_category').val();
-            if(catId){
-                if(window.wppm_load_extras){
-                    wppm_load_extras(catId);
-                }
-            }
-        });
-        </script>
-    </div>
-    <?php
-    exit;
-}
-add_action( 'admin_post_wppm_add_service_form', 'wppm_add_service_form' );
-
 // Форма редактирования услуги
 function wppm_edit_service_form() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -551,7 +477,9 @@ function wppm_save_style_settings() {
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
         'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'row_height', 'row_alignment',
         'icon_char', 'icon_color', 'icon_bg_color',
-        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius'
+        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius',
+        'show_more_text', 'show_more_bg', 'show_more_color',
+        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_limit'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
             $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );

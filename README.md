@@ -12,7 +12,7 @@ WP Price Manager is a WordPress plugin for managing service prices and displayin
 
 After activation new menu items appear under **Price Manager**:
 
-- **Категории** – create and sort service categories with drag-and-drop and quickly add services within a category.
+- **Категории** – create and sort service categories with drag-and-drop.
 - **Все услуги** – add and search services. The form provides autocomplete for categories and price groups.
 - **Группа цен** – manage price groups. Editing a group prompts for confirmation before bulk price updates.
 - **Стиль** – configure colors, fonts and other appearance options for the front-end price table.
@@ -22,3 +22,5 @@ After activation new menu items appear under **Price Manager**:
 In the Elementor editor search for **Price List**. Drop the widget onto the page and select a service category in the **Content** tab. Style the table in the **Style** tab (colors, borders, typography, link color, alignment, etc.). Each row displays an info icon; hover or tap it to view the service description. The default font is **Montserrat**.
 
 The admin interface loads `js/admin.js` and exposes AJAX parameters via `wppm_ajax_obj` for all asynchronous operations.
+
+Price tables initially show only a limited number of rows. You can configure the limit and the "Show more" button style on the **Стиль** page.

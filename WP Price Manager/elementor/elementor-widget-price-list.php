@@ -282,17 +282,25 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 <?php
                                                 $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
                                                 $extras = json_decode( $service['extras'], true );
+                                                $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row" style="display:none;"' : '';
                                                 ?>
-                                                        <tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
+                                                        <tr<?php echo $row_class; ?> style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
                                                             <?php
                                                 for ( $c = 0; $c < $column_count; $c++ ) {
                                                     echo '<td style="border:' . esc_attr( $styles['border_width'] ) . ' solid ' . esc_attr( $styles['border_color'] ) . ';padding:' . esc_attr( $styles['text_padding'] ) . ';">';
+
                                                     if ( $c === 0 ) {
-                                                        echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                        if ( $custom ) {
+                                                            $val = $extras[0] ?? '';
+                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                        } else {
+                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                        }
                                                     } elseif ( ! $custom && $c === 1 ) {
                                                         echo esc_html( $display_price );
                                                     } else {
-                                                        $val = $extras[ $custom ? $c - 1 : $c - 2 ] ?? '';
+                                                        $idx = $custom ? $c : $c - 2;
+                                                        $val = $extras[ $idx ] ?? '';
                                                         echo esc_html( $val );
                                                     }
                                                     echo '</td>';
@@ -306,9 +314,14 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 </tr>
 					<?php endif; ?>
 				</tbody>
-			</table>
-		</div>
-		<?php
+                        </table>
+                        <?php if ( count( $services ) > intval( $styles['show_limit'] ) ) : ?>
+                            <button type="button" class="wppm-show-more" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; margin-top:10px;">
+                                <?php echo esc_html( $styles['show_more_text'] ); ?>
+                            </button>
+                        <?php endif; ?>
+                </div>
+                <?php
 	}
 }
 

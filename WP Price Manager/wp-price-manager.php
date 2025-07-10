@@ -89,7 +89,14 @@ function wppm_install() {
         'icon_bg_color'         => '#0073aa',
         'tooltip_bg_color'      => '#333',
         'tooltip_text_color'    => '#fff',
-        'tooltip_border_radius' => '4px'
+        'tooltip_border_radius' => '4px',
+        'show_more_text'        => 'Показать все',
+        'show_more_bg'          => '#0073aa',
+        'show_more_color'       => '#ffffff',
+        'show_more_padding'     => '8px 16px',
+        'show_more_radius'      => '4px',
+        'show_more_font_size'   => '14px',
+        'show_limit'            => '7'
     );
     add_option( 'wppm_style_settings', $default_styles );
 }
@@ -134,11 +141,9 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'confirm_price_change_title'   => __( 'Подтверждение', 'wp-price-manager' ),
             'confirm_price_change_message' => __( 'Изменение цены повлияет на все связанные услуги. Подтвердить?', 'wp-price-manager' ),
             'view_services_base' => admin_url( 'admin.php?page=price-manager-services&prefill_category=' ),
-            'add_service_base'  => admin_url( 'admin-post.php?action=wppm_add_service_form&category_id=' ),
             'edit_label'        => __( 'Редактировать', 'wp-price-manager' ),
             'delete_label'      => __( 'Удалить', 'wp-price-manager' ),
             'view_label'        => __( 'Посмотреть услуги', 'wp-price-manager' ),
-            'quick_add_label'   => __( 'Быстро добавить услугу', 'wp-price-manager' ),
             'save_label'        => __( 'Сохранить', 'wp-price-manager' )
         ) );
     }
@@ -180,7 +185,14 @@ function wppm_get_style_settings() {
         'icon_bg_color'         => '#0073aa',
         'tooltip_bg_color'      => '#333',
         'tooltip_text_color'    => '#fff',
-        'tooltip_border_radius' => '4px'
+        'tooltip_border_radius' => '4px',
+        'show_more_text'        => 'Показать все',
+        'show_more_bg'          => '#0073aa',
+        'show_more_color'       => '#ffffff',
+        'show_more_padding'     => '8px 16px',
+        'show_more_radius'      => '4px',
+        'show_more_font_size'   => '14px',
+        'show_limit'            => '7'
     );
 
     $saved = get_option( 'wppm_style_settings', array() );

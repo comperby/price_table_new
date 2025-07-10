@@ -318,7 +318,6 @@ function wppm_handle_ajax() {
                 foreach ( $services as $srv ) {
                     ?>
                     <tr data-id="<?php echo intval( $srv['id'] ); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>">
-                        <td><?php echo esc_html( $srv['id'] ); ?></td>
                         <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>
                         <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
                         <td class="srv-link">
@@ -340,7 +339,7 @@ function wppm_handle_ajax() {
                 }
             } else {
                 ?>
-                <tr><td colspan="8"><?php _e( 'Услуги не найдены', 'wp-price-manager' ); ?></td></tr>
+                <tr><td colspan="7"><?php _e( 'Услуги не найдены', 'wp-price-manager' ); ?></td></tr>
                 <?php
             }
             $html = ob_get_clean();
