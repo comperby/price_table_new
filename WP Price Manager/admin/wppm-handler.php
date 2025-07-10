@@ -275,6 +275,7 @@ function wppm_edit_service() {
     $price = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
     $price_group = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
     $category = sanitize_text_field( $_POST['service_category'] );
+    $extras = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
 
     // Обновляем категорию (если не существует, создаём)
     $existing_cat = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $cat_table WHERE name = %s", $category ) );

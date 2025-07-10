@@ -271,6 +271,11 @@ class Price_Manager_Admin {
                         <?php foreach ( (array) $titles as $title ) : ?>
                             <th><?php echo esc_html( $title ); ?></th>
                         <?php endforeach; ?>
+                        <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Описание', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Категория', 'wp-price-manager' ); ?></th>
+                        <th><?php _e( 'Группа цен', 'wp-price-manager' ); ?></th>
                     <?php else : ?>
                         <th><?php _e( 'Описание', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
@@ -294,8 +299,19 @@ class Price_Manager_Admin {
                             <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
                                 <?php $extras = json_decode( $srv['extras'], true ); ?>
                                 <?php foreach ( (array) $titles as $i => $t ) : ?>
-                                    <td><?php echo esc_html( $extras[$i] ?? '' ); ?></td>
+                                    <td class="srv-extra" data-index="<?php echo intval( $i ); ?>"><?php echo esc_html( $extras[$i] ?? '' ); ?></td>
                                 <?php endforeach; ?>
+                                <td class="srv-link">
+                                    <?php if( ! empty( $srv['link'] ) ): ?>
+                                        <a href="<?php echo esc_url( $srv['link'] ); ?>" target="_blank"><?php echo esc_html( $srv['link'] ); ?></a>
+                                    <?php else: ?>
+                                        <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                                <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
+                                <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
+                                <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
                             <?php else : ?>
                                 <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
                                 <td class="srv-link">
@@ -320,12 +336,12 @@ class Price_Manager_Admin {
                         <?php
                         if ( $prefill_category ) {
                             if ( $cat_info && $cat_info['custom_table'] ) {
-                                $cnt = count( json_decode( $cat_info['column_titles'], true ) ) + 2;
+                                $cnt = count( json_decode( $cat_info['column_titles'], true ) ) + 7;
                             } else {
                                 $cnt = 8;
                             }
                         } else {
-                            $cnt = 8;
+                            $cnt = 7;
                         }
                         ?>
                         <td colspan="<?php echo intval( $cnt ); ?>"><?php _e( 'Услуги не найдены', 'wp-price-manager' ); ?></td>

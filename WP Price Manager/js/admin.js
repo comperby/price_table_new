@@ -292,6 +292,12 @@ jQuery(document).ready(function($) {
         row.find('.srv-price').html('<input type="text" class="srv-edit-price" value="'+row.data('price')+'">');
         row.find('.srv-category').html('<input type="text" class="srv-edit-category" value="'+row.data('category')+'">');
         row.find('.srv-price-group').html('<input type="text" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
+        var extrasData = [];
+        try{ extrasData = JSON.parse(row.data('extras')); }catch(e){}
+        row.find('td.srv-extra').each(function(idx){
+            var val = extrasData[idx] || '';
+            $(this).html('<input type="text" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
+        });
         var actions = row.find('.srv-actions');
         actions.data('orig', actions.html());
         actions.html('<button class="save-service button button-primary">'+wppm_ajax_obj.save_label+'</button>');
@@ -304,6 +310,8 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var row = $(this).closest('tr');
         var id = row.data('id');
+        var extras = [];
+        row.find('.srv-edit-extra').each(function(){ extras.push($(this).val()); });
         var data = {
             action: 'wppm_ajax_action',
             nonce: wppm_ajax_obj.nonce,
@@ -314,7 +322,8 @@ jQuery(document).ready(function($) {
             service_link: row.find('.srv-edit-link').val(),
             service_price: row.find('.srv-edit-price').val(),
             price_group: row.find('.srv-edit-price-group').val(),
-            service_category: row.find('.srv-edit-category').val()
+            service_category: row.find('.srv-edit-category').val(),
+            extras: extras
         };
         $.post(wppm_ajax_obj.ajax_url, data, function(res){
             alert(res.message);
