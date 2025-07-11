@@ -168,6 +168,7 @@ class Price_Manager_Admin {
              WHERE s.category_id = %d ORDER BY s.display_order ASC", $prefill_category
         ), ARRAY_A );
         $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $cat_table WHERE id = %d", $prefill_category ), ARRAY_A );
+        wp_add_inline_script( 'wppm-admin-js', 'jQuery(function($){ if(window.wppm_load_extras){ wppm_load_extras(' . intval( $prefill_category ) . '); } });' );
     } else {
         $services = array();
         $cat_info = null;
@@ -237,11 +238,6 @@ class Price_Manager_Admin {
             </table>
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Добавить услугу', 'wp-price-manager' ); ?>"></p>
         </form>
-        <?php if ( $prefill_category ) : ?>
-        <script type="text/javascript">
-        jQuery(function($){ if(window.wppm_load_extras){ wppm_load_extras(<?php echo intval($prefill_category); ?>); } });
-        </script>
-        <?php endif; ?>
         <hr>
         <h2><?php _e( 'Список услуг', 'wp-price-manager' ); ?></h2>
         <?php if ( !$prefill_category ) : ?>
