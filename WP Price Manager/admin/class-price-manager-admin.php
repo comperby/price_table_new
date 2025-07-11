@@ -216,14 +216,15 @@ class Price_Manager_Admin {
                     <td><input type="text" id="price_group" name="price_group"></td>
                 </tr>
                 <tr>
-                    <th><label for="service_category"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>
+                    <?php $category_label_for = $prefill_category ? 'service_category_display' : 'service_category'; ?>
+                    <th><label for="<?php echo esc_attr( $category_label_for ); ?>"><?php _e( 'Категория', 'wp-price-manager' ); ?></label></th>
                     <td>
                         <?php
                         if ( $prefill_category ) {
                             $cat = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $cat_table WHERE id = %d", $prefill_category ) );
                             if ( $cat ) {
-                                echo '<input type="hidden" name="service_category_id" value="' . intval($cat->id) . '">';
-                                echo '<input type="text" value="' . esc_attr($cat->name) . '" disabled>';
+                                echo '<input type="hidden" name="service_category_id" value="' . intval( $cat->id ) . '">';
+                                echo '<input type="text" id="service_category_display" value="' . esc_attr( $cat->name ) . '" disabled>';
                             }
                         } else {
                             echo '<input type="text" id="service_category" name="service_category" required>';
