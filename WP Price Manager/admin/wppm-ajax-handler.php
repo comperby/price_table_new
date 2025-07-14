@@ -81,7 +81,7 @@ function wppm_handle_ajax() {
                 $cat = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $table WHERE name = %s", $name ), ARRAY_A );
             }
             if ( $cat ) {
-                $titles = json_decode( $cat['column_titles'], true );
+                $titles = array_values( json_decode( $cat['column_titles'], true ) );
                 $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles );
             } else {
                 $response = array( 'success' => false );
@@ -162,7 +162,7 @@ function wppm_handle_ajax() {
             $cat_table = $wpdb->prefix . 'wppm_categories';
             $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
-            $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
+            $extras_array = isset( $_POST['extras'] ) ? array_values( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : array();
             $name        = sanitize_text_field( $_POST['service_name'] );
             if ( $name === '' && ! empty( $extras_array ) ) {
                 $name = $extras_array[0];
@@ -232,7 +232,7 @@ function wppm_handle_ajax() {
             $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
             $id          = intval( $_POST['service_id'] );
-            $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
+            $extras_array = isset( $_POST['extras'] ) ? array_values( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : array();
             $name        = sanitize_text_field( $_POST['service_name'] );
             if ( $name === '' && ! empty( $extras_array ) ) {
                 $name = $extras_array[0];

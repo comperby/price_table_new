@@ -120,7 +120,7 @@ function wppm_add_service() {
     $cat_table = $wpdb->prefix . 'wppm_categories';
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
-    $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
+    $extras_array = isset( $_POST['extras'] ) ? array_values( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : array();
     $name = sanitize_text_field( $_POST['service_name'] );
     if ( $name === '' && ! empty( $extras_array ) ) {
         $name = $extras_array[0];
@@ -247,7 +247,7 @@ function wppm_edit_service_form() {
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Сохранить изменения', 'wp-price-manager' ); ?>"></p>
         </form>
         <script type="text/javascript">
-        var wppm_initial_extras = <?php echo wp_json_encode( json_decode( $service['extras'], true ) ); ?>;
+        var wppm_initial_extras = <?php echo wp_json_encode( array_values( json_decode( $service['extras'], true ) ) ); ?>;
         jQuery(function($){
             var cat = $('#service_category').val();
             if(cat && window.wppm_load_extras){
@@ -273,7 +273,7 @@ function wppm_edit_service() {
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
     $id = intval($_POST['service_id']);
-    $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
+    $extras_array = isset( $_POST['extras'] ) ? array_values( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : array();
     $name = sanitize_text_field( $_POST['service_name'] );
     if ( $name === '' && ! empty( $extras_array ) ) {
         $name = $extras_array[0];

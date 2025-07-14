@@ -265,7 +265,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                     $decoded = json_decode( $cat_info['column_titles'], true );
                                                     if ( is_array( $decoded ) ) {
                                                         $custom = true;
-                                                        $headers = $decoded;
+                                                        $headers = array_values( $decoded );
                                                         $column_count = count( $headers );
                                                     }
                                                 }
@@ -281,7 +281,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         <?php foreach ( $services as $index => $service ) : ?>
                                                 <?php
                                                 $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
-                                                $extras = json_decode( $service['extras'], true );
+                                                $extras = array_values( json_decode( $service['extras'], true ) );
                                                 $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row" style="display:none;"' : '';
                                                 ?>
                                                         <tr<?php echo $row_class; ?> style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
