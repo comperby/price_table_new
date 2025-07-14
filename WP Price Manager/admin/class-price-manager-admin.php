@@ -191,7 +191,7 @@ class Price_Manager_Admin {
         </div>
         <?php return; endif; ?>
         <h2><?php _e( 'Добавить новую услугу', 'wp-price-manager' ); ?></h2>
-        <form id="wppm-add-service-form" method="post" action="">
+        <form id="wppm-add-service-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
             <input type="hidden" name="action" value="wppm_add_service">
             <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
             <table class="form-table">
@@ -369,7 +369,7 @@ class Price_Manager_Admin {
         <div class="wrap">
             <h1><?php _e( 'Группа цен', 'wp-price-manager' ); ?></h1>
             <h2><?php _e( 'Добавить новую группу цен', 'wp-price-manager' ); ?></h2>
-            <form id="wppm-add-price-group-form" method="post" action="">
+            <form id="wppm-add-price-group-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="wppm_add_price_group">
                 <?php wp_nonce_field( 'wppm_price_group_nonce', 'wppm_price_group_nonce_field' ); ?>
                 <table class="form-table">

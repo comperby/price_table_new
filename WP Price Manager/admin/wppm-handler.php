@@ -198,7 +198,7 @@ function wppm_edit_service_form() {
     ?>
     <div class="wrap">
         <h1><?php _e( 'Редактировать услугу', 'wp-price-manager' ); ?></h1>
-        <form id="wppm-edit-service-form" method="post" action="">
+        <form id="wppm-edit-service-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
             <input type="hidden" name="action" value="wppm_edit_service">
             <input type="hidden" name="service_id" value="<?php echo intval($service['id']); ?>">
             <?php wp_nonce_field( 'wppm_service_nonce', 'wppm_service_nonce_field' ); ?>
@@ -383,7 +383,7 @@ function wppm_edit_price_group_form() {
     ?>
     <div class="wrap">
         <h1><?php _e( 'Редактировать группу цен', 'wp-price-manager' ); ?></h1>
-        <form id="wppm-edit-price-group-form" method="post" action="">
+        <form id="wppm-edit-price-group-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
             <input type="hidden" name="action" value="wppm_edit_price_group">
             <input type="hidden" name="price_group_id" value="<?php echo intval($group['id']); ?>">
             <?php wp_nonce_field( 'wppm_price_group_nonce', 'wppm_price_group_nonce_field' ); ?>
