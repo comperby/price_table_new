@@ -28,6 +28,7 @@ function wppm_handle_ajax() {
                 'column_titles' => $titles,
             ), array( '%s', '%d', '%d', '%d', '%s' ) );
             if ( $result ) {
+                delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория добавлена.', 'wp-price-manager' ) );
             } else {
                 $response = array( 'success' => false, 'message' => __( 'Ошибка добавления категории.', 'wp-price-manager' ) );
@@ -40,6 +41,7 @@ function wppm_handle_ajax() {
             $table = $wpdb->prefix . 'wppm_categories';
             $result = $wpdb->update( $table, array( 'name' => $name ), array( 'id' => $id ), array( '%s' ), array( '%d' ) );
             if ( $result !== false ) {
+                delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория обновлена.', 'wp-price-manager' ) );
             } else {
                 $response = array( 'success' => false, 'message' => __( 'Ошибка обновления категории.', 'wp-price-manager' ) );
@@ -51,6 +53,7 @@ function wppm_handle_ajax() {
             $table = $wpdb->prefix . 'wppm_categories';
             $result = $wpdb->delete( $table, array( 'id' => $id ), array( '%d' ) );
             if ( $result ) {
+                delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория удалена.', 'wp-price-manager' ) );
             } else {
                 $response = array( 'success' => false, 'message' => __( 'Ошибка удаления категории.', 'wp-price-manager' ) );
@@ -63,12 +66,17 @@ function wppm_handle_ajax() {
             foreach ( $order as $display_order => $id ) {
                 $wpdb->update( $table, array( 'display_order' => $display_order ), array( 'id' => intval( $id ) ), array( '%d' ), array( '%d' ) );
             }
+            delete_transient( 'wppm_categories' );
             $response = array( 'success' => true, 'message' => __( 'Порядок категорий обновлен.', 'wp-price-manager' ) );
             break;
 
         case 'get_categories':
             $table = $wpdb->prefix . 'wppm_categories';
-            $categories = $wpdb->get_results( "SELECT id, name, display_order FROM $table ORDER BY display_order ASC", ARRAY_A );
+            $categories = get_transient( 'wppm_categories' );
+            if ( false === $categories ) {
+                $categories = $wpdb->get_results( "SELECT id, name, display_order FROM $table ORDER BY display_order ASC", ARRAY_A );
+                set_transient( 'wppm_categories', $categories, HOUR_IN_SECONDS );
+            }
             $response = array( 'success' => true, 'categories' => $categories );
             break;
 
@@ -98,6 +106,7 @@ function wppm_handle_ajax() {
                 'default_price' => $default_price,
             ), array( '%s', '%s' ) );
             if ( $result ) {
+                delete_transient( 'wppm_price_groups' );
                 $response = array( 'success' => true, 'message' => __( 'Группа цен добавлена.', 'wp-price-manager' ) );
             } else {
                 $response = array( 'success' => false, 'message' => __( 'Ошибка добавления группы цен.', 'wp-price-manager' ) );
@@ -128,6 +137,7 @@ function wppm_handle_ajax() {
                 'default_price' => $default_price,
             ), array( 'id' => $id ), array( '%s', '%s' ), array( '%d' ) );
             if ( $result !== false ) {
+                delete_transient( 'wppm_price_groups' );
                 $srv_table = $wpdb->prefix . 'wppm_services';
                 $wpdb->query( $wpdb->prepare(
                     "UPDATE $srv_table SET price = %s WHERE price_group_id = %d AND manual_price = 0",
@@ -144,6 +154,7 @@ function wppm_handle_ajax() {
             $pg_table = $wpdb->prefix . 'wppm_price_groups';
             $result = $wpdb->delete( $pg_table, array( 'id' => $id ), array( '%d' ) );
             if ( $result ) {
+                delete_transient( 'wppm_price_groups' );
                 $response = array( 'success' => true, 'message' => __( 'Группа цен удалена.', 'wp-price-manager' ) );
             } else {
                 $response = array( 'success' => false, 'message' => __( 'Ошибка удаления группы цен.', 'wp-price-manager' ) );
@@ -152,7 +163,11 @@ function wppm_handle_ajax() {
 
         case 'get_price_groups':
             $pg_table = $wpdb->prefix . 'wppm_price_groups';
-            $price_groups = $wpdb->get_results( "SELECT id, name FROM $pg_table", ARRAY_A );
+            $price_groups = get_transient( 'wppm_price_groups' );
+            if ( false === $price_groups ) {
+                $price_groups = $wpdb->get_results( "SELECT id, name FROM $pg_table", ARRAY_A );
+                set_transient( 'wppm_price_groups', $price_groups, HOUR_IN_SECONDS );
+            }
             $response = array( 'success' => true, 'get_price_groups' => $price_groups );
             break;
 
@@ -352,6 +367,63 @@ function wppm_handle_ajax() {
             }
             $html = ob_get_clean();
             $response = array( 'success' => true, 'html' => $html );
+            break;
+
+        case 'load_more_services':
+            $srv_table = $wpdb->prefix . 'wppm_services';
+            $pg_table  = $wpdb->prefix . 'wppm_price_groups';
+            $cat_table = $wpdb->prefix . 'wppm_categories';
+            $cat_id = intval( $_POST['cat_id'] );
+            $offset = intval( $_POST['offset'] );
+            $limit  = intval( $_POST['limit'] );
+            $styles = wppm_get_style_settings();
+
+            $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM $cat_table WHERE id = %d", $cat_id ), ARRAY_A );
+            $custom = false;
+            $column_count = 2;
+            $headers = array();
+            if ( $cat_info && $cat_info['custom_table'] ) {
+                $decoded = json_decode( $cat_info['column_titles'], true );
+                if ( is_array( $decoded ) ) {
+                    $custom = true;
+                    $headers = array_values( $decoded );
+                    $column_count = count( $headers );
+                }
+            }
+
+            $services = $wpdb->get_results( $wpdb->prepare( "SELECT s.*, pg.default_price, pg.name as pg_name FROM $srv_table s LEFT JOIN $pg_table pg ON s.price_group_id = pg.id WHERE s.category_id = %d ORDER BY s.display_order ASC LIMIT %d OFFSET %d", $cat_id, $limit, $offset ), ARRAY_A );
+            ob_start();
+            $index_offset = $offset; // for alternating row colors
+            foreach ( $services as $index => $service ) {
+                $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
+                $extras_data = json_decode( $service['extras'], true );
+                $extras = is_array( $extras_data ) ? array_values( $extras_data ) : array();
+                echo '<tr style="background:' . ( ( $index + $index_offset ) % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ) ) . ';height:' . esc_attr( $styles['row_height'] ) . ';text-align:' . esc_attr( $styles['row_alignment'] ) . ';">';
+                for ( $c = 0; $c < $column_count; $c++ ) {
+                    echo '<td style="border:' . esc_attr( $styles['border_width'] ) . ' solid ' . esc_attr( $styles['border_color'] ) . ';padding:' . esc_attr( $styles['text_padding'] ) . ';">';
+                    if ( $c === 0 ) {
+                        if ( $custom ) {
+                            $val = $extras[0] ?? '';
+                            echo esc_html( $val ) . ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                        } else {
+                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                        }
+                    } elseif ( ! $custom && $c == 1 ) {
+                        echo esc_html( $display_price );
+                    } else {
+                        $idx = $custom ? $c : $c - 2;
+                        $val = $extras[ $idx ] ?? '';
+                        echo esc_html( $val );
+                    }
+                    echo '</td>';
+                }
+                echo '</tr>';
+            }
+            $html = ob_get_clean();
+            $count = count( $services );
+            $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $srv_table WHERE category_id = %d", $cat_id ) );
+            $has_more = ( $offset + $count ) < $total;
+            $response = array( 'success' => true, 'html' => $html, 'count' => $count, 'has_more' => $has_more );
             break;
 
         default:

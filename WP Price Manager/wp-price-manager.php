@@ -96,7 +96,8 @@ function wppm_install() {
         'show_more_padding'     => '8px 16px',
         'show_more_radius'      => '4px',
         'show_more_font_size'   => '14px',
-        'show_limit'            => '7'
+        'show_limit'            => '7',
+        'use_google_font'       => '1'
     );
     add_option( 'wppm_style_settings', $default_styles );
 }
@@ -152,9 +153,16 @@ add_action( 'admin_enqueue_scripts', 'wppm_admin_enqueue_scripts' );
 
 // Подключаем стили и скрипты для фронтенда
 function wppm_frontend_enqueue_scripts() {
-    wp_enqueue_script( 'wppm-front-end-js', WPPM_PLUGIN_URL . 'js/front-end.js', array('jquery'), '1.0', true );
+    wp_enqueue_script( 'wppm-front-end-js', WPPM_PLUGIN_URL . 'js/front-end.js', array( 'jquery' ), '1.0', true );
+    wp_localize_script( 'wppm-front-end-js', 'wppm_ajax_obj', array(
+        'ajax_url' => admin_url( 'admin-ajax.php' ),
+        'nonce'    => wp_create_nonce( 'wppm_nonce' )
+    ) );
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
-    wp_enqueue_style( 'wppm-fonts', 'https://fonts.googleapis.com/css?family=Montserrat&display=swap', array(), null );
+    $styles = wppm_get_style_settings();
+    if ( empty( $styles['use_google_font'] ) || $styles['use_google_font'] === '1' ) {
+        wp_enqueue_style( 'wppm-fonts', 'https://fonts.googleapis.com/css?family=Montserrat&display=swap', array(), null );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'wppm_frontend_enqueue_scripts' );
 
@@ -192,7 +200,8 @@ function wppm_get_style_settings() {
         'show_more_padding'     => '8px 16px',
         'show_more_radius'      => '4px',
         'show_more_font_size'   => '14px',
-        'show_limit'            => '7'
+        'show_limit'            => '7',
+        'use_google_font'       => '1'
     );
 
     $saved = get_option( 'wppm_style_settings', array() );

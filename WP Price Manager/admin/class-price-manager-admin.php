@@ -538,6 +538,10 @@ class Price_Manager_Admin {
                                 </select>
                             </td>
                         </tr>
+                        <tr>
+                            <th><label for="use_google_font"><?php _e( 'Загружать Google Fonts', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="checkbox" name="use_google_font" id="use_google_font" value="1" <?php checked( $options['use_google_font'] ?? '1', '1' ); ?>></td>
+                        </tr>
                     <?php elseif ( $active_tab === 'icon' ) : ?>
                         <tr>
                             <th><label for="icon_char"><?php _e( 'Символ значка', 'wp-price-manager' ); ?></label></th>

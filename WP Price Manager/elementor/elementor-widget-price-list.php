@@ -220,18 +220,22 @@ class Elementor_Price_List_Widget extends Widget_Base {
 		global $wpdb;
 		$srv_table = $wpdb->prefix . 'wppm_services';
 		$cat_id = intval( $settings['selected_category'] );
-		if ( $cat_id ) {
-			$services = $wpdb->get_results( $wpdb->prepare(
-				"SELECT s.*, pg.default_price, pg.name as pg_name 
-				 FROM $srv_table s 
-				 LEFT JOIN {$wpdb->prefix}wppm_price_groups pg ON s.price_group_id = pg.id 
-				 WHERE s.category_id = %d ORDER BY s.display_order ASC", $cat_id
-			), ARRAY_A );
-		} else {
-			$services = [];
-		}
+                if ( $cat_id ) {
+                        $limit = intval( $styles['show_limit'] );
+                        $services = $wpdb->get_results( $wpdb->prepare(
+                                "SELECT s.*, pg.default_price, pg.name as pg_name
+                                 FROM $srv_table s
+                                 LEFT JOIN {$wpdb->prefix}wppm_price_groups pg ON s.price_group_id = pg.id
+                                 WHERE s.category_id = %d ORDER BY s.display_order ASC LIMIT %d",
+                                 $cat_id, $limit
+                        ), ARRAY_A );
+                        $total_services = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $srv_table WHERE category_id = %d", $cat_id ) );
+                } else {
+                        $services = [];
+                        $total_services = 0;
+                }
 		?>
-                <div class="wppm-price-list-widget" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
+                <div class="wppm-price-list-widget" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
                         <style>
                         #wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                             background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
@@ -316,8 +320,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
 					<?php endif; ?>
 				</tbody>
                         </table>
-                        <?php if ( count( $services ) > intval( $styles['show_limit'] ) ) : ?>
-                            <button type="button" class="wppm-show-more" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; margin-top:10px;">
+                        <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
+                            <button type="button" class="wppm-show-more" data-offset="<?php echo esc_attr( $styles['show_limit'] ); ?>" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; margin-top:10px;">
                                 <?php echo esc_html( $styles['show_more_text'] ); ?>
                             </button>
                         <?php endif; ?>

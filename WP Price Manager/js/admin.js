@@ -136,7 +136,9 @@ jQuery(document).ready(function($) {
             }
         });
     }
-    loadCategories();
+    if($('#wppm-categories-list').length && $('#wppm-categories-list').children().length === 0){
+        loadCategories();
+    }
 
     // Редактирование категории inline
     $(document).on('click', '.edit-category', function(e) {

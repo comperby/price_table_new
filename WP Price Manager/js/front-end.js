@@ -1,63 +1,69 @@
-jQuery(document).ready(function($) {
-    $('.wppm-info-icon').each(function() {
+jQuery(document).ready(function($){
+    var $tooltip = $('<div class="wppm-tooltip"><span class="wppm-content"></span><span class="wppm-close">×</span></div>').hide();
+    $('body').append($tooltip);
+    var hideTimeout;
+
+    function positionTooltip($icon){
+        var offset = $icon.offset();
+        $tooltip.css({
+            top: offset.top - $tooltip.outerHeight() - 5,
+            left: offset.left + $icon.outerWidth() + 5
+        });
+    }
+
+    $(document).on('mouseenter', '.wppm-info-icon', function(){
         var $icon = $(this);
-        var description = $icon.data('description');
-        // Создаём tooltip и скрываем его
-        var $tooltip = $('<div class="wppm-tooltip">' + description + '<span class="wppm-close">×</span></div>').hide();
-        $('body').append($tooltip);
-        
-        // Функция позиционирования tooltip относительно значка:
-        // Располагаем tooltip так, чтобы его нижняя левая точка была чуть выше (на 5px) и правее (на 5px) значка.
-        function showTooltip() {
-            var offset = $icon.offset();
-            $tooltip.css({
-                top: offset.top - $tooltip.outerHeight() - 5,
-                left: offset.left + $icon.outerWidth() + 5
-            }).fadeIn();
+        clearTimeout(hideTimeout);
+        $tooltip.find('.wppm-content').text($icon.data('description'));
+        positionTooltip($icon);
+        $tooltip.fadeIn();
+    }).on('mouseleave', '.wppm-info-icon', function(){
+        hideTimeout = setTimeout(function(){ $tooltip.fadeOut(); }, 300);
+    });
+
+    $tooltip.on('mouseenter', function(){
+        clearTimeout(hideTimeout);
+    }).on('mouseleave', function(){
+        $tooltip.fadeOut();
+    });
+
+    $(document).on('click', '.wppm-info-icon', function(e){
+        if($(window).width() <= 768){
+            e.preventDefault();
+            var $icon = $(this);
+            $tooltip.find('.wppm-content').text($icon.data('description'));
+            positionTooltip($icon);
+            $tooltip.fadeToggle();
         }
-        
-        function hideTooltip() {
-            $tooltip.fadeOut();
-        }
-        
-        var hideTimeout;
-        
-        // При наведении на значок отменяем таймер скрытия и показываем tooltip
-        $icon.on('mouseenter', function() {
-            clearTimeout(hideTimeout);
-            showTooltip();
-        });
-        
-        // При уходе с значка устанавливаем таймер для скрытия tooltip
-        $icon.on('mouseleave', function() {
-            hideTimeout = setTimeout(hideTooltip, 300);
-        });
-        
-        // Если курсор входит в область tooltip – отменяем скрытие
-        $tooltip.on('mouseenter', function() {
-            clearTimeout(hideTimeout);
-        }).on('mouseleave', function() {
-            hideTooltip();
-        });
-        
-        // Для мобильных устройств – переключаем показ tooltip по клику
-        $icon.on('click', function(e) {
-            if ($(window).width() <= 768) {
-                e.preventDefault();
-                $tooltip.fadeToggle();
-            }
-        });
-        
-        // Кнопка закрытия tooltip
-        $tooltip.find('.wppm-close').on('click', function() {
-            hideTooltip();
-        });
+    });
+
+    $tooltip.find('.wppm-close').on('click', function(){
+        $tooltip.fadeOut();
     });
 
     $('.wppm-show-more').on('click', function(){
         var $btn = $(this);
-        var table = $btn.prev('table');
-        table.find('tbody tr.wppm-hidden-row').slideToggle();
-        $btn.remove();
+        var container = $btn.closest('.wppm-price-list-widget');
+        var table = container.find('table');
+        var cat = container.data('cat');
+        var limit = container.data('limit');
+        var offset = $btn.data('offset');
+        $.post(wppm_ajax_obj.ajax_url, {
+            action:'wppm_ajax_action',
+            nonce:wppm_ajax_obj.nonce,
+            wppm_type:'load_more_services',
+            cat_id:cat,
+            offset:offset,
+            limit:limit
+        }, function(res){
+            if(res.success){
+                table.find('tbody').append(res.html);
+                offset += res.count;
+                $btn.data('offset', offset);
+                if(!res.has_more){
+                    $btn.remove();
+                }
+            }
+        });
     });
 });

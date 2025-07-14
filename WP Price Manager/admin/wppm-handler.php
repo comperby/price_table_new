@@ -25,6 +25,9 @@ function wppm_add_category() {
         'column_count' => $count,
         'column_titles' => $titles,
     ), array( '%s', '%d', '%d', '%d', '%s' ) );
+    if ( $result ) {
+        delete_transient( 'wppm_categories' );
+    }
     $msg = $result ? __( 'Категория добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления категории.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-categories&msg=' . urlencode( $msg ) ) );
     exit;
@@ -83,6 +86,9 @@ function wppm_edit_category() {
         'name' => $name,
         'display_order' => $order,
     ), array( 'id' => $id ), array( '%s', '%d' ), array( '%d' ) );
+    if ( $result !== false ) {
+        delete_transient( 'wppm_categories' );
+    }
     $msg = ($result !== false) ? __( 'Категория обновлена.', 'wp-price-manager' ) : __( 'Ошибка обновления категории.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-categories&msg=' . urlencode( $msg ) ) );
     exit;
@@ -101,6 +107,9 @@ function wppm_delete_category() {
     global $wpdb;
     $table = $wpdb->prefix . 'wppm_categories';
     $result = $wpdb->delete( $table, array( 'id' => $id ), array( '%d' ) );
+    if ( $result ) {
+        delete_transient( 'wppm_categories' );
+    }
     $msg = $result ? __( 'Категория удалена.', 'wp-price-manager' ) : __( 'Ошибка удаления категории.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-categories&msg=' . urlencode( $msg ) ) );
     exit;
@@ -362,6 +371,9 @@ function wppm_add_price_group() {
         'name' => $name,
         'default_price' => $default_price,
     ), array( '%s', '%s' ) );
+    if ( $result ) {
+        delete_transient( 'wppm_price_groups' );
+    }
     $msg = $result ? __( 'Группа цен добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления группы цен.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-price-groups&msg=' . urlencode( $msg ) ) );
     exit;
@@ -421,6 +433,7 @@ function wppm_edit_price_group() {
         'default_price' => $default_price,
     ), array( 'id' => $id ), array( '%s', '%s' ), array( '%d' ) );
     if ( $result !== false ) {
+        delete_transient( 'wppm_price_groups' );
         // Обновляем связанные услуги (если цена не задана вручную)
         $srv_table = $wpdb->prefix . 'wppm_services';
         $wpdb->query( $wpdb->prepare( "UPDATE $srv_table SET price = %s WHERE price_group_id = %d AND manual_price = 0", $default_price, $id ) );
@@ -445,6 +458,9 @@ function wppm_delete_price_group() {
     global $wpdb;
     $table = $wpdb->prefix . 'wppm_price_groups';
     $result = $wpdb->delete( $table, array( 'id' => $id ), array( '%d' ) );
+    if ( $result ) {
+        delete_transient( 'wppm_price_groups' );
+    }
     $msg = $result ? __( 'Группа цен удалена.', 'wp-price-manager' ) : __( 'Ошибка удаления группы цен.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-price-groups&msg=' . urlencode( $msg ) ) );
     exit;
@@ -488,7 +504,7 @@ function wppm_save_style_settings() {
         'icon_char', 'icon_color', 'icon_bg_color',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius',
         'show_more_text', 'show_more_bg', 'show_more_color',
-        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_limit'
+        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_limit', 'use_google_font'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
             $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
