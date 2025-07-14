@@ -162,12 +162,16 @@ function wppm_handle_ajax() {
             $cat_table = $wpdb->prefix . 'wppm_categories';
             $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
+            $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
             $name        = sanitize_text_field( $_POST['service_name'] );
+            if ( $name === '' && ! empty( $extras_array ) ) {
+                $name = $extras_array[0];
+            }
             $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
             $link        = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
            $price       = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
            $pg_name     = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
-           $extras      = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
+           $extras      = wp_json_encode( $extras_array );
 
             if ( isset( $_POST['service_category_id'] ) && ! empty( $_POST['service_category_id'] ) ) {
                 $category_id = intval( $_POST['service_category_id'] );
@@ -228,13 +232,17 @@ function wppm_handle_ajax() {
             $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
             $id          = intval( $_POST['service_id'] );
+            $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
             $name        = sanitize_text_field( $_POST['service_name'] );
+            if ( $name === '' && ! empty( $extras_array ) ) {
+                $name = $extras_array[0];
+            }
             $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
             $link        = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
             $price       = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
            $pg_name     = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
            $cat_name    = sanitize_text_field( $_POST['service_category'] );
-           $extras      = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
+           $extras      = wp_json_encode( $extras_array );
 
             $existing_cat = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $cat_table WHERE name = %s", $cat_name ) );
             if ( $existing_cat ) {

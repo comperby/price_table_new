@@ -120,12 +120,16 @@ function wppm_add_service() {
     $cat_table = $wpdb->prefix . 'wppm_categories';
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
+    $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
     $name = sanitize_text_field( $_POST['service_name'] );
+    if ( $name === '' && ! empty( $extras_array ) ) {
+        $name = $extras_array[0];
+    }
     $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
     $link = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
     $price = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
    $price_group = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
-   $extras = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
+   $extras = wp_json_encode( $extras_array );
 
     // Определяем категорию: если передано через выпадающий список – используем его, иначе пробуем по текстовому полю
     if ( isset($_POST['service_category_id']) && !empty($_POST['service_category_id']) ) {
@@ -168,7 +172,7 @@ function wppm_add_service() {
         'category_id' => $category_id,
         'price_group_id' => $price_group_id,
         'display_order' => 0,
-        'extras' => isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '',
+        'extras' => $extras,
     ), array( '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%s' ) );
     $msg = $result ? __( 'Услуга добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления услуги.', 'wp-price-manager' );
     wp_redirect( admin_url( 'admin.php?page=price-manager-services&msg=' . urlencode( $msg ) ) );
@@ -269,13 +273,17 @@ function wppm_edit_service() {
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
 
     $id = intval($_POST['service_id']);
+    $extras_array = isset( $_POST['extras'] ) ? array_map( 'sanitize_text_field', (array) $_POST['extras'] ) : array();
     $name = sanitize_text_field( $_POST['service_name'] );
+    if ( $name === '' && ! empty( $extras_array ) ) {
+        $name = $extras_array[0];
+    }
     $description = isset( $_POST['service_description'] ) ? sanitize_textarea_field( $_POST['service_description'] ) : '';
     $link = isset( $_POST['service_link'] ) ? esc_url_raw( $_POST['service_link'] ) : '';
     $price = isset( $_POST['service_price'] ) ? sanitize_text_field( $_POST['service_price'] ) : '';
     $price_group = isset( $_POST['price_group'] ) ? sanitize_text_field( $_POST['price_group'] ) : '';
     $category = sanitize_text_field( $_POST['service_category'] );
-    $extras = isset( $_POST['extras'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['extras'] ) ) : '';
+    $extras = wp_json_encode( $extras_array );
 
     // Обновляем категорию (если не существует, создаём)
     $existing_cat = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $cat_table WHERE name = %s", $category ) );

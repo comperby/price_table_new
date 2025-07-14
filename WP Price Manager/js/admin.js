@@ -51,12 +51,12 @@ jQuery(document).ready(function($) {
                 });
                 row.show();
                 if(priceRow.length){ priceRow.hide(); }
-                if(nameRow.length){ nameRow.hide(); }
+                if(nameRow.length){ nameRow.hide(); $('#service_name').prop('required', false); }
             } else {
                 container.empty();
                 row.hide();
                 if(priceRow.length){ priceRow.show(); }
-                if(nameRow.length){ nameRow.show(); }
+                if(nameRow.length){ nameRow.show(); $('#service_name').prop('required', true); }
             }
         });
     }
@@ -246,11 +246,13 @@ jQuery(document).ready(function($) {
         var pg  = $('#price_group').val();
         var extras = [];
         $('#wppm-extras-container input').each(function(){ extras.push($(this).val()); });
+        var nameVal = $('#service_name').val();
+        if($('#service_name_row').is(':hidden') && extras.length){ nameVal = extras[0]; }
         var data = {
             action: 'wppm_ajax_action',
             nonce: wppm_ajax_obj.nonce,
             wppm_type: type,
-            service_name: $('#service_name').val(),
+            service_name: nameVal,
             service_description: $('#service_description').val(),
             service_link: $('#service_link').val(),
             service_price: $('#service_price').val(),
@@ -312,12 +314,14 @@ jQuery(document).ready(function($) {
         var id = row.data('id');
         var extras = [];
         row.find('.srv-edit-extra').each(function(){ extras.push($(this).val()); });
+        var nameVal = row.find('.srv-edit-name').val();
+        if(!nameVal && extras.length){ nameVal = extras[0]; }
         var data = {
             action: 'wppm_ajax_action',
             nonce: wppm_ajax_obj.nonce,
             wppm_type: 'edit_service',
             service_id: id,
-            service_name: row.find('.srv-edit-name').val(),
+            service_name: nameVal,
             service_description: row.find('.srv-edit-description').val(),
             service_link: row.find('.srv-edit-link').val(),
             service_price: row.find('.srv-edit-price').val(),
