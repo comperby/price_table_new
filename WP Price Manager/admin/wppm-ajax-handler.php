@@ -89,7 +89,8 @@ function wppm_handle_ajax() {
                 $cat = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $table WHERE name = %s", $name ), ARRAY_A );
             }
             if ( $cat ) {
-                $titles = array_values( json_decode( $cat['column_titles'], true ) );
+                $decoded_titles = json_decode( $cat['column_titles'], true );
+                $titles = is_array( $decoded_titles ) ? array_values( $decoded_titles ) : array();
                 $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles );
             } else {
                 $response = array( 'success' => false );

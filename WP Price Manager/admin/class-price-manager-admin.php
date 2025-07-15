@@ -264,7 +264,8 @@ class Price_Manager_Admin {
                         <th><?php _e( 'Название услуги', 'wp-price-manager' ); ?></th>
                     <?php endif; ?>
                     <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
-                        <?php $titles = array_values( json_decode( $cat_info['column_titles'], true ) ); ?>
+                        <?php $decoded_titles = json_decode( $cat_info['column_titles'], true );
+                              $titles = is_array( $decoded_titles ) ? array_values( $decoded_titles ) : array(); ?>
                         <?php foreach ( (array) $titles as $title ) : ?>
                             <th><?php echo esc_html( $title ); ?></th>
                         <?php endforeach; ?>
@@ -286,7 +287,8 @@ class Price_Manager_Admin {
             <tbody id="<?php echo $prefill_category ? 'wppm-services-sortable' : 'wppm-services-table'; ?>">
                 <?php if ( $services ) : ?>
                     <?php foreach ( $services as $srv ) : ?>
-                        <?php $extras = array_values( json_decode( $srv['extras'], true ) ); ?>
+                        <?php $decoded_extras = json_decode( $srv['extras'], true );
+                              $extras = is_array( $decoded_extras ) ? array_values( $decoded_extras ) : array(); ?>
                         <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>" data-extras='<?php echo esc_attr( wp_json_encode( $extras ) ); ?>'>
                             <?php if ( $prefill_category ) : ?>
                                 <td class="wppm-drag-handle wppm-order-col" style="cursor: move;width:6em;">⇅</td>

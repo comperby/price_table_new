@@ -256,7 +256,8 @@ function wppm_edit_service_form() {
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Сохранить изменения', 'wp-price-manager' ); ?>"></p>
         </form>
         <script type="text/javascript">
-        var wppm_initial_extras = <?php echo wp_json_encode( array_values( json_decode( $service['extras'], true ) ) ); ?>;
+        <?php $decoded_extras = json_decode( $service['extras'], true ); ?>
+        var wppm_initial_extras = <?php echo wp_json_encode( is_array( $decoded_extras ) ? array_values( $decoded_extras ) : array() ); ?>;
         jQuery(function($){
             var cat = $('#service_category').val();
             if(cat && window.wppm_load_extras){
