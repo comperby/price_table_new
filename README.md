@@ -23,4 +23,4 @@ In the Elementor editor search for **Price List**. Drop the widget onto the page
 
 The admin interface loads `js/admin.js` and exposes AJAX parameters via `wppm_ajax_obj` for all asynchronous operations.
 
-Price tables initially show only a limited number of rows. You can configure the limit and the "Show more" button style on the **Стиль** page.
+Price tables initially show only a limited number of rows. The **Стиль** page lets you configure the "Show more" button (size, font and animation speed) and fine tune table borders just like in Google Sheets.

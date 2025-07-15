@@ -445,15 +445,47 @@ class Price_Manager_Admin {
                     <?php if ( $active_tab === 'table' ) : ?>
                         <tr>
                             <th><label for="border_width"><?php _e( 'Толщина границы', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="border_width" id="border_width" value="<?php echo esc_attr( $options['border_width'] ?? '' ); ?>"></td>
+                            <td>
+                                <input type="text" name="border_width" id="border_width" value="<?php echo esc_attr( $options['border_width'] ?? '' ); ?>">
+                                <p class="description"><?php _e( 'Укажите значение в px, например 1px', 'wp-price-manager' ); ?></p>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="border_color"><?php _e( 'Цвет границы', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="border_color" id="border_color" value="<?php echo esc_attr( $options['border_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td>
+                                <input type="text" name="border_color" id="border_color" value="<?php echo esc_attr( $options['border_color'] ?? '' ); ?>" class="wppm-color-field">
+                                <p class="description"><?php _e( 'Например: #cccccc', 'wp-price-manager' ); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="border_style"><?php _e( 'Стиль линии', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="border_style" id="border_style">
+                                    <option value="solid" <?php selected( $options['border_style'] ?? '', 'solid' ); ?>>solid</option>
+                                    <option value="dashed" <?php selected( $options['border_style'] ?? '', 'dashed' ); ?>>dashed</option>
+                                    <option value="dotted" <?php selected( $options['border_style'] ?? '', 'dotted' ); ?>>dotted</option>
+                                </select>
+                                <p class="description">solid, dashed <?php _e( 'или', 'wp-price-manager' ); ?> dotted</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="border_apply"><?php _e( 'Какие границы', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="border_apply" id="border_apply">
+                                    <option value="all" <?php selected( $options['border_apply'] ?? '', 'all' ); ?>><?php _e( 'Все', 'wp-price-manager' ); ?></option>
+                                    <option value="outer" <?php selected( $options['border_apply'] ?? '', 'outer' ); ?>><?php _e( 'Только внешние', 'wp-price-manager' ); ?></option>
+                                    <option value="inner" <?php selected( $options['border_apply'] ?? '', 'inner' ); ?>><?php _e( 'Только внутренние', 'wp-price-manager' ); ?></option>
+                                    <option value="vertical" <?php selected( $options['border_apply'] ?? '', 'vertical' ); ?>><?php _e( 'Только вертикальные', 'wp-price-manager' ); ?></option>
+                                    <option value="horizontal" <?php selected( $options['border_apply'] ?? '', 'horizontal' ); ?>><?php _e( 'Только горизонтальные', 'wp-price-manager' ); ?></option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="border_radius"><?php _e( 'Скругление углов', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="border_radius" id="border_radius" value="<?php echo esc_attr( $options['border_radius'] ?? '' ); ?>"></td>
+                            <td>
+                                <input type="text" name="border_radius" id="border_radius" value="<?php echo esc_attr( $options['border_radius'] ?? '' ); ?>">
+                                <p class="description"><?php _e( 'Пример: 5px', 'wp-price-manager' ); ?></p>
+                            </td>
                         </tr>
                     <?php elseif ( $active_tab === 'header' ) : ?>
                         <tr>
@@ -557,6 +589,21 @@ class Price_Manager_Admin {
                             <th><label for="icon_bg_color"><?php _e( 'Фон значка', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="icon_bg_color" id="icon_bg_color" value="<?php echo esc_attr( $options['icon_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
+                        <tr>
+                            <th><label for="icon_size"><?php _e( 'Размер иконки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="icon_size" id="icon_size" value="<?php echo esc_attr( $options['icon_size'] ?? '' ); ?>">
+                                <p class="description"><?php _e( 'Пример: 16px', 'wp-price-manager' ); ?></p></td>
+                        </tr>
+                        <tr>
+                            <th><label for="icon_offset_x"><?php _e( 'Смещение по X', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="icon_offset_x" id="icon_offset_x" value="<?php echo esc_attr( $options['icon_offset_x'] ?? '' ); ?>">
+                                <p class="description">px</p></td>
+                        </tr>
+                        <tr>
+                            <th><label for="icon_offset_y"><?php _e( 'Смещение по Y', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="icon_offset_y" id="icon_offset_y" value="<?php echo esc_attr( $options['icon_offset_y'] ?? '' ); ?>">
+                                <p class="description">px</p></td>
+                        </tr>
                     <?php elseif ( $active_tab === 'tooltip' ) : ?>
                         <tr>
                             <th><label for="tooltip_bg_color"><?php _e( 'Фон описания', 'wp-price-manager' ); ?></label></th>
@@ -594,6 +641,36 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="show_more_font_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="show_more_font_size" id="show_more_font_size" value="<?php echo esc_attr( $options['show_more_font_size'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_width"><?php _e( 'Ширина кнопки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_width" id="show_more_width" value="<?php echo esc_attr( $options['show_more_width'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_height"><?php _e( 'Высота кнопки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_height" id="show_more_height" value="<?php echo esc_attr( $options['show_more_height'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_font_family"><?php _e( 'Шрифт кнопки', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="show_more_font_family" id="show_more_font_family">
+                                    <?php $fonts = array( 'Montserrat', 'Arial', 'Georgia', 'Times New Roman' ); ?>
+                                    <?php foreach ( $fonts as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['show_more_font_family'] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_font_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_more_font_weight" id="show_more_font_weight" value="<?php echo esc_attr( $options['show_more_font_weight'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_speed"><?php _e( 'Скорость анимации', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <input type="text" name="show_more_speed" id="show_more_speed" value="<?php echo esc_attr( $options['show_more_speed'] ?? '' ); ?>">
+                                <p class="description"><?php _e( 'Измеряется в секундах или миллисекундах, например 0.3s', 'wp-price-manager' ); ?></p>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="show_limit"><?php _e( 'Количество строк', 'wp-price-manager' ); ?></label></th>

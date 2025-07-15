@@ -67,6 +67,8 @@ function wppm_install() {
     $default_styles = array(
         'border_color'          => '#ccc',
         'border_width'          => '1px',
+        'border_style'          => 'solid',
+        'border_apply'          => 'all',
         'border_radius'         => '5px',
         'header_bg_color'       => '#f1f1f1',
         'header_text_color'     => '#333',
@@ -87,6 +89,9 @@ function wppm_install() {
         'icon_char'             => '\u2753',
         'icon_color'            => '#fff',
         'icon_bg_color'         => '#0073aa',
+        'icon_size'             => '16px',
+        'icon_offset_x'         => '0px',
+        'icon_offset_y'         => '0px',
         'tooltip_bg_color'      => '#333',
         'tooltip_text_color'    => '#fff',
         'tooltip_border_radius' => '4px',
@@ -96,6 +101,11 @@ function wppm_install() {
         'show_more_padding'     => '8px 16px',
         'show_more_radius'      => '4px',
         'show_more_font_size'   => '14px',
+        'show_more_width'       => 'auto',
+        'show_more_height'      => 'auto',
+        'show_more_font_family' => 'Montserrat',
+        'show_more_font_weight' => '400',
+        'show_more_speed'       => '0.3s',
         'show_limit'            => '7',
         'use_google_font'       => '1'
     );
@@ -171,6 +181,8 @@ function wppm_get_style_settings() {
     $defaults = array(
         'border_color'          => '#ccc',
         'border_width'          => '1px',
+        'border_style'          => 'solid',
+        'border_apply'          => 'all',
         'border_radius'         => '5px',
         'header_bg_color'       => '#f1f1f1',
         'header_text_color'     => '#333',
@@ -191,6 +203,9 @@ function wppm_get_style_settings() {
         'icon_char'             => '\u2753',
         'icon_color'            => '#fff',
         'icon_bg_color'         => '#0073aa',
+        'icon_size'             => '16px',
+        'icon_offset_x'         => '0px',
+        'icon_offset_y'         => '0px',
         'tooltip_bg_color'      => '#333',
         'tooltip_text_color'    => '#fff',
         'tooltip_border_radius' => '4px',
@@ -200,6 +215,11 @@ function wppm_get_style_settings() {
         'show_more_padding'     => '8px 16px',
         'show_more_radius'      => '4px',
         'show_more_font_size'   => '14px',
+        'show_more_width'       => 'auto',
+        'show_more_height'      => 'auto',
+        'show_more_font_family' => 'Montserrat',
+        'show_more_font_weight' => '400',
+        'show_more_speed'       => '0.3s',
         'show_limit'            => '7',
         'use_google_font'       => '1'
     );

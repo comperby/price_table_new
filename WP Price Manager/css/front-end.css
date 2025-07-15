@@ -35,3 +35,6 @@
     -ms-user-select: none;
     user-select: none;
 }
+.wppm-hidden-row {
+    display: none;
+}

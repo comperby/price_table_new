@@ -499,13 +499,13 @@ function wppm_save_style_settings() {
     check_admin_referer( 'wppm_style_settings' );
     $options = get_option( 'wppm_style_settings', array() );
     foreach ( array(
-        'border_width', 'border_color', 'border_radius',
+        'border_width', 'border_color', 'border_style', 'border_apply', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
         'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'row_height', 'row_alignment',
-        'icon_char', 'icon_color', 'icon_bg_color',
+        'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius',
         'show_more_text', 'show_more_bg', 'show_more_color',
-        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_limit', 'use_google_font'
+        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_speed', 'show_limit', 'use_google_font'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
             $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );

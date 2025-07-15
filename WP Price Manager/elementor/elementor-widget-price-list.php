@@ -235,7 +235,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         $total_services = 0;
                 }
 		?>
-                <div class="wppm-price-list-widget" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
+                <div class="wppm-price-list-widget" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
                         <style>
                         #wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                             background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
@@ -247,17 +247,32 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
                         }
                         </style>
-                        <table id="wppm-table-<?php echo $this->get_id(); ?>" style="
-                                border-collapse: collapse;
-                                border-spacing: 0;
-                                width: 100%;
-                                font-family: <?php echo esc_attr( $styles['text_font'] ); ?>;
-                                font-size: <?php echo esc_attr( $styles['text_size'] ); ?>;
-                                color: <?php echo esc_attr( $styles['text_color'] ); ?>;
-                                font-weight: <?php echo esc_attr( $styles['text_weight'] ); ?>;
-                                border: <?php echo esc_attr( $styles['border_width'] ); ?> solid <?php echo esc_attr( $styles['border_color'] ); ?>;
-                                border-radius: <?php echo esc_attr( $styles['border_radius'] ); ?>;
-                        ">
+                        <?php
+                        $border_css  = esc_attr( $styles['border_width'] ) . ' ' . esc_attr( $styles['border_style'] ) . ' ' . esc_attr( $styles['border_color'] );
+                        $table_style = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $styles['text_font'] ) . ';font-size:' . esc_attr( $styles['text_size'] ) . ';color:' . esc_attr( $styles['text_color'] ) . ';font-weight:' . esc_attr( $styles['text_weight'] ) . ';border-radius:' . esc_attr( $styles['border_radius'] ) . ';';
+                        $cell_border = 'border:' . $border_css . ';';
+                        switch ( $styles['border_apply'] ) {
+                            case 'outer':
+                                $table_style .= 'border:' . $border_css . ';';
+                                $cell_border = 'border:none;';
+                                break;
+                            case 'inner':
+                                $cell_border = 'border:' . $border_css . ';';
+                                break;
+                            case 'vertical':
+                                $table_style .= 'border:none;';
+                                $cell_border = 'border-left:' . $border_css . ';border-right:' . $border_css . ';';
+                                break;
+                            case 'horizontal':
+                                $table_style .= 'border:none;';
+                                $cell_border = 'border-top:' . $border_css . ';border-bottom:' . $border_css . ';';
+                                break;
+                            default:
+                                $table_style .= 'border:' . $border_css . ';';
+                                break;
+                        }
+                        ?>
+                        <table id="wppm-table-<?php echo $this->get_id(); ?>" style="<?php echo $table_style; ?>">
                                 <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
                                         <tr>
                                                 <?php
@@ -275,7 +290,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 }
                                                 for ( $i = 0; $i < $column_count; $i++ ) {
                                                     $title = $headers[$i] ?? '';
-                                                    echo '<th style="text-align: '.esc_attr($styles['header_alignment']).'; border: '.esc_attr($styles['border_width']).' solid '.esc_attr($styles['border_color']).'; padding: '.esc_attr($styles['text_padding']).'; font-size: '.esc_attr($styles['header_text_size']).'; font-weight: '.esc_attr($styles['header_text_weight']).';">'.esc_html($title).'</th>';
+                                                    echo '<th style="text-align: '.esc_attr($styles['header_alignment']).'; '.$cell_border.' padding: '.esc_attr($styles['text_padding']).'; font-size: '.esc_attr($styles['header_text_size']).'; font-weight: '.esc_attr($styles['header_text_weight']).';">'.esc_html($title).'</th>';
                                                 }
                                                 ?>
                                         </tr>
@@ -288,18 +303,21 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 $extras_data = json_decode( $service['extras'], true );
                                                 $extras = is_array( $extras_data ) ? array_values( $extras_data ) : [];
                                                 $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row" style="display:none;"' : '';
+                                                $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
+                                                $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
+                                                $icon_style = 'style="color:' . esc_attr( $styles['icon_color'] ) . ';background:' . esc_attr( $styles['icon_bg_color'] ) . ';font-size:' . esc_attr( $styles['icon_size'] ) . ';margin-left:' . esc_attr( $styles['icon_offset_x'] ) . ';position:relative;top:' . esc_attr( $styles['icon_offset_y'] ) . ';"';
                                                 ?>
                                                         <tr<?php echo $row_class; ?> style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
                                                             <?php
                                                 for ( $c = 0; $c < $column_count; $c++ ) {
-                                                    echo '<td style="border:' . esc_attr( $styles['border_width'] ) . ' solid ' . esc_attr( $styles['border_color'] ) . ';padding:' . esc_attr( $styles['text_padding'] ) . ';">';
+                                                    echo '<td style="'.$cell_border.'padding:' . esc_attr( $styles['text_padding'] ) . ';">';
 
                                                     if ( $c === 0 ) {
                                                         if ( $custom ) {
                                                             $val = $extras[0] ?? '';
-                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" ' . $icon_style . ' data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
                                                         } else {
-                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . esc_html( $styles['icon_char'] ) . '</span>';
+                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" ' . $icon_style . ' data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
                                                         }
                                                     } elseif ( ! $custom && $c === 1 ) {
                                                         echo esc_html( $display_price );
@@ -321,7 +339,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
 				</tbody>
                         </table>
                         <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
-                            <button type="button" class="wppm-show-more" data-offset="<?php echo esc_attr( $styles['show_limit'] ); ?>" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; margin-top:10px;">
+                            <button type="button" class="wppm-show-more" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; width: <?php echo esc_attr( $styles['show_more_width'] ); ?>; height: <?php echo esc_attr( $styles['show_more_height'] ); ?>; font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>; font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>; margin-top:10px;">
                                 <?php echo esc_html( $styles['show_more_text'] ); ?>
                             </button>
                         <?php endif; ?>

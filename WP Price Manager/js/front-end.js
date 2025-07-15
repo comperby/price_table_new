@@ -44,26 +44,10 @@ jQuery(document).ready(function($){
     $('.wppm-show-more').on('click', function(){
         var $btn = $(this);
         var container = $btn.closest('.wppm-price-list-widget');
-        var table = container.find('table');
-        var cat = container.data('cat');
-        var limit = container.data('limit');
-        var offset = $btn.data('offset');
-        $.post(wppm_ajax_obj.ajax_url, {
-            action:'wppm_ajax_action',
-            nonce:wppm_ajax_obj.nonce,
-            wppm_type:'load_more_services',
-            cat_id:cat,
-            offset:offset,
-            limit:limit
-        }, function(res){
-            if(res.success){
-                table.find('tbody').append(res.html);
-                offset += res.count;
-                $btn.data('offset', offset);
-                if(!res.has_more){
-                    $btn.remove();
-                }
-            }
-        });
+        var speed = container.data('speed') || '0.3s';
+        var duration = parseFloat(speed);
+        if(speed.indexOf('ms') === -1){ duration *= 1000; }
+        container.find('tbody .wppm-hidden-row').slideDown(duration);
+        $btn.remove();
     });
 });
