@@ -51,15 +51,20 @@ jQuery(document).ready(function($){
         var rows = container.find('tbody tr').slice(limit);
         if(container.hasClass('wppm-expanded')){
             rows.each(function(){
-                $(this).slideUp(duration, function(){
-                    $(this).css('display','none');
+                var $row = $(this);
+                $row.slideUp(duration, function(){
+                    $row.css('display','none').addClass('wppm-hidden-row');
                 });
             });
             $btn.text($btn.data('more'));
             container.removeClass('wppm-expanded');
         } else {
             rows.each(function(){
-                $(this).css('display','table-row').hide().slideDown(duration);
+                var $row = $(this);
+                $row.removeClass('wppm-hidden-row').css('display','table-row').hide()
+                    .slideDown(duration, function(){
+                        $row.css('display','table-row');
+                    });
             });
             $btn.text($btn.data('less'));
             container.addClass('wppm-expanded');
