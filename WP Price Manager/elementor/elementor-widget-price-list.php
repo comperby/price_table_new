@@ -221,15 +221,14 @@ class Elementor_Price_List_Widget extends Widget_Base {
 		$srv_table = $wpdb->prefix . 'wppm_services';
 		$cat_id = intval( $settings['selected_category'] );
                 if ( $cat_id ) {
-                        $limit = intval( $styles['show_limit'] );
                         $services = $wpdb->get_results( $wpdb->prepare(
                                 "SELECT s.*, pg.default_price, pg.name as pg_name
                                  FROM $srv_table s
                                  LEFT JOIN {$wpdb->prefix}wppm_price_groups pg ON s.price_group_id = pg.id
-                                 WHERE s.category_id = %d ORDER BY s.display_order ASC LIMIT %d",
-                                 $cat_id, $limit
+                                 WHERE s.category_id = %d ORDER BY s.display_order ASC",
+                                 $cat_id
                         ), ARRAY_A );
-                        $total_services = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $srv_table WHERE category_id = %d", $cat_id ) );
+                        $total_services = count( $services );
                 } else {
                         $services = [];
                         $total_services = 0;
