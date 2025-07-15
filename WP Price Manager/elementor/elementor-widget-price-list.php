@@ -301,7 +301,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
                                                 $extras_data = json_decode( $service['extras'], true );
                                                 $extras = is_array( $extras_data ) ? array_values( $extras_data ) : [];
-                                                $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row" style="display:none;"' : '';
+                                                $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row"' : '';
                                                 $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
                                                 $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
                                                 $icon_style = 'style="color:' . esc_attr( $styles['icon_color'] ) . ';background:' . esc_attr( $styles['icon_bg_color'] ) . ';font-size:' . esc_attr( $styles['icon_size'] ) . ';margin-left:' . esc_attr( $styles['icon_offset_x'] ) . ';position:relative;top:' . esc_attr( $styles['icon_offset_y'] ) . ';"';

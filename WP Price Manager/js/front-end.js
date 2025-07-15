@@ -52,18 +52,22 @@ jQuery(document).ready(function($){
         if(container.hasClass('wppm-expanded')){
             rows.each(function(){
                 var $row = $(this);
-                $row.slideUp(duration, function(){
-                    $row.css('display','none').addClass('wppm-hidden-row');
-                });
+                var height = $row.outerHeight();
+                $row.css({overflow:'hidden', height:height, opacity:1})
+                    .animate({height:0, opacity:0}, duration, function(){
+                        $row.addClass('wppm-hidden-row').css({overflow:'', height:'', opacity:'', display:''});
+                    });
             });
             $btn.text($btn.data('more'));
             container.removeClass('wppm-expanded');
         } else {
             rows.each(function(){
                 var $row = $(this);
-                $row.removeClass('wppm-hidden-row').css('display','table-row').hide()
-                    .slideDown(duration, function(){
-                        $row.css('display','table-row');
+                $row.removeClass('wppm-hidden-row').css({display:'table-row'});
+                var height = $row.outerHeight();
+                $row.css({overflow:'hidden', height:0, opacity:0})
+                    .animate({height:height, opacity:1}, duration, function(){
+                        $row.css({overflow:'', height:'', opacity:''});
                     });
             });
             $btn.text($btn.data('less'));
