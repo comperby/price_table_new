@@ -47,13 +47,20 @@ jQuery(document).ready(function($){
         var speed = container.data('speed') || '0.3s';
         var duration = parseFloat(speed);
         if(speed.indexOf('ms') === -1){ duration *= 1000; }
-        var rows = container.find('tbody tr.wppm-hidden-row');
+        var limit = parseInt(container.data('limit'), 10) || 0;
+        var rows = container.find('tbody tr').slice(limit);
         if(container.hasClass('wppm-expanded')){
-            rows.slideUp(duration);
+            rows.each(function(){
+                $(this).slideUp(duration, function(){
+                    $(this).css('display','none');
+                });
+            });
             $btn.text($btn.data('more'));
             container.removeClass('wppm-expanded');
         } else {
-            rows.slideDown(duration);
+            rows.each(function(){
+                $(this).css('display','table-row').hide().slideDown(duration);
+            });
             $btn.text($btn.data('less'));
             container.addClass('wppm-expanded');
         }
