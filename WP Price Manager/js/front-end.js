@@ -53,4 +53,32 @@ jQuery(document).ready(function($) {
             hideTooltip();
         });
     });
+
+    // Анимация показа скрытых строк таблицы
+    $(document).on('click', '.wppm-show-more', function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        var $widget = $btn.closest('.wppm-price-list-widget');
+        var $tbody = $widget.find('tbody');
+        var $hiddenRows = $tbody.find('tr:hidden');
+
+        // Длительность анимации из настроек или data-атрибута
+        var speed = parseInt($widget.data('show-more-speed'), 10);
+        if (isNaN(speed)) {
+            speed = typeof window.wppm_show_more_speed !== 'undefined' ? parseInt(window.wppm_show_more_speed, 10) : 400;
+        }
+
+        $hiddenRows.each(function() {
+            var $row = $(this);
+            $row.css({ display: 'table-row', opacity: 0 });
+            var fullHeight = $row.outerHeight();
+            $row.css('height', 0);
+            $row.animate({ height: fullHeight, opacity: 1 }, speed, function() {
+                $row.css({ height: '', opacity: '' });
+            });
+        });
+
+        // Скрываем кнопку после показа всех строк
+        $btn.hide();
+    });
 });
