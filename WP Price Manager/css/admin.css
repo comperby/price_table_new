@@ -16,3 +16,6 @@
     -ms-user-select: none;
     user-select: none;
 }
+.wppm-order-col{
+    width:6em;
+}
