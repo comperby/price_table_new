@@ -47,7 +47,15 @@ jQuery(document).ready(function($){
         var speed = container.data('speed') || '0.3s';
         var duration = parseFloat(speed);
         if(speed.indexOf('ms') === -1){ duration *= 1000; }
-        container.find('tbody .wppm-hidden-row').slideDown(duration);
-        $btn.remove();
+        var rows = container.find('tbody tr.wppm-hidden-row');
+        if(container.hasClass('wppm-expanded')){
+            rows.slideUp(duration);
+            $btn.text($btn.data('more'));
+            container.removeClass('wppm-expanded');
+        } else {
+            rows.slideDown(duration);
+            $btn.text($btn.data('less'));
+            container.addClass('wppm-expanded');
+        }
     });
 });

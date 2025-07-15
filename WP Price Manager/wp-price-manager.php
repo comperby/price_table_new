@@ -96,6 +96,7 @@ function wppm_install() {
         'tooltip_text_color'    => '#fff',
         'tooltip_border_radius' => '4px',
         'show_more_text'        => 'Показать все',
+        'show_less_text'        => 'Свернуть',
         'show_more_bg'          => '#0073aa',
         'show_more_color'       => '#ffffff',
         'show_more_padding'     => '8px 16px',
@@ -105,6 +106,7 @@ function wppm_install() {
         'show_more_height'      => 'auto',
         'show_more_font_family' => 'Montserrat',
         'show_more_font_weight' => '400',
+        'show_more_align'       => 'left',
         'show_more_speed'       => '0.3s',
         'show_limit'            => '7',
         'use_google_font'       => '1'
@@ -210,6 +212,7 @@ function wppm_get_style_settings() {
         'tooltip_text_color'    => '#fff',
         'tooltip_border_radius' => '4px',
         'show_more_text'        => 'Показать все',
+        'show_less_text'        => 'Свернуть',
         'show_more_bg'          => '#0073aa',
         'show_more_color'       => '#ffffff',
         'show_more_padding'     => '8px 16px',
@@ -219,6 +222,7 @@ function wppm_get_style_settings() {
         'show_more_height'      => 'auto',
         'show_more_font_family' => 'Montserrat',
         'show_more_font_weight' => '400',
+        'show_more_align'       => 'left',
         'show_more_speed'       => '0.3s',
         'show_limit'            => '7',
         'use_google_font'       => '1'

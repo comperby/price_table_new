@@ -623,6 +623,10 @@ class Price_Manager_Admin {
                             <td><input type="text" name="show_more_text" id="show_more_text" value="<?php echo esc_attr( $options['show_more_text'] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
+                            <th><label for="show_less_text"><?php _e( 'Текст при сворачивании', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="show_less_text" id="show_less_text" value="<?php echo esc_attr( $options['show_less_text'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
                             <th><label for="show_more_bg"><?php _e( 'Фон кнопки', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="show_more_bg" id="show_more_bg" value="<?php echo esc_attr( $options['show_more_bg'] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
@@ -664,6 +668,16 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="show_more_font_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="show_more_font_weight" id="show_more_font_weight" value="<?php echo esc_attr( $options['show_more_font_weight'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="show_more_align"><?php _e( 'Выравнивание', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="show_more_align" id="show_more_align">
+                                    <option value="left" <?php selected( $options['show_more_align'] ?? '', 'left' ); ?>><?php _e( 'По левому краю', 'wp-price-manager' ); ?></option>
+                                    <option value="center" <?php selected( $options['show_more_align'] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
+                                    <option value="right" <?php selected( $options['show_more_align'] ?? '', 'right' ); ?>><?php _e( 'По правому краю', 'wp-price-manager' ); ?></option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="show_more_speed"><?php _e( 'Скорость анимации', 'wp-price-manager' ); ?></label></th>

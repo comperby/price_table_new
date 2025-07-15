@@ -339,9 +339,11 @@ class Elementor_Price_List_Widget extends Widget_Base {
 				</tbody>
                         </table>
                         <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
-                            <button type="button" class="wppm-show-more" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; width: <?php echo esc_attr( $styles['show_more_width'] ); ?>; height: <?php echo esc_attr( $styles['show_more_height'] ); ?>; font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>; font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>; margin-top:10px;">
-                                <?php echo esc_html( $styles['show_more_text'] ); ?>
-                            </button>
+                            <div class="wppm-show-more-wrapper" style="text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;">
+                                <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; width: <?php echo esc_attr( $styles['show_more_width'] ); ?>; height: <?php echo esc_attr( $styles['show_more_height'] ); ?>; font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>; font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>; margin-top:10px;">
+                                    <?php echo esc_html( $styles['show_more_text'] ); ?>
+                                </button>
+                            </div>
                         <?php endif; ?>
                 </div>
                 <?php

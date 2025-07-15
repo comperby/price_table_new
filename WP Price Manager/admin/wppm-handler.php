@@ -505,7 +505,7 @@ function wppm_save_style_settings() {
         'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius',
         'show_more_text', 'show_more_bg', 'show_more_color',
-        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_speed', 'show_limit', 'use_google_font'
+        'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_align', 'show_less_text', 'show_more_speed', 'show_limit', 'use_google_font'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
             $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
