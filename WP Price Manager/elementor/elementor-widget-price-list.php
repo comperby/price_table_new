@@ -286,46 +286,95 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         break;
                 }
 		?>
-                <div class="wppm-price-list-widget" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
+                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>">
                         <style>
-                        #wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
+                        .wppm-widget-<?php echo $this->get_id(); ?> {
+                            width: <?php echo esc_attr( $settings['table_width'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> {
+                            <?php echo $table_style; ?>
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> thead {
+                            background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['header_text_color'] ); ?>;
+                            height: <?php echo esc_attr( $styles['header_height'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr {
+                            height: <?php echo esc_attr( $styles['row_height'] ); ?>;
+                            text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $styles['even_row_bg_color'] ); ?>;}
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $styles['odd_row_bg_color'] ); ?>;}
+                        .wppm-table-<?php echo $this->get_id(); ?> th,
+                        .wppm-table-<?php echo $this->get_id(); ?> td{
+                            <?php echo $cell_border; ?>
+                            padding: <?php echo esc_attr( $styles['text_padding'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> th{
+                            text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['header_text_size'] ); ?>;
+                            font-weight: <?php echo esc_attr( $styles['header_text_weight'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> a {
+                            color: <?php echo esc_attr( $styles['link_color'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                             background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
                             color: <?php echo esc_attr( $styles['icon_color'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['icon_size'] ); ?>;
+                            margin-left: <?php echo esc_attr( $styles['icon_offset_x'] ); ?>;
+                            position: relative;
+                            top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
                         }
-                        #wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
                             background: <?php echo esc_attr( $styles['tooltip_bg_color'] ); ?>;
                             color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
                         }
+                        .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more-wrapper {
+                            text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;
+                        }
+                        .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more {
+                            background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>;
+                            color: <?php echo esc_attr( $styles['show_more_color'] ); ?>;
+                            padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>;
+                            border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>;
+                            width: <?php echo esc_attr( $styles['show_more_width'] ); ?>;
+                            height: <?php echo esc_attr( $styles['show_more_height'] ); ?>;
+                            font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>;
+                            font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>;
+                            margin-top:10px;
+                        }
                         @media(max-width:768px){
-                            #wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
+                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                                 background: <?php echo esc_attr( $mobile['icon_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['icon_color'] ); ?>;
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
                                 background: <?php echo esc_attr( $mobile['tooltip_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['tooltip_text_color'] ); ?>;
                                 border-radius: <?php echo esc_attr( $mobile['tooltip_border_radius'] ); ?>;
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> {
+                            .wppm-table-<?php echo $this->get_id(); ?> {
                                 <?php echo $table_mobile; ?>
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> thead {
+                            .wppm-table-<?php echo $this->get_id(); ?> thead {
                                 background: <?php echo esc_attr( $mobile['header_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['header_text_color'] ); ?>;
                                 height: <?php echo esc_attr( $mobile['header_height'] ); ?>;
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> tbody tr {
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr {
                                 height: <?php echo esc_attr( $mobile['row_height'] ); ?>;
                                 text-align: <?php echo esc_attr( $mobile['row_alignment'] ); ?>;
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $mobile['even_row_bg_color'] ); ?>;}
-                            #wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $mobile['odd_row_bg_color'] ); ?>;}
-                            #wppm-table-<?php echo $this->get_id(); ?> th, #wppm-table-<?php echo $this->get_id(); ?> td{
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $mobile['even_row_bg_color'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $mobile['odd_row_bg_color'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> th, .wppm-table-<?php echo $this->get_id(); ?> td{
                                 <?php echo $cell_border_m; ?>
                                 padding: <?php echo esc_attr( $mobile['text_padding'] ); ?>;
                             }
-                            #wppm-table-<?php echo $this->get_id(); ?> th{
+                            .wppm-table-<?php echo $this->get_id(); ?> th{
                                 text-align: <?php echo esc_attr( $mobile['header_alignment'] ); ?>;
                                 font-size: <?php echo esc_attr( $mobile['header_text_size'] ); ?>;
                                 font-weight: <?php echo esc_attr( $mobile['header_text_weight'] ); ?>;
@@ -335,8 +384,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         <?php
                         // styles for table output already calculated above
                         ?>
-                        <table id="wppm-table-<?php echo $this->get_id(); ?>" style="<?php echo $table_style; ?>">
-                                <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
+                        <table class="wppm-table wppm-table-<?php echo $this->get_id(); ?>">
+                                <thead>
                                         <tr>
                                                 <?php
                                                 $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM {$wpdb->prefix}wppm_categories WHERE id = %d", $cat_id ), ARRAY_A );
@@ -353,7 +402,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 }
                                                 for ( $i = 0; $i < $column_count; $i++ ) {
                                                     $title = $headers[$i] ?? '';
-                                                    echo '<th style="text-align: '.esc_attr($styles['header_alignment']).'; '.$cell_border.' padding: '.esc_attr($styles['text_padding']).'; font-size: '.esc_attr($styles['header_text_size']).'; font-weight: '.esc_attr($styles['header_text_weight']).';">'.esc_html($title).'</th>';
+                                                    echo '<th>'.esc_html($title).'</th>';
                                                 }
                                                 ?>
                                         </tr>
@@ -368,19 +417,18 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row"' : '';
                                                 $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
                                                 $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
-                                                $icon_style = 'style="color:' . esc_attr( $styles['icon_color'] ) . ';background:' . esc_attr( $styles['icon_bg_color'] ) . ';font-size:' . esc_attr( $styles['icon_size'] ) . ';margin-left:' . esc_attr( $styles['icon_offset_x'] ) . ';position:relative;top:' . esc_attr( $styles['icon_offset_y'] ) . ';"';
                                                 ?>
-                                                        <tr<?php echo $row_class; ?> style="background: <?php echo $index % 2 === 0 ? esc_attr( $styles['even_row_bg_color'] ) : esc_attr( $styles['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $styles['row_height'] ); ?>; text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;">
+                                                        <tr<?php echo $row_class; ?>>
                                                             <?php
                                                 for ( $c = 0; $c < $column_count; $c++ ) {
-                                                    echo '<td style="'.$cell_border.'padding:' . esc_attr( $styles['text_padding'] ) . ';">';
+                                                    echo '<td>';
 
                                                     if ( $c === 0 ) {
                                                         if ( $custom ) {
                                                             $val = $extras[0] ?? '';
-                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" ' . $icon_style . ' data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
+                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
                                                         } else {
-                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank" style="color:' . esc_attr( $styles['link_color'] ) . ';">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" ' . $icon_style . ' data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
+                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
                                                         }
                                                     } elseif ( ! $custom && $c === 1 ) {
                                                         echo esc_html( $display_price );
@@ -402,8 +450,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
 				</tbody>
                         </table>
                         <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
-                            <div class="wppm-show-more-wrapper" style="text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;">
-                                <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>" style="background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>; color: <?php echo esc_attr( $styles['show_more_color'] ); ?>; padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>; border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>; font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>; width: <?php echo esc_attr( $styles['show_more_width'] ); ?>; height: <?php echo esc_attr( $styles['show_more_height'] ); ?>; font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>; font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>; margin-top:10px;">
+                            <div class="wppm-show-more-wrapper">
+                                <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>">
                                     <?php echo esc_html( $styles['show_more_text'] ); ?>
                                 </button>
                             </div>
