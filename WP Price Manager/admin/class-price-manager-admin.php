@@ -154,6 +154,9 @@ class Price_Manager_Admin {
     $srv_table = $wpdb->prefix . 'wppm_services';
     $cat_table = $wpdb->prefix . 'wppm_categories';
     $pg_table  = $wpdb->prefix . 'wppm_price_groups';
+    $styles = wppm_get_style_settings();
+    $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
+    $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
     
     // Категория для отображения услуг
     $prefill_category = isset($_GET['prefill_category']) ? intval($_GET['prefill_category']) : 0;
@@ -265,9 +268,22 @@ class Price_Manager_Admin {
                     <?php endif; ?>
                     <?php if ( $cat_info && $cat_info['custom_table'] ) : ?>
                         <?php $decoded_titles = json_decode( $cat_info['column_titles'], true );
-                              $titles = is_array( $decoded_titles ) ? array_values( $decoded_titles ) : array(); ?>
-                        <?php foreach ( (array) $titles as $title ) : ?>
-                            <th><?php echo esc_html( $title ); ?></th>
+                              $titles = array();
+                              $descs  = array();
+                              if ( is_array( $decoded_titles ) ) {
+                                  foreach ( $decoded_titles as $item ) {
+                                      if ( is_array( $item ) ) {
+                                          $titles[] = $item['title'] ?? '';
+                                          $descs[]  = $item['desc'] ?? '';
+                                      } else {
+                                          $titles[] = $item;
+                                          $descs[]  = '';
+                                      }
+                                  }
+                              }
+                        ?>
+                        <?php foreach ( (array) $titles as $i => $title ) : ?>
+                            <th><?php echo esc_html( $title ); if ( ! empty( $descs[$i] ) ) echo ' <span class="wppm-info-icon" data-description="'.esc_attr($descs[$i]).'">' . $icon_content . '</span>'; ?></th>
                         <?php endforeach; ?>
                         <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>

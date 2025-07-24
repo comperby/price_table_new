@@ -18,7 +18,18 @@ function wppm_handle_ajax() {
             $display_order = isset( $_POST['display_order'] ) ? intval( $_POST['display_order'] ) : 0;
             $custom  = isset( $_POST['custom_table'] ) ? 1 : 0;
             $count   = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
-            $titles  = $custom && isset( $_POST['column_titles'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['column_titles'] ) ) : '';
+            if ( $custom && isset( $_POST['column_titles'] ) ) {
+                $titles_arr = array();
+                foreach ( (array) $_POST['column_titles'] as $idx => $t ) {
+                    $titles_arr[] = array(
+                        'title' => sanitize_text_field( $t ),
+                        'desc'  => isset( $_POST['column_desc'][ $idx ] ) ? sanitize_text_field( $_POST['column_desc'][ $idx ] ) : ''
+                    );
+                }
+                $titles = wp_json_encode( $titles_arr );
+            } else {
+                $titles = '';
+            }
             $table = $wpdb->prefix . 'wppm_categories';
             $result = $wpdb->insert( $table, array(
                 'name'          => $name,
@@ -90,8 +101,20 @@ function wppm_handle_ajax() {
             }
             if ( $cat ) {
                 $decoded_titles = json_decode( $cat['column_titles'], true );
-                $titles = is_array( $decoded_titles ) ? array_values( $decoded_titles ) : array();
-                $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles );
+                $titles = array();
+                $descs  = array();
+                if ( is_array( $decoded_titles ) ) {
+                    foreach ( $decoded_titles as $it ) {
+                        if ( is_array( $it ) ) {
+                            $titles[] = $it['title'] ?? '';
+                            $descs[]  = $it['desc'] ?? '';
+                        } else {
+                            $titles[] = $it;
+                            $descs[]  = '';
+                        }
+                    }
+                }
+                $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles, 'descs' => $descs );
             } else {
                 $response = array( 'success' => false );
             }

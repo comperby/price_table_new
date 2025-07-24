@@ -17,7 +17,18 @@ function wppm_add_category() {
     $order = intval( $_POST['display_order'] );
     $custom = isset( $_POST['custom_table'] ) ? 1 : 0;
     $count  = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
-    $titles = $custom && isset( $_POST['column_titles'] ) ? wp_json_encode( array_map( 'sanitize_text_field', (array) $_POST['column_titles'] ) ) : '';
+    if ( $custom && isset( $_POST['column_titles'] ) ) {
+        $titles = array();
+        foreach ( (array) $_POST['column_titles'] as $idx => $t ) {
+            $titles[] = array(
+                'title' => sanitize_text_field( $t ),
+                'desc'  => isset( $_POST['column_desc'][ $idx ] ) ? sanitize_text_field( $_POST['column_desc'][ $idx ] ) : ''
+            );
+        }
+        $titles = wp_json_encode( $titles );
+    } else {
+        $titles = '';
+    }
     $result = $wpdb->insert( $table, array(
         'name' => $name,
         'display_order' => $order,

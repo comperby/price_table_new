@@ -157,7 +157,8 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'edit_label'        => __( 'Редактировать', 'wp-price-manager' ),
             'delete_label'      => __( 'Удалить', 'wp-price-manager' ),
             'view_label'        => __( 'Посмотреть услуги', 'wp-price-manager' ),
-            'save_label'        => __( 'Сохранить', 'wp-price-manager' )
+            'save_label'        => __( 'Сохранить', 'wp-price-manager' ),
+            'desc_placeholder'  => __( 'Описание колонки', 'wp-price-manager' )
         ) );
     }
 }

@@ -68,7 +68,10 @@ jQuery(document).ready(function($) {
         var container = $('#column_titles_container');
         container.empty();
         for(var i=1;i<=count;i++){
-            container.append('<input type="text" name="column_titles['+i+']" placeholder="'+i+'" /><br>');
+            container.append(
+                '<input type="text" name="column_titles['+i+']" placeholder="'+i+'" /> '
+                + '<input type="text" name="column_desc['+i+']" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" /><br>'
+            );
         }
     }
 

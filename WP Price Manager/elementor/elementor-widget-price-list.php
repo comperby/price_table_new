@@ -390,19 +390,36 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 <?php
                                                 $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM {$wpdb->prefix}wppm_categories WHERE id = %d", $cat_id ), ARRAY_A );
                                                 $headers = array( __( 'Услуга', 'wp-price-manager' ), __( 'Цена', 'wp-price-manager' ) );
+                                                $header_descs = array( '', '' );
                                                 $column_count = 2;
                                                 $custom = false;
                                                 if ( $cat_info && $cat_info['custom_table'] ) {
                                                     $decoded = json_decode( $cat_info['column_titles'], true );
                                                     if ( is_array( $decoded ) ) {
                                                         $custom = true;
-                                                        $headers = array_values( $decoded );
+                                                        $headers = array();
+                                                        $header_descs = array();
+                                                        foreach ( $decoded as $item ) {
+                                                            if ( is_array( $item ) ) {
+                                                                $headers[] = $item['title'] ?? '';
+                                                                $header_descs[] = $item['desc'] ?? '';
+                                                            } else {
+                                                                $headers[] = $item;
+                                                                $header_descs[] = '';
+                                                            }
+                                                        }
                                                         $column_count = count( $headers );
                                                     }
                                                 }
+                                                $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
+                                                $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
                                                 for ( $i = 0; $i < $column_count; $i++ ) {
                                                     $title = $headers[$i] ?? '';
-                                                    echo '<th>'.esc_html($title).'</th>';
+                                                    echo '<th>'.esc_html($title);
+                                                    if ( ! empty( $header_descs[$i] ) ) {
+                                                        echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $header_descs[$i] ) . '">' . $icon_content . '</span>';
+                                                    }
+                                                    echo '</th>';
                                                 }
                                                 ?>
                                         </tr>
@@ -426,9 +443,12 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                     if ( $c === 0 ) {
                                                         if ( $custom ) {
                                                             $val = $extras[0] ?? '';
-                                                            echo esc_html( $val ) . ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
+                                                            echo esc_html( $val );
                                                         } else {
-                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a> <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
+                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a>';
+                                                        }
+                                                        if ( ! empty( $service['description'] ) ) {
+                                                            echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
                                                         }
                                                     } elseif ( ! $custom && $c === 1 ) {
                                                         echo esc_html( $display_price );
