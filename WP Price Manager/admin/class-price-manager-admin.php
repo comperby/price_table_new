@@ -425,10 +425,16 @@ class Price_Manager_Admin {
     // Страница настроек стиля вывода таблицы
     public function render_style_page() {
         $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'table';
+        $device     = isset( $_GET['device'] ) ? sanitize_text_field( $_GET['device'] ) : 'desktop';
         $options    = get_option( 'wppm_style_settings', array() );
+        $prefix     = $device === 'mobile' ? '_mobile' : '';
         ?>
         <div class="wrap">
             <h1><?php _e( 'Настройки стиля', 'wp-price-manager' ); ?></h1>
+            <h2 class="nav-tab-wrapper wppm-device-tabs">
+                <a href="?page=price-manager-style&tab=<?php echo esc_attr( $active_tab ); ?>&device=desktop" class="nav-tab <?php echo $device === 'desktop' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Десктоп', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=<?php echo esc_attr( $active_tab ); ?>&device=mobile" class="nav-tab <?php echo $device === 'mobile' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Мобильная', 'wp-price-manager' ); ?></a>
+            </h2>
             <h2 class="nav-tab-wrapper">
                 <a href="?page=price-manager-style&tab=table" class="nav-tab <?php echo $active_tab === 'table' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Таблица', 'wp-price-manager' ); ?></a>
                 <a href="?page=price-manager-style&tab=header" class="nav-tab <?php echo $active_tab === 'header' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Хедер', 'wp-price-manager' ); ?></a>
@@ -440,20 +446,21 @@ class Price_Manager_Admin {
             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="wppm_save_style_settings">
                 <input type="hidden" name="current_tab" value="<?php echo esc_attr( $active_tab ); ?>">
+                <input type="hidden" name="device" value="<?php echo esc_attr( $device ); ?>">
                 <?php wp_nonce_field( 'wppm_style_settings' ); ?>
                 <table class="form-table">
                     <?php if ( $active_tab === 'table' ) : ?>
                         <tr>
                             <th><label for="border_width"><?php _e( 'Толщина границы', 'wp-price-manager' ); ?></label></th>
                             <td>
-                                <input type="text" name="border_width" id="border_width" value="<?php echo esc_attr( $options['border_width'] ?? '' ); ?>">
+                                <input type="text" name="border_width" id="border_width" value="<?php echo esc_attr( $options['border_width' . $prefix] ?? '' ); ?>">
                                 <p class="description"><?php _e( 'Укажите значение в px, например 1px', 'wp-price-manager' ); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="border_color"><?php _e( 'Цвет границы', 'wp-price-manager' ); ?></label></th>
                             <td>
-                                <input type="text" name="border_color" id="border_color" value="<?php echo esc_attr( $options['border_color'] ?? '' ); ?>" class="wppm-color-field">
+                                <input type="text" name="border_color" id="border_color" value="<?php echo esc_attr( $options['border_color' . $prefix] ?? '' ); ?>" class="wppm-color-field">
                                 <p class="description"><?php _e( 'Например: #cccccc', 'wp-price-manager' ); ?></p>
                             </td>
                         </tr>
@@ -461,9 +468,9 @@ class Price_Manager_Admin {
                             <th><label for="border_style"><?php _e( 'Стиль линии', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="border_style" id="border_style">
-                                    <option value="solid" <?php selected( $options['border_style'] ?? '', 'solid' ); ?>>solid</option>
-                                    <option value="dashed" <?php selected( $options['border_style'] ?? '', 'dashed' ); ?>>dashed</option>
-                                    <option value="dotted" <?php selected( $options['border_style'] ?? '', 'dotted' ); ?>>dotted</option>
+                                    <option value="solid" <?php selected( $options['border_style' . $prefix] ?? '', 'solid' ); ?>>solid</option>
+                                    <option value="dashed" <?php selected( $options['border_style' . $prefix] ?? '', 'dashed' ); ?>>dashed</option>
+                                    <option value="dotted" <?php selected( $options['border_style' . $prefix] ?? '', 'dotted' ); ?>>dotted</option>
                                 </select>
                                 <p class="description">solid, dashed <?php _e( 'или', 'wp-price-manager' ); ?> dotted</p>
                             </td>
@@ -472,60 +479,60 @@ class Price_Manager_Admin {
                             <th><label for="border_apply"><?php _e( 'Какие границы', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="border_apply" id="border_apply">
-                                    <option value="all" <?php selected( $options['border_apply'] ?? '', 'all' ); ?>><?php _e( 'Все', 'wp-price-manager' ); ?></option>
-                                    <option value="outer" <?php selected( $options['border_apply'] ?? '', 'outer' ); ?>><?php _e( 'Только внешние', 'wp-price-manager' ); ?></option>
-                                    <option value="inner" <?php selected( $options['border_apply'] ?? '', 'inner' ); ?>><?php _e( 'Только внутренние', 'wp-price-manager' ); ?></option>
-                                    <option value="vertical" <?php selected( $options['border_apply'] ?? '', 'vertical' ); ?>><?php _e( 'Только вертикальные', 'wp-price-manager' ); ?></option>
-                                    <option value="horizontal" <?php selected( $options['border_apply'] ?? '', 'horizontal' ); ?>><?php _e( 'Только горизонтальные', 'wp-price-manager' ); ?></option>
+                                    <option value="all" <?php selected( $options['border_apply' . $prefix] ?? '', 'all' ); ?>><?php _e( 'Все', 'wp-price-manager' ); ?></option>
+                                    <option value="outer" <?php selected( $options['border_apply' . $prefix] ?? '', 'outer' ); ?>><?php _e( 'Только внешние', 'wp-price-manager' ); ?></option>
+                                    <option value="inner" <?php selected( $options['border_apply' . $prefix] ?? '', 'inner' ); ?>><?php _e( 'Только внутренние', 'wp-price-manager' ); ?></option>
+                                    <option value="vertical" <?php selected( $options['border_apply' . $prefix] ?? '', 'vertical' ); ?>><?php _e( 'Только вертикальные', 'wp-price-manager' ); ?></option>
+                                    <option value="horizontal" <?php selected( $options['border_apply' . $prefix] ?? '', 'horizontal' ); ?>><?php _e( 'Только горизонтальные', 'wp-price-manager' ); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="border_radius"><?php _e( 'Скругление углов', 'wp-price-manager' ); ?></label></th>
                             <td>
-                                <input type="text" name="border_radius" id="border_radius" value="<?php echo esc_attr( $options['border_radius'] ?? '' ); ?>">
+                                <input type="text" name="border_radius" id="border_radius" value="<?php echo esc_attr( $options['border_radius' . $prefix] ?? '' ); ?>">
                                 <p class="description"><?php _e( 'Пример: 5px', 'wp-price-manager' ); ?></p>
                             </td>
                         </tr>
                     <?php elseif ( $active_tab === 'header' ) : ?>
                         <tr>
                             <th><label for="header_bg_color"><?php _e( 'Фон заголовка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="header_bg_color" id="header_bg_color" value="<?php echo esc_attr( $options['header_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="header_bg_color" id="header_bg_color" value="<?php echo esc_attr( $options['header_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="header_text_color"><?php _e( 'Цвет текста заголовка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="header_text_color" id="header_text_color" value="<?php echo esc_attr( $options['header_text_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="header_text_color" id="header_text_color" value="<?php echo esc_attr( $options['header_text_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="header_height"><?php _e( 'Высота заголовка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="header_height" id="header_height" value="<?php echo esc_attr( $options['header_height'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="header_height" id="header_height" value="<?php echo esc_attr( $options['header_height' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="header_text_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="header_text_size" id="header_text_size" value="<?php echo esc_attr( $options['header_text_size'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="header_text_size" id="header_text_size" value="<?php echo esc_attr( $options['header_text_size' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="header_text_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="header_text_weight" id="header_text_weight" value="<?php echo esc_attr( $options['header_text_weight'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="header_text_weight" id="header_text_weight" value="<?php echo esc_attr( $options['header_text_weight' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="header_alignment"><?php _e( 'Выравнивание текста', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="header_alignment" id="header_alignment">
-                                    <option value="left" <?php selected( $options['header_alignment'] ?? '', 'left' ); ?>><?php _e( 'Слева', 'wp-price-manager' ); ?></option>
-                                    <option value="center" <?php selected( $options['header_alignment'] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
-                                    <option value="right" <?php selected( $options['header_alignment'] ?? '', 'right' ); ?>><?php _e( 'Справа', 'wp-price-manager' ); ?></option>
+                                    <option value="left" <?php selected( $options['header_alignment' . $prefix] ?? '', 'left' ); ?>><?php _e( 'Слева', 'wp-price-manager' ); ?></option>
+                                    <option value="center" <?php selected( $options['header_alignment' . $prefix] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
+                                    <option value="right" <?php selected( $options['header_alignment' . $prefix] ?? '', 'right' ); ?>><?php _e( 'Справа', 'wp-price-manager' ); ?></option>
                                 </select>
                             </td>
                         </tr>
                     <?php elseif ( $active_tab === 'rows' ) : ?>
                         <tr>
                             <th><label for="even_row_bg_color"><?php _e( 'Фон четных строк', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="even_row_bg_color" id="even_row_bg_color" value="<?php echo esc_attr( $options['even_row_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="even_row_bg_color" id="even_row_bg_color" value="<?php echo esc_attr( $options['even_row_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="odd_row_bg_color"><?php _e( 'Фон нечетных строк', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="odd_row_bg_color" id="odd_row_bg_color" value="<?php echo esc_attr( $options['odd_row_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="odd_row_bg_color" id="odd_row_bg_color" value="<?php echo esc_attr( $options['odd_row_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="text_font"><?php _e( 'Шрифт', 'wp-price-manager' ); ?></label></th>
@@ -533,126 +540,126 @@ class Price_Manager_Admin {
                                 <select name="text_font" id="text_font">
                                     <?php $fonts = array( 'Montserrat', 'Arial', 'Georgia', 'Times New Roman' ); ?>
                                     <?php foreach ( $fonts as $font ) : ?>
-                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['text_font'] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['text_font' . $prefix] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="text_size"><?php _e( 'Размер текста (px)', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="text_size" id="text_size" value="<?php echo esc_attr( $options['text_size'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="text_size" id="text_size" value="<?php echo esc_attr( $options['text_size' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="text_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="text_weight" id="text_weight" value="<?php echo esc_attr( $options['text_weight'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="text_weight" id="text_weight" value="<?php echo esc_attr( $options['text_weight' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="text_padding"><?php _e( 'Отступы текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="text_padding" id="text_padding" value="<?php echo esc_attr( $options['text_padding'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="text_padding" id="text_padding" value="<?php echo esc_attr( $options['text_padding' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="text_color"><?php _e( 'Цвет текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="text_color" id="text_color" value="<?php echo esc_attr( $options['text_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="text_color" id="text_color" value="<?php echo esc_attr( $options['text_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="link_color"><?php _e( 'Цвет ссылок', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="link_color" id="link_color" value="<?php echo esc_attr( $options['link_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="link_color" id="link_color" value="<?php echo esc_attr( $options['link_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="row_height"><?php _e( 'Высота строк', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="row_height" id="row_height" value="<?php echo esc_attr( $options['row_height'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="row_height" id="row_height" value="<?php echo esc_attr( $options['row_height' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="row_alignment"><?php _e( 'Выравнивание строк', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="row_alignment" id="row_alignment">
-                                    <option value="left" <?php selected( $options['row_alignment'] ?? '', 'left' ); ?>><?php _e( 'Слева', 'wp-price-manager' ); ?></option>
-                                    <option value="center" <?php selected( $options['row_alignment'] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
-                                    <option value="right" <?php selected( $options['row_alignment'] ?? '', 'right' ); ?>><?php _e( 'Справа', 'wp-price-manager' ); ?></option>
+                                    <option value="left" <?php selected( $options['row_alignment' . $prefix] ?? '', 'left' ); ?>><?php _e( 'Слева', 'wp-price-manager' ); ?></option>
+                                    <option value="center" <?php selected( $options['row_alignment' . $prefix] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
+                                    <option value="right" <?php selected( $options['row_alignment' . $prefix] ?? '', 'right' ); ?>><?php _e( 'Справа', 'wp-price-manager' ); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="use_google_font"><?php _e( 'Загружать Google Fonts', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="checkbox" name="use_google_font" id="use_google_font" value="1" <?php checked( $options['use_google_font'] ?? '1', '1' ); ?>></td>
+                            <td><input type="checkbox" name="use_google_font" id="use_google_font" value="1" <?php checked( $options['use_google_font' . $prefix] ?? '1', '1' ); ?>></td>
                         </tr>
                     <?php elseif ( $active_tab === 'icon' ) : ?>
                         <tr>
                             <th><label for="icon_char"><?php _e( 'Символ значка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_char" id="icon_char" value="<?php echo esc_attr( $options['icon_char'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="icon_char" id="icon_char" value="<?php echo esc_attr( $options['icon_char' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="icon_color"><?php _e( 'Цвет значка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_color" id="icon_color" value="<?php echo esc_attr( $options['icon_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="icon_color" id="icon_color" value="<?php echo esc_attr( $options['icon_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="icon_bg_color"><?php _e( 'Фон значка', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_bg_color" id="icon_bg_color" value="<?php echo esc_attr( $options['icon_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="icon_bg_color" id="icon_bg_color" value="<?php echo esc_attr( $options['icon_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="icon_size"><?php _e( 'Размер иконки', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_size" id="icon_size" value="<?php echo esc_attr( $options['icon_size'] ?? '' ); ?>">
+                            <td><input type="text" name="icon_size" id="icon_size" value="<?php echo esc_attr( $options['icon_size' . $prefix] ?? '' ); ?>">
                                 <p class="description"><?php _e( 'Пример: 16px', 'wp-price-manager' ); ?></p></td>
                         </tr>
                         <tr>
                             <th><label for="icon_offset_x"><?php _e( 'Смещение по X', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_offset_x" id="icon_offset_x" value="<?php echo esc_attr( $options['icon_offset_x'] ?? '' ); ?>">
+                            <td><input type="text" name="icon_offset_x" id="icon_offset_x" value="<?php echo esc_attr( $options['icon_offset_x' . $prefix] ?? '' ); ?>">
                                 <p class="description">px</p></td>
                         </tr>
                         <tr>
                             <th><label for="icon_offset_y"><?php _e( 'Смещение по Y', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="icon_offset_y" id="icon_offset_y" value="<?php echo esc_attr( $options['icon_offset_y'] ?? '' ); ?>">
+                            <td><input type="text" name="icon_offset_y" id="icon_offset_y" value="<?php echo esc_attr( $options['icon_offset_y' . $prefix] ?? '' ); ?>">
                                 <p class="description">px</p></td>
                         </tr>
                     <?php elseif ( $active_tab === 'tooltip' ) : ?>
                         <tr>
                             <th><label for="tooltip_bg_color"><?php _e( 'Фон описания', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="tooltip_bg_color" id="tooltip_bg_color" value="<?php echo esc_attr( $options['tooltip_bg_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="tooltip_bg_color" id="tooltip_bg_color" value="<?php echo esc_attr( $options['tooltip_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="tooltip_text_color"><?php _e( 'Цвет текста описания', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="tooltip_text_color" id="tooltip_text_color" value="<?php echo esc_attr( $options['tooltip_text_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="tooltip_text_color" id="tooltip_text_color" value="<?php echo esc_attr( $options['tooltip_text_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="tooltip_border_radius"><?php _e( 'Скругление описания', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="tooltip_border_radius" id="tooltip_border_radius" value="<?php echo esc_attr( $options['tooltip_border_radius'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="tooltip_border_radius" id="tooltip_border_radius" value="<?php echo esc_attr( $options['tooltip_border_radius' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                     <?php elseif ( $active_tab === 'button' ) : ?>
                         <tr>
                             <th><label for="show_more_text"><?php _e( 'Текст кнопки', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_text" id="show_more_text" value="<?php echo esc_attr( $options['show_more_text'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_text" id="show_more_text" value="<?php echo esc_attr( $options['show_more_text' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_less_text"><?php _e( 'Текст при сворачивании', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_less_text" id="show_less_text" value="<?php echo esc_attr( $options['show_less_text'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_less_text" id="show_less_text" value="<?php echo esc_attr( $options['show_less_text' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_bg"><?php _e( 'Фон кнопки', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_bg" id="show_more_bg" value="<?php echo esc_attr( $options['show_more_bg'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="show_more_bg" id="show_more_bg" value="<?php echo esc_attr( $options['show_more_bg' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_color"><?php _e( 'Цвет текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_color" id="show_more_color" value="<?php echo esc_attr( $options['show_more_color'] ?? '' ); ?>" class="wppm-color-field"></td>
+                            <td><input type="text" name="show_more_color" id="show_more_color" value="<?php echo esc_attr( $options['show_more_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_padding"><?php _e( 'Отступы', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_padding" id="show_more_padding" value="<?php echo esc_attr( $options['show_more_padding'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_padding" id="show_more_padding" value="<?php echo esc_attr( $options['show_more_padding' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_radius"><?php _e( 'Скругление', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_radius" id="show_more_radius" value="<?php echo esc_attr( $options['show_more_radius'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_radius" id="show_more_radius" value="<?php echo esc_attr( $options['show_more_radius' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_font_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_font_size" id="show_more_font_size" value="<?php echo esc_attr( $options['show_more_font_size'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_font_size" id="show_more_font_size" value="<?php echo esc_attr( $options['show_more_font_size' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_width"><?php _e( 'Ширина кнопки', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_width" id="show_more_width" value="<?php echo esc_attr( $options['show_more_width'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_width" id="show_more_width" value="<?php echo esc_attr( $options['show_more_width' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_height"><?php _e( 'Высота кнопки', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_height" id="show_more_height" value="<?php echo esc_attr( $options['show_more_height'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_height" id="show_more_height" value="<?php echo esc_attr( $options['show_more_height' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_font_family"><?php _e( 'Шрифт кнопки', 'wp-price-manager' ); ?></label></th>
@@ -660,35 +667,35 @@ class Price_Manager_Admin {
                                 <select name="show_more_font_family" id="show_more_font_family">
                                     <?php $fonts = array( 'Montserrat', 'Arial', 'Georgia', 'Times New Roman' ); ?>
                                     <?php foreach ( $fonts as $font ) : ?>
-                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['show_more_font_family'] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['show_more_font_family' . $prefix] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="show_more_font_weight"><?php _e( 'Жирность текста', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="text" name="show_more_font_weight" id="show_more_font_weight" value="<?php echo esc_attr( $options['show_more_font_weight'] ?? '' ); ?>"></td>
+                            <td><input type="text" name="show_more_font_weight" id="show_more_font_weight" value="<?php echo esc_attr( $options['show_more_font_weight' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="show_more_align"><?php _e( 'Выравнивание', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="show_more_align" id="show_more_align">
-                                    <option value="left" <?php selected( $options['show_more_align'] ?? '', 'left' ); ?>><?php _e( 'По левому краю', 'wp-price-manager' ); ?></option>
-                                    <option value="center" <?php selected( $options['show_more_align'] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
-                                    <option value="right" <?php selected( $options['show_more_align'] ?? '', 'right' ); ?>><?php _e( 'По правому краю', 'wp-price-manager' ); ?></option>
+                                    <option value="left" <?php selected( $options['show_more_align' . $prefix] ?? '', 'left' ); ?>><?php _e( 'По левому краю', 'wp-price-manager' ); ?></option>
+                                    <option value="center" <?php selected( $options['show_more_align' . $prefix] ?? '', 'center' ); ?>><?php _e( 'По центру', 'wp-price-manager' ); ?></option>
+                                    <option value="right" <?php selected( $options['show_more_align' . $prefix] ?? '', 'right' ); ?>><?php _e( 'По правому краю', 'wp-price-manager' ); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="show_more_speed"><?php _e( 'Скорость анимации', 'wp-price-manager' ); ?></label></th>
                             <td>
-                                <input type="text" name="show_more_speed" id="show_more_speed" value="<?php echo esc_attr( $options['show_more_speed'] ?? '' ); ?>">
+                                <input type="text" name="show_more_speed" id="show_more_speed" value="<?php echo esc_attr( $options['show_more_speed' . $prefix] ?? '' ); ?>">
                                 <p class="description"><?php _e( 'Измеряется в секундах или миллисекундах, например 0.3s', 'wp-price-manager' ); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="show_limit"><?php _e( 'Количество строк', 'wp-price-manager' ); ?></label></th>
-                            <td><input type="number" name="show_limit" id="show_limit" value="<?php echo esc_attr( $options['show_limit'] ?? '' ); ?>" min="1"></td>
+                            <td><input type="number" name="show_limit" id="show_limit" value="<?php echo esc_attr( $options['show_limit' . $prefix] ?? '' ); ?>" min="1"></td>
                         </tr>
                     <?php endif; ?>
                 </table>

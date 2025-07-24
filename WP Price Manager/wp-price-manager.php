@@ -228,6 +228,10 @@ function wppm_get_style_settings() {
         'use_google_font'       => '1'
     );
 
+    foreach ( array_keys( $defaults ) as $base ) {
+        $defaults[ $base . '_mobile' ] = $defaults[ $base ];
+    }
+
     $saved = get_option( 'wppm_style_settings', array() );
     if ( ! is_array( $saved ) ) {
         $saved = array();

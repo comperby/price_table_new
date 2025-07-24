@@ -497,6 +497,8 @@ function wppm_save_style_settings() {
         wp_die( __( 'Недостаточно прав', 'wp-price-manager' ) );
     }
     check_admin_referer( 'wppm_style_settings' );
+    $device  = isset( $_POST['device'] ) ? sanitize_text_field( $_POST['device'] ) : 'desktop';
+    $suffix  = $device === 'mobile' ? '_mobile' : '';
     $options = get_option( 'wppm_style_settings', array() );
     foreach ( array(
         'border_width', 'border_color', 'border_style', 'border_apply', 'border_radius',
@@ -508,13 +510,13 @@ function wppm_save_style_settings() {
         'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_align', 'show_less_text', 'show_more_speed', 'show_limit', 'use_google_font'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
-            $options[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+            $options[ $key . $suffix ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
         }
     }
     update_option( 'wppm_style_settings', $options );
-    $tab = isset( $_POST['current_tab'] ) ? sanitize_text_field( $_POST['current_tab'] ) : 'table';
-    $msg = urlencode( __( 'Настройки сохранены', 'wp-price-manager' ) );
-    wp_redirect( admin_url( 'admin.php?page=price-manager-style&tab=' . $tab . '&msg=' . $msg ) );
+    $tab    = isset( $_POST['current_tab'] ) ? sanitize_text_field( $_POST['current_tab'] ) : 'table';
+    $msg    = urlencode( __( 'Настройки сохранены', 'wp-price-manager' ) );
+    wp_redirect( admin_url( 'admin.php?page=price-manager-style&tab=' . $tab . '&device=' . $device . '&msg=' . $msg ) );
     exit;
 }
 add_action( 'admin_post_wppm_save_style_settings', 'wppm_save_style_settings' );
