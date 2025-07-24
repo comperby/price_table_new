@@ -1,5 +1,48 @@
 jQuery(document).ready(function($) {
 
+    // Tooltip for column descriptions (similar to front-end)
+    var $tooltip = $('<div class="wppm-tooltip"><span class="wppm-content"></span><span class="wppm-close">×</span></div>').hide();
+    $('body').append($tooltip);
+    var hideTimeout;
+
+    function positionTooltip($icon){
+        var offset = $icon.offset();
+        $tooltip.css({
+            top: offset.top - $tooltip.outerHeight() - 5,
+            left: offset.left + $icon.outerWidth() + 5
+        });
+    }
+
+    $(document).on('mouseenter', '.wppm-info-icon', function(){
+        var $icon = $(this);
+        clearTimeout(hideTimeout);
+        $tooltip.find('.wppm-content').text($icon.data('description'));
+        positionTooltip($icon);
+        $tooltip.fadeIn();
+    }).on('mouseleave', '.wppm-info-icon', function(){
+        hideTimeout = setTimeout(function(){ $tooltip.fadeOut(); }, 300);
+    });
+
+    $tooltip.on('mouseenter', function(){
+        clearTimeout(hideTimeout);
+    }).on('mouseleave', function(){
+        $tooltip.fadeOut();
+    });
+
+    $(document).on('click', '.wppm-info-icon', function(e){
+        if($(window).width() <= 768){
+            e.preventDefault();
+            var $icon = $(this);
+            $tooltip.find('.wppm-content').text($icon.data('description'));
+            positionTooltip($icon);
+            $tooltip.fadeToggle();
+        }
+    });
+
+    $tooltip.find('.wppm-close').on('click', function(){
+        $tooltip.fadeOut();
+    });
+
     $('.wppm-color-field').wpColorPicker();
 
     var wppmCategories = [];
@@ -46,8 +89,10 @@ jQuery(document).ready(function($) {
             if(res.success && res.custom){
                 container.empty();
                 $.each(res.titles || [], function(i, title){
-                    var val = preset && preset[i] ? preset[i] : '';
-                    container.append('<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'"><br>');
+                    var val  = preset && preset[i] ? preset[i] : '';
+                    var desc = res.descs && res.descs[i] ? res.descs[i] : '';
+                    var icon = desc ? '<span class="wppm-info-icon" data-description="'+desc+'">'+(wppm_ajax_obj.icon_html||'?')+'</span>' : '';
+                    container.append('<label>'+title+' '+icon+'<br><input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'"></label><br>');
                 });
                 row.show();
                 if(priceRow.length){ priceRow.hide(); }

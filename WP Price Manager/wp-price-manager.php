@@ -148,6 +148,9 @@ function wppm_admin_enqueue_scripts( $hook ) {
         wp_enqueue_style( 'wppm-admin-css', WPPM_PLUGIN_URL . 'css/admin.css' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
         wp_enqueue_style( 'wp-color-picker' );
+        $styles = wppm_get_style_settings();
+        $is_fa  = strpos( $styles['icon_char'], 'fa' ) === 0;
+        $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
         wp_localize_script( 'wppm-admin-js', 'wppm_ajax_obj', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'wppm_nonce' ),
@@ -158,7 +161,8 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'delete_label'      => __( 'Удалить', 'wp-price-manager' ),
             'view_label'        => __( 'Посмотреть услуги', 'wp-price-manager' ),
             'save_label'        => __( 'Сохранить', 'wp-price-manager' ),
-            'desc_placeholder'  => __( 'Описание колонки', 'wp-price-manager' )
+            'desc_placeholder'  => __( 'Описание колонки', 'wp-price-manager' ),
+            'icon_html'         => $icon_content
         ) );
     }
 }
