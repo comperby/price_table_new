@@ -223,9 +223,9 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         }
                 }
                 // Получаем услуги по выбранной категории
-		global $wpdb;
-		$srv_table = $wpdb->prefix . 'wppm_services';
-		$cat_id = intval( $settings['selected_category'] );
+                global $wpdb;
+                $srv_table = $wpdb->prefix . 'wppm_services';
+                $cat_id = intval( $settings['selected_category'] );
                 if ( $cat_id ) {
                         $services = $wpdb->get_results( $wpdb->prepare(
                                 "SELECT s.*, pg.default_price, pg.name as pg_name
@@ -238,6 +238,52 @@ class Elementor_Price_List_Widget extends Widget_Base {
                 } else {
                         $services = [];
                         $total_services = 0;
+                }
+                $border_css  = esc_attr( $styles['border_width'] ) . ' ' . esc_attr( $styles['border_style'] ) . ' ' . esc_attr( $styles['border_color'] );
+                $table_style = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $styles['text_font'] ) . ';font-size:' . esc_attr( $styles['text_size'] ) . ';color:' . esc_attr( $styles['text_color'] ) . ';font-weight:' . esc_attr( $styles['text_weight'] ) . ';border-radius:' . esc_attr( $styles['border_radius'] ) . ';';
+                $border_css_m  = esc_attr( $mobile['border_width'] ) . ' ' . esc_attr( $mobile['border_style'] ) . ' ' . esc_attr( $mobile['border_color'] );
+                $table_mobile  = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $mobile['text_font'] ) . ';font-size:' . esc_attr( $mobile['text_size'] ) . ';color:' . esc_attr( $mobile['text_color'] ) . ';font-weight:' . esc_attr( $mobile['text_weight'] ) . ';border-radius:' . esc_attr( $mobile['border_radius'] ) . ';';
+                $cell_border = 'border:' . $border_css . ';';
+                $cell_border_m = 'border:' . $border_css_m . ';';
+                switch ( $styles['border_apply'] ) {
+                    case 'outer':
+                        $table_style .= 'border:' . $border_css . ';';
+                        $cell_border = 'border:none;';
+                        break;
+                    case 'inner':
+                        $cell_border = 'border:' . $border_css . ';';
+                        break;
+                    case 'vertical':
+                        $table_style .= 'border:none;';
+                        $cell_border = 'border-left:' . $border_css . ';border-right:' . $border_css . ';';
+                        break;
+                    case 'horizontal':
+                        $table_style .= 'border:none;';
+                        $cell_border = 'border-top:' . $border_css . ';border-bottom:' . $border_css . ';';
+                        break;
+                    default:
+                        $table_style .= 'border:' . $border_css . ';';
+                        break;
+                }
+                switch ( $mobile['border_apply'] ) {
+                    case 'outer':
+                        $table_mobile .= 'border:' . $border_css_m . ';';
+                        $cell_border_m = 'border:none;';
+                        break;
+                    case 'inner':
+                        $cell_border_m = 'border:' . $border_css_m . ';';
+                        break;
+                    case 'vertical':
+                        $table_mobile .= 'border:none;';
+                        $cell_border_m = 'border-left:' . $border_css_m . ';border-right:' . $border_css_m . ';';
+                        break;
+                    case 'horizontal':
+                        $table_mobile .= 'border:none;';
+                        $cell_border_m = 'border-top:' . $border_css_m . ';border-bottom:' . $border_css_m . ';';
+                        break;
+                    default:
+                        $table_mobile .= 'border:' . $border_css_m . ';';
+                        break;
                 }
 		?>
                 <div class="wppm-price-list-widget" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
@@ -287,52 +333,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         }
                         </style>
                         <?php
-                        $border_css  = esc_attr( $styles['border_width'] ) . ' ' . esc_attr( $styles['border_style'] ) . ' ' . esc_attr( $styles['border_color'] );
-                        $table_style = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $styles['text_font'] ) . ';font-size:' . esc_attr( $styles['text_size'] ) . ';color:' . esc_attr( $styles['text_color'] ) . ';font-weight:' . esc_attr( $styles['text_weight'] ) . ';border-radius:' . esc_attr( $styles['border_radius'] ) . ';';
-                        $border_css_m  = esc_attr( $mobile['border_width'] ) . ' ' . esc_attr( $mobile['border_style'] ) . ' ' . esc_attr( $mobile['border_color'] );
-                        $table_mobile  = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $mobile['text_font'] ) . ';font-size:' . esc_attr( $mobile['text_size'] ) . ';color:' . esc_attr( $mobile['text_color'] ) . ';font-weight:' . esc_attr( $mobile['text_weight'] ) . ';border-radius:' . esc_attr( $mobile['border_radius'] ) . ';';
-                        $cell_border = 'border:' . $border_css . ';';
-                        $cell_border_m = 'border:' . $border_css_m . ';';
-                        switch ( $styles['border_apply'] ) {
-                            case 'outer':
-                                $table_style .= 'border:' . $border_css . ';';
-                                $cell_border = 'border:none;';
-                                break;
-                            case 'inner':
-                                $cell_border = 'border:' . $border_css . ';';
-                                break;
-                            case 'vertical':
-                                $table_style .= 'border:none;';
-                                $cell_border = 'border-left:' . $border_css . ';border-right:' . $border_css . ';';
-                                break;
-                            case 'horizontal':
-                                $table_style .= 'border:none;';
-                                $cell_border = 'border-top:' . $border_css . ';border-bottom:' . $border_css . ';';
-                                break;
-                            default:
-                                $table_style .= 'border:' . $border_css . ';';
-                                break;
-                        }
-                        switch ( $mobile['border_apply'] ) {
-                            case 'outer':
-                                $table_mobile .= 'border:' . $border_css_m . ';';
-                                $cell_border_m = 'border:none;';
-                                break;
-                            case 'inner':
-                                $cell_border_m = 'border:' . $border_css_m . ';';
-                                break;
-                            case 'vertical':
-                                $table_mobile .= 'border:none;';
-                                $cell_border_m = 'border-left:' . $border_css_m . ';border-right:' . $border_css_m . ';';
-                                break;
-                            case 'horizontal':
-                                $table_mobile .= 'border:none;';
-                                $cell_border_m = 'border-top:' . $border_css_m . ';border-bottom:' . $border_css_m . ';';
-                                break;
-                            default:
-                                $table_mobile .= 'border:' . $border_css_m . ';';
-                                break;
-                        }
+                        // styles for table output already calculated above
                         ?>
                         <table id="wppm-table-<?php echo $this->get_id(); ?>" style="<?php echo $table_style; ?>">
                                 <thead style="background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>; color: <?php echo esc_attr( $styles['header_text_color'] ); ?>; height: <?php echo esc_attr( $styles['header_height'] ); ?>;">
