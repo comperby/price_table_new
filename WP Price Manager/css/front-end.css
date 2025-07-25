@@ -21,6 +21,8 @@
     padding: 10px;
     border-radius: 4px;
     z-index: 9999;
+    max-width: 300px;
+    width: max-content;
 }
 .wppm-tooltip .wppm-close {
     cursor: pointer;

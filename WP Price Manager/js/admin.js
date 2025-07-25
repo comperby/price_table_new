@@ -7,20 +7,37 @@ jQuery(document).ready(function($) {
 
     function positionTooltip($icon){
         var offset = $icon.offset();
-        $tooltip.css({
-            top: offset.top - $tooltip.outerHeight() - 5,
-            left: offset.left + $icon.outerWidth() + 5
-        });
+        var spaceRight = $(window).width() - offset.left - $icon.outerWidth() - 10;
+        var width = 300;
+        if(spaceRight < 300){
+            width = spaceRight > 0 ? spaceRight : 300;
+        }
+        $tooltip.css({display:'block', visibility:'hidden', width: width});
+        var height = $tooltip.outerHeight();
+        var fullWidth = $tooltip.outerWidth();
+        var top = offset.top - height;
+        var left = offset.left + $icon.outerWidth();
+        if(left + fullWidth > $(window).width() - 10){
+            left = $(window).width() - fullWidth - 10;
+        }
+        if(top < 0){
+            top = offset.top + $icon.outerHeight();
+        }
+        $tooltip.css({top: top, left: left, display:'none', visibility:''});
     }
 
     $(document).on('mouseenter', '.wppm-info-icon', function(){
-        var $icon = $(this);
-        clearTimeout(hideTimeout);
-        $tooltip.find('.wppm-content').text($icon.data('description'));
-        positionTooltip($icon);
-        $tooltip.fadeIn();
+        if($(window).width() > 768){
+            var $icon = $(this);
+            clearTimeout(hideTimeout);
+            $tooltip.find('.wppm-content').text($icon.data('description'));
+            positionTooltip($icon);
+            $tooltip.fadeIn();
+        }
     }).on('mouseleave', '.wppm-info-icon', function(){
-        hideTimeout = setTimeout(function(){ $tooltip.fadeOut(); }, 300);
+        if($(window).width() > 768){
+            hideTimeout = setTimeout(function(){ $tooltip.fadeOut(); }, 300);
+        }
     });
 
     $tooltip.on('mouseenter', function(){
