@@ -205,7 +205,7 @@ function wppm_handle_ajax() {
                 delete_transient( 'wppm_price_groups' );
                 $srv_table = $wpdb->prefix . 'wppm_services';
                 $wpdb->query( $wpdb->prepare(
-                    "UPDATE $srv_table SET price = %s WHERE price_group_id = %d AND manual_price = 0",
+                    "UPDATE $srv_table SET price = %s, manual_price = 0 WHERE price_group_id = %d",
                     $default_price, $id
                 ) );
                 $response = array( 'success' => true, 'message' => __( 'Группа цен обновлена.', 'wp-price-manager' ) );

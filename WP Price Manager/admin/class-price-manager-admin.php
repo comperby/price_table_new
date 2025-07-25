@@ -584,8 +584,25 @@ class Price_Manager_Admin {
                             <td><input type="text" name="link_color" id="link_color" value="<?php echo esc_attr( $options['link_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
+                            <th><label for="link_hover_color"><?php _e( 'Цвет ссылок при наведении', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="link_hover_color" id="link_hover_color" value="<?php echo esc_attr( $options['link_hover_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="link_hover_speed"><?php _e( 'Скорость изменения цвета', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="link_hover_speed" id="link_hover_speed" value="<?php echo esc_attr( $options['link_hover_speed' . $prefix] ?? '' ); ?>">
+                                <p class="description">s or ms</p></td>
+                        </tr>
+                        <tr>
                             <th><label for="row_height"><?php _e( 'Высота строк', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="row_height" id="row_height" value="<?php echo esc_attr( $options['row_height' . $prefix] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="row_hover_bg_color"><?php _e( 'Фон строки при наведении', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="row_hover_bg_color" id="row_hover_bg_color" value="<?php echo esc_attr( $options['row_hover_bg_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="row_hover_speed"><?php _e( 'Скорость изменения фона', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="row_hover_speed" id="row_hover_speed" value="<?php echo esc_attr( $options['row_hover_speed' . $prefix] ?? '' ); ?>"> <p class="description">s or ms</p></td>
                         </tr>
                         <tr>
                             <th><label for="row_alignment"><?php _e( 'Выравнивание строк', 'wp-price-manager' ); ?></label></th>
@@ -641,6 +658,16 @@ class Price_Manager_Admin {
                         <tr>
                             <th><label for="tooltip_border_radius"><?php _e( 'Скругление описания', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="tooltip_border_radius" id="tooltip_border_radius" value="<?php echo esc_attr( $options['tooltip_border_radius' . $prefix] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_opacity"><?php _e( 'Прозрачность фона', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_opacity" id="tooltip_opacity" value="<?php echo esc_attr( $options['tooltip_opacity' . $prefix] ?? '' ); ?>">
+                                <p class="description">0-1</p></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_shadow"><?php _e( 'Тень', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_shadow" id="tooltip_shadow" value="<?php echo esc_attr( $options['tooltip_shadow' . $prefix] ?? '' ); ?>">
+                                <p class="description">CSS box-shadow</p></td>
                         </tr>
                     <?php elseif ( $active_tab === 'button' ) : ?>
                         <tr>

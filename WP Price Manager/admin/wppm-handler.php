@@ -450,7 +450,7 @@ function wppm_edit_price_group() {
         delete_transient( 'wppm_price_groups' );
         // Обновляем связанные услуги (если цена не задана вручную)
         $srv_table = $wpdb->prefix . 'wppm_services';
-        $wpdb->query( $wpdb->prepare( "UPDATE $srv_table SET price = %s WHERE price_group_id = %d AND manual_price = 0", $default_price, $id ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE $srv_table SET price = %s, manual_price = 0 WHERE price_group_id = %d", $default_price, $id ) );
         $msg = __( 'Группа цен обновлена.', 'wp-price-manager' );
     } else {
         $msg = __( 'Ошибка обновления группы цен.', 'wp-price-manager' );
@@ -516,9 +516,9 @@ function wppm_save_style_settings() {
     foreach ( array(
         'border_width', 'border_color', 'border_style', 'border_apply', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
-        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'row_height', 'row_alignment',
+        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'link_hover_color', 'link_hover_speed', 'row_height', 'row_hover_bg_color', 'row_hover_speed', 'row_alignment',
         'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
-        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius',
+        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius', 'tooltip_opacity', 'tooltip_shadow',
         'show_more_text', 'show_more_bg', 'show_more_color',
         'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_align', 'show_less_text', 'show_more_speed', 'show_limit', 'use_google_font'
     ) as $key ) {

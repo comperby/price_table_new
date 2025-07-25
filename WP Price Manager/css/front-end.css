@@ -41,3 +41,21 @@
     display: none;
 }
 
+.wppm-price-list-widget tbody tr:hover {
+    transition: background 0.3s;
+}
+
+.wppm-price-list-widget a {
+    transition: color 0.3s;
+}
+
+@media(max-width:768px){
+    .wppm-price-list-widget td { position: relative; }
+    .wppm-price-list-widget .wppm-info-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-left: 0;
+    }
+}
+

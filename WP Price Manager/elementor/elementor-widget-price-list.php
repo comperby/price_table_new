@@ -1,6 +1,23 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+        exit;
+}
+
+if ( ! function_exists( 'wppm_hex_to_rgba' ) ) {
+    function wppm_hex_to_rgba( $hex, $opacity ) {
+        $hex = str_replace( '#', '', $hex );
+        if ( strlen( $hex ) === 3 ) {
+            $r = hexdec( $hex[0] . $hex[0] );
+            $g = hexdec( $hex[1] . $hex[1] );
+            $b = hexdec( $hex[2] . $hex[2] );
+        } else {
+            $r = hexdec( substr( $hex, 0, 2 ) );
+            $g = hexdec( substr( $hex, 2, 2 ) );
+            $b = hexdec( substr( $hex, 4, 2 ) );
+        }
+        $opacity = is_numeric( $opacity ) ? $opacity : 1;
+        return 'rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ')';
+    }
 }
 
 use Elementor\Widget_Base;
@@ -317,6 +334,14 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         }
                         .wppm-table-<?php echo $this->get_id(); ?> a {
                             color: <?php echo esc_attr( $styles['link_color'] ); ?>;
+                            transition: color <?php echo esc_attr( $styles['link_hover_speed'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> a:hover {
+                            color: <?php echo esc_attr( $styles['link_hover_color'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr:hover {
+                            background: <?php echo esc_attr( $styles['row_hover_bg_color'] ); ?>;
+                            transition: background <?php echo esc_attr( $styles['row_hover_speed'] ); ?>;
                         }
                         .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                             background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
@@ -327,9 +352,10 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
                         }
                         .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
-                            background: <?php echo esc_attr( $styles['tooltip_bg_color'] ); ?>;
+                            background: <?php echo wppm_hex_to_rgba( $styles['tooltip_bg_color'], $styles['tooltip_opacity'] ); ?>;
                             color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
+                            box-shadow: <?php echo esc_attr( $styles['tooltip_shadow'] ); ?>;
                         }
                         .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more-wrapper {
                             text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;
@@ -347,14 +373,21 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             margin-top:10px;
                         }
                         @media(max-width:768px){
+                            .wppm-table-<?php echo $this->get_id(); ?> td {position:relative;}
                             .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                                 background: <?php echo esc_attr( $mobile['icon_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['icon_color'] ); ?>;
+                                position:absolute;
+                                top: <?php echo esc_attr( $mobile['icon_offset_y'] ); ?>;
+                                right: <?php echo esc_attr( $mobile['icon_offset_x'] ); ?>;
+                                margin-left:0;
                             }
                             .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
                                 background: <?php echo esc_attr( $mobile['tooltip_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['tooltip_text_color'] ); ?>;
                                 border-radius: <?php echo esc_attr( $mobile['tooltip_border_radius'] ); ?>;
+                                box-shadow: <?php echo esc_attr( $mobile['tooltip_shadow'] ); ?>;
+                                background: <?php echo wppm_hex_to_rgba( $mobile['tooltip_bg_color'], $mobile['tooltip_opacity'] ); ?>;
                             }
                             .wppm-table-<?php echo $this->get_id(); ?> {
                                 <?php echo $table_mobile; ?>
@@ -370,6 +403,9 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             }
                             .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $mobile['even_row_bg_color'] ); ?>;}
                             .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $mobile['odd_row_bg_color'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr:hover{background: <?php echo esc_attr( $mobile['row_hover_bg_color'] ); ?>;transition: background <?php echo esc_attr( $mobile['row_hover_speed'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> a {transition: color <?php echo esc_attr( $mobile['link_hover_speed'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> a:hover{color: <?php echo esc_attr( $mobile['link_hover_color'] ); ?>;}
                             .wppm-table-<?php echo $this->get_id(); ?> th, .wppm-table-<?php echo $this->get_id(); ?> td{
                                 <?php echo $cell_border_m; ?>
                                 padding: <?php echo esc_attr( $mobile['text_padding'] ); ?>;
