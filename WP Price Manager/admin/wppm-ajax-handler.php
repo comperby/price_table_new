@@ -21,12 +21,14 @@ function wppm_handle_ajax() {
             if ( $custom && isset( $_POST['column_titles'] ) ) {
                 $titles_arr = array();
                 foreach ( (array) $_POST['column_titles'] as $idx => $t ) {
-                    $titles_arr[] = array(
+                    $key = is_numeric( $idx ) ? intval( $idx ) - 1 : $idx;
+                    $titles_arr[ $key ] = array(
                         'title' => sanitize_text_field( $t ),
                         'desc'  => isset( $_POST['column_desc'][ $idx ] ) ? sanitize_text_field( $_POST['column_desc'][ $idx ] ) : ''
                     );
                 }
-                $titles = wp_json_encode( $titles_arr );
+                ksort( $titles_arr );
+                $titles = wp_json_encode( array_values( $titles_arr ) );
             } else {
                 $titles = '';
             }
@@ -104,6 +106,8 @@ function wppm_handle_ajax() {
                 $titles = array();
                 $descs  = array();
                 if ( is_array( $decoded_titles ) ) {
+                    ksort( $decoded_titles );
+                    $decoded_titles = array_values( $decoded_titles );
                     foreach ( $decoded_titles as $it ) {
                         if ( is_array( $it ) ) {
                             $titles[] = $it['title'] ?? '';
@@ -134,6 +138,8 @@ function wppm_handle_ajax() {
                 if ( ! is_array( $titles ) ) {
                     $titles = array();
                 }
+                ksort( $titles );
+                $titles = array_values( $titles );
                 foreach ( $descs as $idx => $val ) {
                     if ( isset( $titles[ $idx ] ) ) {
                         if ( is_array( $titles[ $idx ] ) ) {

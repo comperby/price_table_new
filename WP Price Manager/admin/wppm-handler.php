@@ -20,12 +20,14 @@ function wppm_add_category() {
     if ( $custom && isset( $_POST['column_titles'] ) ) {
         $titles = array();
         foreach ( (array) $_POST['column_titles'] as $idx => $t ) {
-            $titles[] = array(
+            $key = is_numeric( $idx ) ? intval( $idx ) - 1 : $idx;
+            $titles[ $key ] = array(
                 'title' => sanitize_text_field( $t ),
                 'desc'  => isset( $_POST['column_desc'][ $idx ] ) ? sanitize_text_field( $_POST['column_desc'][ $idx ] ) : ''
             );
         }
-        $titles = wp_json_encode( $titles );
+        ksort( $titles );
+        $titles = wp_json_encode( array_values( $titles ) );
     } else {
         $titles = '';
     }

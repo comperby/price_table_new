@@ -396,6 +396,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 if ( $cat_info && $cat_info['custom_table'] ) {
                                                     $decoded = json_decode( $cat_info['column_titles'], true );
                                                     if ( is_array( $decoded ) ) {
+                                                        ksort( $decoded );
+                                                        $decoded = array_values( $decoded );
                                                         $custom = true;
                                                         $headers = array();
                                                         $header_descs = array();

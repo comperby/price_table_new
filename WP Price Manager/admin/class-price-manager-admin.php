@@ -271,6 +271,8 @@ class Price_Manager_Admin {
                               $titles = array();
                               $descs  = array();
                               if ( is_array( $decoded_titles ) ) {
+                                  ksort( $decoded_titles );
+                                  $decoded_titles = array_values( $decoded_titles );
                                   foreach ( $decoded_titles as $item ) {
                                       if ( is_array( $item ) ) {
                                           $titles[] = $item['title'] ?? '';
