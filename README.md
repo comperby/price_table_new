@@ -24,4 +24,4 @@ In the Elementor editor search for **Price List**. Drop the widget onto the page
 The admin interface loads `js/admin.js` and exposes AJAX parameters via `wppm_ajax_obj` for all asynchronous operations.
 
 Price tables initially show only a limited number of rows. The **Стиль** page lets you configure the "Show more" button (size, font and animation speed) and fine tune table borders just like in Google Sheets.
-You can also set the text shown after expanding (default "Свернуть") and choose the button alignment.
+You can also set the text shown after expanding (default "Свернуть") and choose the button alignment. The style settings allow defining a price suffix (e.g. "BYN") that appears after every price value.

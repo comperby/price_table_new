@@ -325,7 +325,7 @@ class Price_Manager_Admin {
                                         <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
                                     <?php endif; ?>
                                 </td>
-                                <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                                <td class="srv-price"><?php echo esc_html( $srv['price'] . ( $styles['price_suffix'] ? ' ' . $styles['price_suffix'] : '' ) ); ?></td>
                                 <td class="srv-description"><?php echo esc_html( $srv['description'] ); ?></td>
                                 <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
                                 <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
@@ -338,7 +338,7 @@ class Price_Manager_Admin {
                                         <?php _e( 'Нет ссылки', 'wp-price-manager' ); ?>
                                     <?php endif; ?>
                                 </td>
-                                <td class="srv-price"><?php echo esc_html( $srv['price'] ); ?></td>
+                                <td class="srv-price"><?php echo esc_html( $srv['price'] . ( $styles['price_suffix'] ? ' ' . $styles['price_suffix'] : '' ) ); ?></td>
                                 <td class="srv-category"><?php echo esc_html( $srv['category_name'] ); ?></td>
                                 <td class="srv-price-group"><?php echo esc_html( $srv['price_group_name'] ); ?></td>
                             <?php endif; ?>
@@ -613,6 +613,10 @@ class Price_Manager_Admin {
                                     <option value="right" <?php selected( $options['row_alignment' . $prefix] ?? '', 'right' ); ?>><?php _e( 'Справа', 'wp-price-manager' ); ?></option>
                                 </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <th><label for="price_suffix"><?php _e( 'Суффикс цены', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="price_suffix" id="price_suffix" value="<?php echo esc_attr( $options['price_suffix' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
                             <th><label for="use_google_font"><?php _e( 'Загружать Google Fonts', 'wp-price-manager' ); ?></label></th>

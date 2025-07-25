@@ -217,6 +217,8 @@ function wppm_edit_service_form() {
     if ( ! $service ) {
         wp_die( __( 'Услуга не найдена.', 'wp-price-manager' ) );
     }
+    wppm_admin_enqueue_scripts('price-manager-edit');
+    require_once ABSPATH . 'wp-admin/admin-header.php';
     ?>
     <div class="wrap">
         <h1><?php _e( 'Редактировать услугу', 'wp-price-manager' ); ?></h1>
@@ -280,6 +282,7 @@ function wppm_edit_service_form() {
         </script>
     </div>
     <?php
+    require_once ABSPATH . 'wp-admin/admin-footer.php';
     exit;
 }
 add_action( 'admin_post_wppm_edit_service_form', 'wppm_edit_service_form' );
@@ -517,6 +520,7 @@ function wppm_save_style_settings() {
         'border_width', 'border_color', 'border_style', 'border_apply', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
         'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'link_hover_color', 'link_hover_speed', 'row_height', 'row_hover_bg_color', 'row_hover_speed', 'row_alignment',
+        'price_suffix',
         'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius', 'tooltip_opacity', 'tooltip_shadow',
         'show_more_text', 'show_more_bg', 'show_more_color',

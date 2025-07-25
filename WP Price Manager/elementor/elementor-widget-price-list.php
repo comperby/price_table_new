@@ -473,6 +473,9 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         <?php foreach ( $services as $index => $service ) : ?>
                                                 <?php
                                                 $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
+                                                if ( ! empty( $styles['price_suffix'] ) ) {
+                                                    $display_price .= ' ' . $styles['price_suffix'];
+                                                }
                                                 $extras_data = json_decode( $service['extras'], true );
                                                 $extras = is_array( $extras_data ) ? array_values( $extras_data ) : [];
                                                 $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row"' : '';

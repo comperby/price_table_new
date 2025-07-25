@@ -386,8 +386,11 @@ jQuery(document).ready(function($) {
         row.find('.srv-price').html('<input type="text" class="srv-edit-price" value="'+row.data('price')+'">');
         row.find('.srv-category').html('<input type="text" class="srv-edit-category" value="'+row.data('category')+'">');
         row.find('.srv-price-group').html('<input type="text" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
-        var extrasData = [];
-        try{ extrasData = JSON.parse(row.data('extras')); }catch(e){}
+        var extrasData = row.data('extras');
+        if (typeof extrasData === 'string') {
+            try { extrasData = JSON.parse(extrasData); } catch(e){ extrasData = []; }
+        }
+        if (!Array.isArray(extrasData)) extrasData = [];
         row.find('td.srv-extra').each(function(idx){
             var val = extrasData[idx] || '';
             $(this).html('<input type="text" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
