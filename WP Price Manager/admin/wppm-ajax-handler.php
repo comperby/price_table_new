@@ -94,10 +94,10 @@ function wppm_handle_ajax() {
         case 'get_category_info':
             $table = $wpdb->prefix . 'wppm_categories';
             if ( isset( $_POST['id'] ) ) {
-                $cat = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $table WHERE id = %d", intval( $_POST['id'] ) ), ARRAY_A );
+                $cat = $wpdb->get_row( $wpdb->prepare( "SELECT id, custom_table,column_titles FROM $table WHERE id = %d", intval( $_POST['id'] ) ), ARRAY_A );
             } else {
                 $name = sanitize_text_field( $_POST['name'] );
-                $cat = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_titles FROM $table WHERE name = %s", $name ), ARRAY_A );
+                $cat = $wpdb->get_row( $wpdb->prepare( "SELECT id, custom_table,column_titles FROM $table WHERE name = %s", $name ), ARRAY_A );
             }
             if ( $cat ) {
                 $decoded_titles = json_decode( $cat['column_titles'], true );
@@ -114,9 +114,40 @@ function wppm_handle_ajax() {
                         }
                     }
                 }
-                $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles, 'descs' => $descs );
+                $response = array( 'success' => true, 'custom' => (bool) $cat['custom_table'], 'titles' => $titles, 'descs' => $descs, 'id' => intval( $cat['id'] ) );
             } else {
                 $response = array( 'success' => false );
+            }
+            break;
+
+        case 'save_column_desc':
+            $table = $wpdb->prefix . 'wppm_categories';
+            $id    = intval( $_POST['category_id'] );
+            $descs = isset( $_POST['descs'] ) ? $_POST['descs'] : array();
+            $cat = $wpdb->get_row( $wpdb->prepare( "SELECT column_titles FROM $table WHERE id = %d", $id ), ARRAY_A );
+            if ( $cat ) {
+                $titles = json_decode( $cat['column_titles'], true );
+                if ( ! is_array( $titles ) ) {
+                    $titles = array();
+                }
+                foreach ( $descs as $idx => $val ) {
+                    if ( isset( $titles[ $idx ] ) ) {
+                        if ( is_array( $titles[ $idx ] ) ) {
+                            $titles[ $idx ]['desc'] = sanitize_text_field( $val );
+                        } else {
+                            $titles[ $idx ] = array( 'title' => $titles[ $idx ], 'desc' => sanitize_text_field( $val ) );
+                        }
+                    }
+                }
+                $result = $wpdb->update( $table, array( 'column_titles' => wp_json_encode( $titles ) ), array( 'id' => $id ), array( '%s' ), array( '%d' ) );
+                if ( $result !== false ) {
+                    delete_transient( 'wppm_categories' );
+                    $response = array( 'success' => true, 'message' => __( 'Описания сохранены', 'wp-price-manager' ) );
+                } else {
+                    $response = array( 'success' => false, 'message' => __( 'Ошибка сохранения', 'wp-price-manager' ) );
+                }
+            } else {
+                $response = array( 'success' => false, 'message' => __( 'Категория не найдена', 'wp-price-manager' ) );
             }
             break;
 

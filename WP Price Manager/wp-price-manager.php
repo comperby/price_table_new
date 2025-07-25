@@ -161,6 +161,7 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'delete_label'      => __( 'Удалить', 'wp-price-manager' ),
             'view_label'        => __( 'Посмотреть услуги', 'wp-price-manager' ),
             'save_label'        => __( 'Сохранить', 'wp-price-manager' ),
+            'save_desc_label'   => __( 'Сохранить описания', 'wp-price-manager' ),
             'desc_placeholder'  => __( 'Описание колонки', 'wp-price-manager' ),
             'icon_html'         => $icon_content
         ) );

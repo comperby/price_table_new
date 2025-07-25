@@ -49,3 +49,13 @@
     right: 5px;
     color: #fff;
 }
+
+.wppm-extra-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.wppm-extra-field label {
+    margin: 0 5px 0 0;
+}

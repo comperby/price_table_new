@@ -92,8 +92,13 @@ jQuery(document).ready(function($) {
                     var val  = preset && preset[i] ? preset[i] : '';
                     var desc = res.descs && res.descs[i] ? res.descs[i] : '';
                     var icon = desc ? '<span class="wppm-info-icon" data-description="'+desc+'">'+(wppm_ajax_obj.icon_html||'?')+'</span>' : '';
-                    container.append('<label>'+title+' '+icon+'<br><input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'"></label><br>');
+                    container.append(
+                        '<div class="wppm-extra-field"><label>'+title+' '+icon+'</label>'+
+                        '<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'">'+
+                        '<input type="text" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
+                    );
                 });
+                container.append('<button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button>');
                 row.show();
                 if(priceRow.length){ priceRow.hide(); }
                 if(nameRow.length){ nameRow.hide(); $('#service_name').prop('required', false); }
@@ -131,6 +136,26 @@ jQuery(document).ready(function($) {
     });
 
     $('#column_count').on('change', updateColumnInputs);
+
+    $(document).on('click', '#wppm-save-desc', function(){
+        var cat = $(this).data('cat');
+        var descs = {};
+        $('#wppm-extras-container .wppm-extra-desc').each(function(){
+            descs[$(this).data('index')] = $(this).val();
+        });
+        $.post(wppm_ajax_obj.ajax_url, {
+            action:'wppm_ajax_action',
+            nonce: wppm_ajax_obj.nonce,
+            wppm_type:'save_column_desc',
+            category_id: cat,
+            descs: descs
+        }, function(res){
+            alert(res.message);
+            if(res.success){
+                wppm_load_extras(cat);
+            }
+        });
+    });
 
 
     // ============================
