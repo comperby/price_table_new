@@ -285,7 +285,7 @@ class Price_Manager_Admin {
                               }
                         ?>
                         <?php foreach ( (array) $titles as $i => $title ) : ?>
-                            <th><?php echo esc_html( $title ); if ( ! empty( $descs[$i] ) ) echo ' <span class="wppm-info-icon" data-description="'.esc_attr($descs[$i]).'">' . $icon_content . '</span>'; ?></th>
+                            <th><?php echo esc_html( $title ); if ( ! empty( $descs[$i] ) ) echo ' <span class="wppm-info-icon wppm-header-icon" data-description="'.esc_attr($descs[$i]).'">' . $icon_content . '</span>'; ?></th>
                         <?php endforeach; ?>
                         <th><?php _e( 'Ссылка', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>

@@ -351,6 +351,15 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             position: relative;
                             top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
                         }
+                        .wppm-table-<?php echo $this->get_id(); ?> th {
+                            position: relative;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-header-icon {
+                            position: absolute;
+                            top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
+                            right: <?php echo esc_attr( $styles['icon_offset_x'] ); ?>;
+                            margin-left: 0;
+                        }
                         .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
                             background: <?php echo wppm_hex_to_rgba( $styles['tooltip_bg_color'], $styles['tooltip_opacity'] ); ?>;
                             color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
@@ -377,6 +386,13 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
                                 background: <?php echo esc_attr( $mobile['icon_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['icon_color'] ); ?>;
+                                position:absolute;
+                                top: <?php echo esc_attr( $mobile['icon_offset_y'] ); ?>;
+                                right: <?php echo esc_attr( $mobile['icon_offset_x'] ); ?>;
+                                margin-left:0;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> th {position:relative;}
+                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-header-icon {
                                 position:absolute;
                                 top: <?php echo esc_attr( $mobile['icon_offset_y'] ); ?>;
                                 right: <?php echo esc_attr( $mobile['icon_offset_x'] ); ?>;
@@ -455,7 +471,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                     $title = $headers[$i] ?? '';
                                                     echo '<th>'.esc_html($title);
                                                     if ( ! empty( $header_descs[$i] ) ) {
-                                                        echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $header_descs[$i] ) . '">' . $icon_content . '</span>';
+                                                        echo ' <span class="wppm-info-icon wppm-header-icon" data-description="' . esc_attr( $header_descs[$i] ) . '">' . $icon_content . '</span>';
                                                     }
                                                     echo '</th>';
                                                 }

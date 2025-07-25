@@ -33,6 +33,14 @@
     font-weight: bold;
 }
 
+.wp-list-table th { position: relative; }
+.wp-list-table .wppm-header-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-left: 0;
+}
+
 .wppm-tooltip {
     position: absolute;
     background: #333;
