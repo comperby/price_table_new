@@ -5,21 +5,19 @@ jQuery(document).ready(function($){
 
     function positionTooltip($icon){
         var offset = $icon.offset();
-        var spaceRight = $(window).width() - offset.left - $icon.outerWidth() - 10;
+        var iconW = $icon.outerWidth();
+        var iconH = $icon.outerHeight();
+        var left = offset.left + iconW / 2 + 15;
         var width = 300;
-        if(spaceRight < 300){
-            width = spaceRight > 0 ? spaceRight : 300;
-        }
         $tooltip.css({display:'block', visibility:'hidden', width: width});
         var height = $tooltip.outerHeight();
         var fullWidth = $tooltip.outerWidth();
-        var top = offset.top - height;
-        var left = offset.left + $icon.outerWidth();
+        var top = offset.top + iconH / 2 - 20 - height;
         if(left + fullWidth > $(window).width() - 10){
             left = $(window).width() - fullWidth - 10;
         }
         if(top < 0){
-            top = offset.top + $icon.outerHeight();
+            top = offset.top + iconH / 2 + 20;
         }
         $tooltip.css({top: top, left: left, display:'none', visibility:''});
     }
