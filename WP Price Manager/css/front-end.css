@@ -16,9 +16,8 @@
 }
 .wppm-price-list-widget th { position: relative; }
 .wppm-header-icon {
-    position: absolute;
+    position: relative;
     top: 0;
-    right: 0;
     margin-left: 0;
 }
 .wppm-tooltip {
