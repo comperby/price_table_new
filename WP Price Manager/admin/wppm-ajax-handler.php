@@ -123,7 +123,11 @@ function wppm_handle_ajax() {
         case 'save_column_desc':
             $table = $wpdb->prefix . 'wppm_categories';
             $id    = intval( $_POST['category_id'] );
-            $descs = isset( $_POST['descs'] ) ? $_POST['descs'] : array();
+            $raw_descs = isset( $_POST['descs'] ) ? (array) $_POST['descs'] : array();
+            $descs = array();
+            foreach ( $raw_descs as $k => $v ) {
+                $descs[ intval( $k ) ] = sanitize_text_field( $v );
+            }
             $cat = $wpdb->get_row( $wpdb->prepare( "SELECT column_titles FROM $table WHERE id = %d", $id ), ARRAY_A );
             if ( $cat ) {
                 $titles = json_decode( $cat['column_titles'], true );
@@ -133,9 +137,9 @@ function wppm_handle_ajax() {
                 foreach ( $descs as $idx => $val ) {
                     if ( isset( $titles[ $idx ] ) ) {
                         if ( is_array( $titles[ $idx ] ) ) {
-                            $titles[ $idx ]['desc'] = sanitize_text_field( $val );
+                            $titles[ $idx ]['desc'] = $val;
                         } else {
-                            $titles[ $idx ] = array( 'title' => $titles[ $idx ], 'desc' => sanitize_text_field( $val ) );
+                            $titles[ $idx ] = array( 'title' => $titles[ $idx ], 'desc' => $val );
                         }
                     }
                 }

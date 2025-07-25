@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
                         '<input type="text" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
                     );
                 });
-                container.append('<button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button>');
+                container.append('<div class="wppm-save-desc-wrapper"><button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button></div>');
                 row.show();
                 if(priceRow.length){ priceRow.hide(); }
                 if(nameRow.length){ nameRow.hide(); $('#service_name').prop('required', false); }
@@ -320,7 +320,9 @@ jQuery(document).ready(function($) {
         var cat = $('#service_category').val();
         var pg  = $('#price_group').val();
         var extras = [];
-        $('#wppm-extras-container input').each(function(){ extras.push($(this).val()); });
+        $('#wppm-extras-container input[name^="extras["]').each(function(){
+            extras.push($(this).val());
+        });
         var nameVal = $('#service_name').val();
         if($('#service_name_row').is(':hidden') && extras.length){ nameVal = extras[0]; }
         var data = {
