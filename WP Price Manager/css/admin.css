@@ -16,3 +16,50 @@
     -ms-user-select: none;
     user-select: none;
 }
+.wppm-order-col{
+    width:6em;
+}
+
+.wppm-info-icon {
+    cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    background: #0073aa;
+    color: #fff;
+    font-weight: bold;
+}
+
+.wppm-tooltip {
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    z-index: 9999;
+}
+
+.wppm-tooltip .wppm-close {
+    cursor: pointer;
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    color: #fff;
+}
+
+.wppm-extra-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.wppm-extra-field label {
+    margin: 0 5px 0 0;
+}
+
+.wppm-save-desc-wrapper {
+    margin-top: 10px;
+}

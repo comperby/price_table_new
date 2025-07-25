@@ -150,28 +150,51 @@ class Elementor_Price_List_Widget extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
-			'header_alignment',
-			[
-				'label'   => __( 'Выравнивание заголовка', 'wp-price-manager' ),
-				'type'    => Controls_Manager::CHOOSE,
-				'options' => [
-					'left'   => [
-						'title' => __( 'Left', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-left',
-					],
-					'center' => [
-						'title' => __( 'Center', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-center',
-					],
-					'right'  => [
-						'title' => __( 'Right', 'wp-price-manager' ),
-						'icon'  => 'eicon-text-align-right',
-					],
-				],
-				'default' => 'left',
-			]
-		);
+                $this->add_control(
+                        'header_alignment',
+                        [
+                                'label'   => __( 'Выравнивание заголовка', 'wp-price-manager' ),
+                                'type'    => Controls_Manager::CHOOSE,
+                                'options' => [
+                                        'left'   => [
+                                                'title' => __( 'Left', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-left',
+                                        ],
+                                        'center' => [
+                                                'title' => __( 'Center', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-center',
+                                        ],
+                                        'right'  => [
+                                                'title' => __( 'Right', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-right',
+                                        ],
+                                ],
+                                'default' => 'left',
+                        ]
+                );
+
+                $this->add_control(
+                        'row_alignment',
+                        [
+                                'label'   => __( 'Выравнивание строк', 'wp-price-manager' ),
+                                'type'    => Controls_Manager::CHOOSE,
+                                'options' => [
+                                        'left'   => [
+                                                'title' => __( 'Left', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-left',
+                                        ],
+                                        'center' => [
+                                                'title' => __( 'Center', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-center',
+                                        ],
+                                        'right'  => [
+                                                'title' => __( 'Right', 'wp-price-manager' ),
+                                                'icon'  => 'eicon-text-align-right',
+                                        ],
+                                ],
+                                'default' => 'left',
+                        ]
+                );
 
 		$this->end_controls_section();
 	}
@@ -190,66 +213,271 @@ class Elementor_Price_List_Widget extends Widget_Base {
 		return $options;
 	}
 
-	protected function render() {
-		$settings = $this->get_settings_for_display();
-		// Получаем услуги по выбранной категории
-		global $wpdb;
-		$srv_table = $wpdb->prefix . 'wppm_services';
-		$cat_id = intval( $settings['selected_category'] );
-		if ( $cat_id ) {
-			$services = $wpdb->get_results( $wpdb->prepare(
-				"SELECT s.*, pg.default_price, pg.name as pg_name 
-				 FROM $srv_table s 
-				 LEFT JOIN {$wpdb->prefix}wppm_price_groups pg ON s.price_group_id = pg.id 
-				 WHERE s.category_id = %d ORDER BY s.display_order ASC", $cat_id
-			), ARRAY_A );
-		} else {
-			$services = [];
-		}
+        protected function render() {
+                $settings = $this->get_settings_for_display();
+                $styles   = wppm_get_style_settings();
+                $mobile   = array();
+                foreach ( $styles as $k => $v ) {
+                        if ( strpos( $k, '_mobile' ) !== false ) {
+                                $mobile[ str_replace( '_mobile', '', $k ) ] = $v;
+                        }
+                }
+                // Получаем услуги по выбранной категории
+                global $wpdb;
+                $srv_table = $wpdb->prefix . 'wppm_services';
+                $cat_id = intval( $settings['selected_category'] );
+                if ( $cat_id ) {
+                        $services = $wpdb->get_results( $wpdb->prepare(
+                                "SELECT s.*, pg.default_price, pg.name as pg_name
+                                 FROM $srv_table s
+                                 LEFT JOIN {$wpdb->prefix}wppm_price_groups pg ON s.price_group_id = pg.id
+                                 WHERE s.category_id = %d ORDER BY s.display_order ASC",
+                                 $cat_id
+                        ), ARRAY_A );
+                        $total_services = count( $services );
+                } else {
+                        $services = [];
+                        $total_services = 0;
+                }
+                $border_css  = esc_attr( $styles['border_width'] ) . ' ' . esc_attr( $styles['border_style'] ) . ' ' . esc_attr( $styles['border_color'] );
+                $table_style = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $styles['text_font'] ) . ';font-size:' . esc_attr( $styles['text_size'] ) . ';color:' . esc_attr( $styles['text_color'] ) . ';font-weight:' . esc_attr( $styles['text_weight'] ) . ';border-radius:' . esc_attr( $styles['border_radius'] ) . ';';
+                $border_css_m  = esc_attr( $mobile['border_width'] ) . ' ' . esc_attr( $mobile['border_style'] ) . ' ' . esc_attr( $mobile['border_color'] );
+                $table_mobile  = 'border-collapse: collapse;border-spacing:0;width:100%;font-family:' . esc_attr( $mobile['text_font'] ) . ';font-size:' . esc_attr( $mobile['text_size'] ) . ';color:' . esc_attr( $mobile['text_color'] ) . ';font-weight:' . esc_attr( $mobile['text_weight'] ) . ';border-radius:' . esc_attr( $mobile['border_radius'] ) . ';';
+                $cell_border = 'border:' . $border_css . ';';
+                $cell_border_m = 'border:' . $border_css_m . ';';
+                switch ( $styles['border_apply'] ) {
+                    case 'outer':
+                        $table_style .= 'border:' . $border_css . ';';
+                        $cell_border = 'border:none;';
+                        break;
+                    case 'inner':
+                        $cell_border = 'border:' . $border_css . ';';
+                        break;
+                    case 'vertical':
+                        $table_style .= 'border:none;';
+                        $cell_border = 'border-left:' . $border_css . ';border-right:' . $border_css . ';';
+                        break;
+                    case 'horizontal':
+                        $table_style .= 'border:none;';
+                        $cell_border = 'border-top:' . $border_css . ';border-bottom:' . $border_css . ';';
+                        break;
+                    default:
+                        $table_style .= 'border:' . $border_css . ';';
+                        break;
+                }
+                switch ( $mobile['border_apply'] ) {
+                    case 'outer':
+                        $table_mobile .= 'border:' . $border_css_m . ';';
+                        $cell_border_m = 'border:none;';
+                        break;
+                    case 'inner':
+                        $cell_border_m = 'border:' . $border_css_m . ';';
+                        break;
+                    case 'vertical':
+                        $table_mobile .= 'border:none;';
+                        $cell_border_m = 'border-left:' . $border_css_m . ';border-right:' . $border_css_m . ';';
+                        break;
+                    case 'horizontal':
+                        $table_mobile .= 'border:none;';
+                        $cell_border_m = 'border-top:' . $border_css_m . ';border-bottom:' . $border_css_m . ';';
+                        break;
+                    default:
+                        $table_mobile .= 'border:' . $border_css_m . ';';
+                        break;
+                }
 		?>
-		<div class="wppm-price-list-widget" style="width: <?php echo esc_attr( $settings['table_width'] ); ?>">
-			<table style="
-				border-collapse: collapse;
-				width: 100%;
-				font-family: <?php echo esc_attr( $settings['typography']['family'] ); ?>;
-				font-size: <?php echo esc_attr( $settings['typography']['size'] ); ?>px;
-				font-weight: <?php echo esc_attr( $settings['typography']['weight'] ); ?>;
-				border: <?php echo esc_attr( $settings['border_width'] ); ?> solid <?php echo esc_attr( $settings['border_color'] ); ?>;
-				border-radius: <?php echo esc_attr( $settings['border_radius'] ); ?>;
-			">
-				<thead style="background: <?php echo esc_attr( $settings['header_bg_color'] ); ?>; color: <?php echo esc_attr( $settings['header_text_color'] ); ?>; text-align: <?php echo esc_attr( $settings['header_alignment'] ); ?>;">
-					<tr>
-						<th><?php _e( 'Услуга', 'wp-price-manager' ); ?></th>
-						<th><?php _e( 'Цена', 'wp-price-manager' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ( ! empty( $services ) ) : ?>
-						<?php foreach ( $services as $index => $service ) : ?>
-							<?php
-							$display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
-							?>
-							<tr style="background: <?php echo $index % 2 === 0 ? esc_attr( $settings['even_row_bg_color'] ) : esc_attr( $settings['odd_row_bg_color'] ); ?>; height: <?php echo esc_attr( $settings['row_height'] ); ?>;">
-								<td>
-									<a href="<?php echo esc_url( $service['link'] ); ?>" target="_blank">
-										<?php echo esc_html( $service['name'] ); ?>
-									</a>
-									<span class="wppm-info-icon" data-description="<?php echo esc_attr( $service['description'] ); ?>">
-										&#x2753;
-									</span>
-								</td>
-								<td><?php echo esc_html( $display_price ); ?></td>
-							</tr>
+                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>">
+                        <style>
+                        .wppm-widget-<?php echo $this->get_id(); ?> {
+                            width: <?php echo esc_attr( $settings['table_width'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> {
+                            <?php echo $table_style; ?>
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> thead {
+                            background: <?php echo esc_attr( $styles['header_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['header_text_color'] ); ?>;
+                            height: <?php echo esc_attr( $styles['header_height'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr {
+                            height: <?php echo esc_attr( $styles['row_height'] ); ?>;
+                            text-align: <?php echo esc_attr( $styles['row_alignment'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $styles['even_row_bg_color'] ); ?>;}
+                        .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $styles['odd_row_bg_color'] ); ?>;}
+                        .wppm-table-<?php echo $this->get_id(); ?> th,
+                        .wppm-table-<?php echo $this->get_id(); ?> td{
+                            <?php echo $cell_border; ?>
+                            padding: <?php echo esc_attr( $styles['text_padding'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> th{
+                            text-align: <?php echo esc_attr( $styles['header_alignment'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['header_text_size'] ); ?>;
+                            font-weight: <?php echo esc_attr( $styles['header_text_weight'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> a {
+                            color: <?php echo esc_attr( $styles['link_color'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
+                            background: <?php echo esc_attr( $styles['icon_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['icon_color'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['icon_size'] ); ?>;
+                            margin-left: <?php echo esc_attr( $styles['icon_offset_x'] ); ?>;
+                            position: relative;
+                            top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
+                        }
+                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                            background: <?php echo esc_attr( $styles['tooltip_bg_color'] ); ?>;
+                            color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
+                            border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
+                        }
+                        .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more-wrapper {
+                            text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;
+                        }
+                        .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more {
+                            background: <?php echo esc_attr( $styles['show_more_bg'] ); ?>;
+                            color: <?php echo esc_attr( $styles['show_more_color'] ); ?>;
+                            padding: <?php echo esc_attr( $styles['show_more_padding'] ); ?>;
+                            border-radius: <?php echo esc_attr( $styles['show_more_radius'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['show_more_font_size'] ); ?>;
+                            width: <?php echo esc_attr( $styles['show_more_width'] ); ?>;
+                            height: <?php echo esc_attr( $styles['show_more_height'] ); ?>;
+                            font-family: <?php echo esc_attr( $styles['show_more_font_family'] ); ?>;
+                            font-weight: <?php echo esc_attr( $styles['show_more_font_weight'] ); ?>;
+                            margin-top:10px;
+                        }
+                        @media(max-width:768px){
+                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
+                                background: <?php echo esc_attr( $mobile['icon_bg_color'] ); ?>;
+                                color: <?php echo esc_attr( $mobile['icon_color'] ); ?>;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                                background: <?php echo esc_attr( $mobile['tooltip_bg_color'] ); ?>;
+                                color: <?php echo esc_attr( $mobile['tooltip_text_color'] ); ?>;
+                                border-radius: <?php echo esc_attr( $mobile['tooltip_border_radius'] ); ?>;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> {
+                                <?php echo $table_mobile; ?>
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> thead {
+                                background: <?php echo esc_attr( $mobile['header_bg_color'] ); ?>;
+                                color: <?php echo esc_attr( $mobile['header_text_color'] ); ?>;
+                                height: <?php echo esc_attr( $mobile['header_height'] ); ?>;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr {
+                                height: <?php echo esc_attr( $mobile['row_height'] ); ?>;
+                                text-align: <?php echo esc_attr( $mobile['row_alignment'] ); ?>;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $mobile['even_row_bg_color'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $mobile['odd_row_bg_color'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> th, .wppm-table-<?php echo $this->get_id(); ?> td{
+                                <?php echo $cell_border_m; ?>
+                                padding: <?php echo esc_attr( $mobile['text_padding'] ); ?>;
+                            }
+                            .wppm-table-<?php echo $this->get_id(); ?> th{
+                                text-align: <?php echo esc_attr( $mobile['header_alignment'] ); ?>;
+                                font-size: <?php echo esc_attr( $mobile['header_text_size'] ); ?>;
+                                font-weight: <?php echo esc_attr( $mobile['header_text_weight'] ); ?>;
+                            }
+                        }
+                        </style>
+                        <?php
+                        // styles for table output already calculated above
+                        ?>
+                        <table class="wppm-table wppm-table-<?php echo $this->get_id(); ?>">
+                                <thead>
+                                        <tr>
+                                                <?php
+                                                $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM {$wpdb->prefix}wppm_categories WHERE id = %d", $cat_id ), ARRAY_A );
+                                                $headers = array( __( 'Услуга', 'wp-price-manager' ), __( 'Цена', 'wp-price-manager' ) );
+                                                $header_descs = array( '', '' );
+                                                $column_count = 2;
+                                                $custom = false;
+                                                if ( $cat_info && $cat_info['custom_table'] ) {
+                                                    $decoded = json_decode( $cat_info['column_titles'], true );
+                                                    if ( is_array( $decoded ) ) {
+                                                        $custom = true;
+                                                        $headers = array();
+                                                        $header_descs = array();
+                                                        foreach ( $decoded as $item ) {
+                                                            if ( is_array( $item ) ) {
+                                                                $headers[] = $item['title'] ?? '';
+                                                                $header_descs[] = $item['desc'] ?? '';
+                                                            } else {
+                                                                $headers[] = $item;
+                                                                $header_descs[] = '';
+                                                            }
+                                                        }
+                                                        $column_count = count( $headers );
+                                                    }
+                                                }
+                                                $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
+                                                $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
+                                                for ( $i = 0; $i < $column_count; $i++ ) {
+                                                    $title = $headers[$i] ?? '';
+                                                    echo '<th>'.esc_html($title);
+                                                    if ( ! empty( $header_descs[$i] ) ) {
+                                                        echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $header_descs[$i] ) . '">' . $icon_content . '</span>';
+                                                    }
+                                                    echo '</th>';
+                                                }
+                                                ?>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        <?php if ( ! empty( $services ) ) : ?>
+                                        <?php foreach ( $services as $index => $service ) : ?>
+                                                <?php
+                                                $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
+                                                $extras_data = json_decode( $service['extras'], true );
+                                                $extras = is_array( $extras_data ) ? array_values( $extras_data ) : [];
+                                                $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row"' : '';
+                                                $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
+                                                $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
+                                                ?>
+                                                        <tr<?php echo $row_class; ?>>
+                                                            <?php
+                                                for ( $c = 0; $c < $column_count; $c++ ) {
+                                                    echo '<td>';
+
+                                                    if ( $c === 0 ) {
+                                                        if ( $custom ) {
+                                                            $val = $extras[0] ?? '';
+                                                            echo esc_html( $val );
+                                                        } else {
+                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a>';
+                                                        }
+                                                        if ( ! empty( $service['description'] ) ) {
+                                                            echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
+                                                        }
+                                                    } elseif ( ! $custom && $c === 1 ) {
+                                                        echo esc_html( $display_price );
+                                                    } else {
+                                                        $idx = $custom ? $c : $c - 2;
+                                                        $val = $extras[ $idx ] ?? '';
+                                                        echo esc_html( $val );
+                                                    }
+                                                    echo '</td>';
+                                                }
+                                                            ?>
+                                                        </tr>
 						<?php endforeach; ?>
 					<?php else : ?>
-						<tr>
-							<td colspan="2"><?php _e( 'Нет услуг для отображения', 'wp-price-manager' ); ?></td>
-						</tr>
+                                                <tr>
+                                                        <td colspan="<?php echo intval( $column_count ); ?>"><?php _e( 'Нет услуг для отображения', 'wp-price-manager' ); ?></td>
+                                                </tr>
 					<?php endif; ?>
 				</tbody>
-			</table>
-		</div>
-		<?php
+                        </table>
+                        <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
+                            <div class="wppm-show-more-wrapper">
+                                <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>">
+                                    <?php echo esc_html( $styles['show_more_text'] ); ?>
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                </div>
+                <?php
 	}
 }
 
