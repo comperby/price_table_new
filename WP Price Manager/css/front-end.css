@@ -57,13 +57,6 @@
 }
 
 @media(max-width:768px){
-    .wppm-price-list-widget td { position: relative; }
-    .wppm-price-list-widget .wppm-info-icon {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin-left: 0;
-    }
     .wppm-price-list-widget th { position: relative; }
     .wppm-price-list-widget .wppm-header-icon {
         position: absolute;

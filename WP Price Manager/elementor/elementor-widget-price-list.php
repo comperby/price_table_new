@@ -382,15 +382,6 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             margin-top:10px;
                         }
                         @media(max-width:768px){
-                            .wppm-table-<?php echo $this->get_id(); ?> td {position:relative;}
-                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-info-icon {
-                                background: <?php echo esc_attr( $mobile['icon_bg_color'] ); ?>;
-                                color: <?php echo esc_attr( $mobile['icon_color'] ); ?>;
-                                position:absolute;
-                                top: <?php echo esc_attr( $mobile['icon_offset_y'] ); ?>;
-                                right: <?php echo esc_attr( $mobile['icon_offset_x'] ); ?>;
-                                margin-left:0;
-                            }
                             .wppm-table-<?php echo $this->get_id(); ?> th {position:relative;}
                             .wppm-table-<?php echo $this->get_id(); ?> .wppm-header-icon {
                                 position:absolute;
