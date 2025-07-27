@@ -91,11 +91,11 @@ class Price_Manager_Admin {
                         <th><label for="custom_table"><?php _e( 'Кастом', 'wp-price-manager' ); ?></label></th>
                         <td><input type="checkbox" id="custom_table" name="custom_table" value="1"></td>
                     </tr>
-                    <tr class="wppm-custom-settings" style="display:none;">
+                    <tr class="wppm-custom-settings">
                         <th><label for="column_count"><?php _e( 'Количество колонок', 'wp-price-manager' ); ?></label></th>
                         <td><input type="number" id="column_count" name="column_count" min="2" value="2"></td>
                     </tr>
-                    <tr class="wppm-custom-settings" id="column_titles_row" style="display:none;">
+                    <tr class="wppm-custom-settings" id="column_titles_row">
                         <th><?php _e( 'Названия колонок', 'wp-price-manager' ); ?></th>
                         <td id="column_titles_container"></td>
                     </tr>
@@ -119,7 +119,7 @@ class Price_Manager_Admin {
                     <tr>
                         <th></th>
                         <th><?php _e( 'Название', 'wp-price-manager' ); ?></th>
-                        <th class="wppm-order-col" style="width:6em;"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
+                        <th class="wppm-order-col"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
                         <th><?php _e( 'Действия', 'wp-price-manager' ); ?></th>
                     </tr>
                 </thead>
@@ -127,9 +127,9 @@ class Price_Manager_Admin {
                     <?php if ( $categories ) : ?>
                         <?php foreach ( $categories as $cat ) : ?>
                             <tr id="<?php echo intval( $cat['id'] ); ?>" data-id="<?php echo intval( $cat['id'] ); ?>" data-name="<?php echo esc_attr( $cat['name'] ); ?>">
-                                <td class="wppm-drag-handle" style="cursor: move;">⇅</td>
+                                <td class="wppm-drag-handle">⇅</td>
                                 <td class="cat-name"><?php echo esc_html( $cat['name'] ); ?></td>
-                                <td class="wppm-order-col" style="width:6em;"><?php echo esc_html( $cat['display_order'] ); ?></td>
+                                <td class="wppm-order-col"><?php echo esc_html( $cat['display_order'] ); ?></td>
                                 <td class="cat-actions">
                                     <a href="#" class="edit-category" data-id="<?php echo intval( $cat['id'] ); ?>"><?php _e( 'Редактировать', 'wp-price-manager' ); ?></a> |
                                     <a href="<?php echo admin_url('admin-post.php?action=wppm_delete_category&id=' . intval($cat['id']) . '&_wpnonce=' . wp_create_nonce('wppm_delete_category_' . intval($cat['id']))); ?>" onclick="return confirm('<?php _e('Вы уверены?', 'wp-price-manager'); ?>');"><?php _e( 'Удалить', 'wp-price-manager' ); ?></a> |
@@ -235,7 +235,7 @@ class Price_Manager_Admin {
                         ?>
                     </td>
                 </tr>
-                <tr id="wppm-extras-row" style="display:none;">
+                <tr id="wppm-extras-row" class="wppm-hidden-row">
                     <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
                     <td id="wppm-extras-container"></td>
                 </tr>
@@ -261,7 +261,7 @@ class Price_Manager_Admin {
             <thead>
                 <tr>
                     <?php if ( $prefill_category ) : ?>
-                        <th class="wppm-order-col" style="width:6em;"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
+                        <th class="wppm-order-col"><?php _e( 'Порядок', 'wp-price-manager' ); ?></th>
                     <?php endif; ?>
                     <?php if ( ! ( $cat_info && $cat_info['custom_table'] ) ) : ?>
                         <th><?php _e( 'Название услуги', 'wp-price-manager' ); ?></th>
@@ -309,7 +309,7 @@ class Price_Manager_Admin {
                               $extras = is_array( $decoded_extras ) ? array_values( $decoded_extras ) : array(); ?>
                         <tr data-id="<?php echo intval($srv['id']); ?>" data-name="<?php echo esc_attr( $srv['name'] ); ?>" data-description="<?php echo esc_attr( $srv['description'] ); ?>" data-link="<?php echo esc_attr( $srv['link'] ); ?>" data-price="<?php echo esc_attr( $srv['price'] ); ?>" data-category="<?php echo esc_attr( $srv['category_name'] ); ?>" data-price-group="<?php echo esc_attr( $srv['price_group_name'] ); ?>" data-extras='<?php echo esc_attr( wp_json_encode( $extras ) ); ?>'>
                             <?php if ( $prefill_category ) : ?>
-                                <td class="wppm-drag-handle wppm-order-col" style="cursor: move;width:6em;">⇅</td>
+                                <td class="wppm-drag-handle wppm-order-col">⇅</td>
                             <?php endif; ?>
                             <?php if ( ! ( $cat_info && $cat_info['custom_table'] ) ) : ?>
                                 <td class="srv-name"><?php echo esc_html( $srv['name'] ); ?></td>

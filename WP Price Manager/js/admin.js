@@ -114,12 +114,12 @@ jQuery(document).ready(function($) {
                     );
                 });
                 container.append('<div class="wppm-save-desc-wrapper"><button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button></div>');
-                row.show();
+                row.removeClass('wppm-hidden-row').show();
                 if(priceRow.length){ priceRow.hide(); }
                 if(nameRow.length){ nameRow.hide(); $('#service_name').prop('required', false); }
             } else {
                 container.empty();
-                row.hide();
+                row.addClass('wppm-hidden-row').hide();
                 if(priceRow.length){ priceRow.show(); }
                 if(nameRow.length){ nameRow.show(); $('#service_name').prop('required', true); }
             }
@@ -209,9 +209,9 @@ jQuery(document).ready(function($) {
                     list.empty();
                     $.each(response.categories, function(index, category) {
                         var row = $('<tr id="'+category.id+'" data-id="'+category.id+'" data-name="'+category.name+'"></tr>');
-                        row.append('<td class="wppm-drag-handle" style="cursor: move;">⇅</td>');
+                        row.append('<td class="wppm-drag-handle">⇅</td>');
                         row.append('<td class="cat-name">'+category.name+'</td>');
-                        row.append('<td class="wppm-order-col" style="width:6em;">'+category.display_order+'</td>');
+                        row.append('<td class="wppm-order-col">'+category.display_order+'</td>');
                         var actions =
                             '<a href="#" class="edit-category" data-id="'+category.id+'">'+wppm_ajax_obj.edit_label+'</a> | ' +
                             '<a href="#" class="delete-category" data-id="'+category.id+'">'+wppm_ajax_obj.delete_label+'</a> | ' +

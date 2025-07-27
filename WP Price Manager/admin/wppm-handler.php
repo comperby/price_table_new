@@ -263,7 +263,7 @@ function wppm_edit_service_form() {
                         <input type="text" id="service_category" name="service_category" value="<?php echo esc_attr($cat_name); ?>" required>
                     </td>
                 </tr>
-                <tr id="wppm-extras-row" style="display:none;">
+                <tr id="wppm-extras-row" class="wppm-hidden-row">
                     <th><?php _e( 'Дополнительные поля', 'wp-price-manager' ); ?></th>
                     <td id="wppm-extras-container"></td>
                 </tr>

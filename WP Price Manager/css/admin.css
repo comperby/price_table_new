@@ -15,9 +15,18 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    cursor: move;
 }
 .wppm-order-col{
     width:6em;
+}
+
+.wppm-hidden-row {
+    display: none;
+}
+
+.wppm-custom-settings {
+    display: none;
 }
 
 .wppm-info-icon {
