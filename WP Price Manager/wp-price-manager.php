@@ -152,6 +152,7 @@ function wppm_admin_enqueue_scripts( $hook ) {
     // Для страниц плагина можно проверять, содержит ли $hook нужное значение.
     if ( strpos( $hook, 'price-manager' ) !== false ) {
         wp_enqueue_script( 'wppm-admin-js', WPPM_PLUGIN_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-ui-dialog', 'jquery-ui-autocomplete', 'wp-color-picker' ), '1.0', true );
+        wp_enqueue_style( 'wppm-common-css', WPPM_PLUGIN_URL . 'css/common.css' );
         wp_enqueue_style( 'wppm-admin-css', WPPM_PLUGIN_URL . 'css/admin.css' );
         wp_enqueue_style( 'wp-jquery-ui-dialog' );
         wp_enqueue_style( 'wp-color-picker' );
@@ -183,6 +184,7 @@ function wppm_frontend_enqueue_scripts() {
         'ajax_url' => admin_url( 'admin-ajax.php' ),
         'nonce'    => wp_create_nonce( 'wppm_nonce' )
     ) );
+    wp_enqueue_style( 'wppm-common-css', WPPM_PLUGIN_URL . 'css/common.css' );
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
     $styles = wppm_get_style_settings();
     if ( empty( $styles['use_google_font'] ) || $styles['use_google_font'] === '1' ) {

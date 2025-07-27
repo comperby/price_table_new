@@ -10,13 +10,6 @@
     padding: 8px;
     border: 1px solid #ddd;
 }
-.wppm-drag-handle {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: move;
-}
 .wppm-order-col{
     width:6em;
 }
@@ -29,18 +22,6 @@
     display: none;
 }
 
-.wppm-info-icon {
-    cursor: pointer;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    text-align: center;
-    border-radius: 50%;
-    background: #0073aa;
-    color: #fff;
-    font-weight: bold;
-}
 
 .wp-list-table th { position: relative; }
 .wp-list-table .wppm-header-icon {
@@ -50,24 +31,7 @@
     margin-left: 0;
 }
 
-.wppm-tooltip {
-    position: absolute;
-    background: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    z-index: 9999;
-    max-width: 300px;
-    width: max-content;
-}
 
-.wppm-tooltip .wppm-close {
-    cursor: pointer;
-    position: absolute;
-    top: 2px;
-    right: 5px;
-    color: #fff;
-}
 
 .wppm-extra-field {
     display: flex;
