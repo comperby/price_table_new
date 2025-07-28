@@ -29,12 +29,7 @@ jQuery(document).ready(function($){
             var $icon = $(this);
             var $container = $icon.closest('.wppm-price-list-widget');
             var fade = parseInt($container.data('tooltip-speed'),10) || 300;
-            var tableClass = $container.find('table').attr('class') || '';
-            var match = tableClass.match(/wppm-table-\S+/);
-            if(match){
-                $tooltip.removeClass(function(i,cls){ return (cls.match(/wppm-table-\S+/g)||[]).join(' '); });
-                $tooltip.addClass(match[0]);
-            }
+            // tooltip style now comes from global CSS, no need to swap classes
             $tooltip.data('speed', fade);
             clearTimeout(hideTimeout);
             $tooltip.find('.wppm-content').text($icon.data('description'));
@@ -61,12 +56,7 @@ jQuery(document).ready(function($){
             var $icon = $(this);
             var $container = $icon.closest('.wppm-price-list-widget');
             var fade = parseInt($container.data('tooltip-speed'),10) || 300;
-            var tableClass = $container.find('table').attr('class') || '';
-            var match = tableClass.match(/wppm-table-\S+/);
-            if(match){
-                $tooltip.removeClass(function(i,cls){ return (cls.match(/wppm-table-\S+/g)||[]).join(' '); });
-                $tooltip.addClass(match[0]);
-            }
+            // tooltip class is fixed via CSS
             $tooltip.data('speed', fade);
             $tooltip.find('.wppm-content').text($icon.data('description'));
             positionTooltip($icon);

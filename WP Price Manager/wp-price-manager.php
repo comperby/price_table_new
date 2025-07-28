@@ -199,6 +199,31 @@ function wppm_frontend_enqueue_scripts() {
     wp_enqueue_style( 'wppm-common-css', WPPM_PLUGIN_URL . 'css/common.css' );
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
     $styles = wppm_get_style_settings();
+    $css  = '.wppm-tooltip{'
+           . 'background:' . wppm_hex_to_rgba( $styles['tooltip_bg_color'], $styles['tooltip_opacity'] ) . ';'
+           . 'color:' . $styles['tooltip_text_color'] . ';'
+           . 'border-radius:' . $styles['tooltip_border_radius'] . ';'
+           . 'box-shadow:' . $styles['tooltip_shadow'] . ';'
+           . 'max-width:' . $styles['tooltip_max_width'] . ';'
+           . 'height:' . $styles['tooltip_height'] . ';'
+           . 'font-size:' . $styles['tooltip_text_size'] . ';'
+           . 'font-family:' . $styles['tooltip_font'] . ';'
+           . 'scrollbar-color:' . $styles['tooltip_scroll_color'] . ' transparent;'
+           . 'transition:opacity ' . intval( $styles['tooltip_speed'] ) . 'ms;'
+           . '}';
+    $css .= '@media(max-width:768px){.wppm-tooltip{'
+           . 'background:' . wppm_hex_to_rgba( $styles['tooltip_bg_color_mobile'], $styles['tooltip_opacity_mobile'] ) . ';'
+           . 'color:' . $styles['tooltip_text_color_mobile'] . ';'
+           . 'border-radius:' . $styles['tooltip_border_radius_mobile'] . ';'
+           . 'box-shadow:' . $styles['tooltip_shadow_mobile'] . ';'
+           . 'max-width:' . $styles['tooltip_max_width_mobile'] . ';'
+           . 'height:' . $styles['tooltip_height_mobile'] . ';'
+           . 'font-size:' . $styles['tooltip_text_size_mobile'] . ';'
+           . 'font-family:' . $styles['tooltip_font_mobile'] . ';'
+           . 'scrollbar-color:' . $styles['tooltip_scroll_color_mobile'] . ' transparent;'
+           . 'transition:opacity ' . intval( $styles['tooltip_speed_mobile'] ) . 'ms;'
+           . '}}';
+    wp_add_inline_style( 'wppm-front-end-css', $css );
     if ( empty( $styles['use_google_font'] ) || $styles['use_google_font'] === '1' ) {
         wp_enqueue_style( 'wppm-fonts', 'https://fonts.googleapis.com/css?family=Montserrat&display=swap', array(), null );
     }
