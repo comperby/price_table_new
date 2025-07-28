@@ -363,7 +363,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             top: <?php echo esc_attr( $styles['icon_offset_y'] ); ?>;
                             margin-left: <?php echo esc_attr( $styles['icon_offset_x'] ); ?>;
                         }
-                        .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                        .wppm-tooltip.wppm-table-<?php echo $this->get_id(); ?> {
                             background: <?php echo wppm_hex_to_rgba( $styles['tooltip_bg_color'], $styles['tooltip_opacity'] ); ?>;
                             color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
@@ -399,7 +399,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                 right: <?php echo esc_attr( $mobile['icon_offset_x'] ); ?>;
                                 margin-left:0;
                             }
-                            .wppm-table-<?php echo $this->get_id(); ?> .wppm-tooltip {
+                            .wppm-tooltip.wppm-table-<?php echo $this->get_id(); ?> {
                                 background: <?php echo esc_attr( $mobile['tooltip_bg_color'] ); ?>;
                                 color: <?php echo esc_attr( $mobile['tooltip_text_color'] ); ?>;
                                 border-radius: <?php echo esc_attr( $mobile['tooltip_border_radius'] ); ?>;
@@ -494,7 +494,12 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         <?php
                                         $limit_desktop = intval( $styles['show_limit'] );
                                         $limit_mobile  = intval( $mobile['show_limit'] );
-                                        $initial_limit = $cat_show_all ? PHP_INT_MAX : min( $limit_desktop, $limit_mobile );
+                                        if ( $cat_show_all ) {
+                                                $initial_limit = PHP_INT_MAX;
+                                        } else {
+                                                $is_mobile = wp_is_mobile();
+                                                $initial_limit = $is_mobile ? $limit_mobile : $limit_desktop;
+                                        }
                                         if ( ! empty( $services ) ) :
                                         foreach ( $services as $index => $service ) : ?>
                                                 <?php
