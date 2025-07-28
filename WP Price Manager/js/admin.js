@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
                     container.append(
                         '<div class="wppm-extra-field"><label>'+title+' '+icon+'</label>'+
                         '<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'">'+
-                        '<input type="text" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
+                        '<input type="text" name="extras_desc['+i+']" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
                     );
                 });
                 container.append('<div class="wppm-save-desc-wrapper"><button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button></div>');
@@ -258,7 +258,7 @@ jQuery(document).ready(function($) {
         row.addClass('editing');
         var nameCell = row.find('.cat-name');
         var current = nameCell.text();
-        nameCell.html('<input type="text" class="edit-cat-name" value="'+current+'">');
+        nameCell.html('<input type="text" name="edit_cat_name" class="edit-cat-name" value="'+current+'">');
         var actions = row.find('.cat-actions');
         actions.data('orig', actions.html());
         actions.html('<button class="save-category button button-primary" data-id="'+row.data('id')+'">'+wppm_ajax_obj.save_label+'</button>');
@@ -402,12 +402,12 @@ jQuery(document).ready(function($) {
         var row = $(this).closest('tr');
         if(row.hasClass('editing')) return;
         row.addClass('editing');
-        row.find('.srv-name').html('<input type="text" class="srv-edit-name" value="'+row.data('name')+'">');
+        row.find('.srv-name').html('<input type="text" name="srv_edit_name" class="srv-edit-name" value="'+row.data('name')+'">');
         row.find('.srv-description').html('<textarea class="srv-edit-description">'+row.data('description')+'</textarea>');
-        row.find('.srv-link').html('<input type="url" class="srv-edit-link" value="'+row.data('link')+'">');
-        row.find('.srv-price').html('<input type="text" class="srv-edit-price" value="'+row.data('price')+'">');
-        row.find('.srv-category').html('<input type="text" class="srv-edit-category" value="'+row.data('category')+'">');
-        row.find('.srv-price-group').html('<input type="text" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
+        row.find('.srv-link').html('<input type="url" name="srv_edit_link" class="srv-edit-link" value="'+row.data('link')+'">');
+        row.find('.srv-price').html('<input type="text" name="srv_edit_price" class="srv-edit-price" value="'+row.data('price')+'">');
+        row.find('.srv-category').html('<input type="text" name="srv_edit_category" class="srv-edit-category" value="'+row.data('category')+'">');
+        row.find('.srv-price-group').html('<input type="text" name="srv_edit_price_group" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
         var extrasData = row.data('extras');
         if (typeof extrasData === 'string') {
             try { extrasData = JSON.parse(extrasData); } catch(e){ extrasData = []; }
@@ -415,7 +415,7 @@ jQuery(document).ready(function($) {
         if (!Array.isArray(extrasData)) extrasData = [];
         row.find('td.srv-extra').each(function(idx){
             var val = extrasData[idx] || '';
-            $(this).html('<input type="text" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
+            $(this).html('<input type="text" name="srv_edit_extra['+idx+']" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
         });
         var actions = row.find('.srv-actions');
         actions.data('orig', actions.html());
@@ -506,8 +506,8 @@ jQuery(document).ready(function($) {
         var row = $(this).closest('tr');
         if(row.hasClass('editing')) return;
         row.addClass('editing');
-        row.find('.pg-name-cell').html('<input type="text" class="pg-edit-name" value="'+row.data('name')+'">');
-        row.find('.pg-price-cell').html('<input type="text" class="pg-edit-price" value="'+row.data('price')+'">');
+        row.find('.pg-name-cell').html('<input type="text" name="pg_edit_name" class="pg-edit-name" value="'+row.data('name')+'">');
+        row.find('.pg-price-cell').html('<input type="text" name="pg_edit_price" class="pg-edit-price" value="'+row.data('price')+'">');
         var actions = row.find('.pg-actions');
         actions.data('orig', actions.html());
         actions.html('<button class="save-price-group button button-primary">'+wppm_ajax_obj.save_label+'</button>');
