@@ -519,7 +519,7 @@ function wppm_save_style_settings() {
     foreach ( array(
         'border_width', 'border_color', 'border_style', 'border_apply', 'border_radius',
         'header_bg_color', 'header_text_color', 'header_height', 'header_alignment',
-        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'link_hover_color', 'link_hover_speed', 'row_height', 'row_hover_bg_color', 'row_hover_speed', 'row_alignment',
+        'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'link_hover_color', 'link_underline', 'link_style', 'link_hover_speed', 'row_height', 'row_hover_bg_color', 'row_hover_speed', 'row_alignment',
         'price_suffix',
         'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
         'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius', 'tooltip_opacity', 'tooltip_shadow',

@@ -593,6 +593,20 @@ class Price_Manager_Admin {
                                 <p class="description">s or ms</p></td>
                         </tr>
                         <tr>
+                            <th><label for="link_underline"><?php _e( 'Подчеркивать ссылки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="checkbox" name="link_underline" id="link_underline" value="1" <?php checked( $options['link_underline' . $prefix] ?? '', '1' ); ?>></td>
+                        </tr>
+                        <tr>
+                            <th><label for="link_style"><?php _e( 'Стиль текста ссылки', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="link_style" id="link_style">
+                                    <option value="normal" <?php selected( $options['link_style' . $prefix] ?? '', 'normal' ); ?>><?php _e( 'Нормальный', 'wp-price-manager' ); ?></option>
+                                    <option value="bold" <?php selected( $options['link_style' . $prefix] ?? '', 'bold' ); ?>><?php _e( 'Жирный', 'wp-price-manager' ); ?></option>
+                                    <option value="italic" <?php selected( $options['link_style' . $prefix] ?? '', 'italic' ); ?>><?php _e( 'Курсив', 'wp-price-manager' ); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
                             <th><label for="row_height"><?php _e( 'Высота строк', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="row_height" id="row_height" value="<?php echo esc_attr( $options['row_height' . $prefix] ?? '' ); ?>"></td>
                         </tr>

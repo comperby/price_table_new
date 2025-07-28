@@ -335,6 +335,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         .wppm-table-<?php echo $this->get_id(); ?> a {
                             color: <?php echo esc_attr( $styles['link_color'] ); ?>;
                             transition: color <?php echo esc_attr( $styles['link_hover_speed'] ); ?>;
+                            text-decoration: <?php echo empty( $styles['link_underline'] ) ? 'none' : 'underline'; ?>;
+                            <?php if ( $styles['link_style'] === 'bold' ) : ?>font-weight:bold;<?php elseif ( $styles['link_style'] === 'italic' ) : ?>font-style:italic;<?php endif; ?>
                         }
                         .wppm-table-<?php echo $this->get_id(); ?> a:hover {
                             color: <?php echo esc_attr( $styles['link_hover_color'] ); ?>;
@@ -414,7 +416,11 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(odd){background: <?php echo esc_attr( $mobile['even_row_bg_color'] ); ?>;}
                             .wppm-table-<?php echo $this->get_id(); ?> tbody tr:nth-child(even){background: <?php echo esc_attr( $mobile['odd_row_bg_color'] ); ?>;}
                             .wppm-table-<?php echo $this->get_id(); ?> tbody tr:hover{background: <?php echo esc_attr( $mobile['row_hover_bg_color'] ); ?>;transition: background <?php echo esc_attr( $mobile['row_hover_speed'] ); ?>;}
-                            .wppm-table-<?php echo $this->get_id(); ?> a {transition: color <?php echo esc_attr( $mobile['link_hover_speed'] ); ?>;}
+                            .wppm-table-<?php echo $this->get_id(); ?> a {
+                                transition: color <?php echo esc_attr( $mobile['link_hover_speed'] ); ?>;
+                                text-decoration: <?php echo empty( $mobile['link_underline'] ) ? 'none' : 'underline'; ?>;
+                                <?php if ( $mobile['link_style'] === 'bold' ) : ?>font-weight:bold;<?php elseif ( $mobile['link_style'] === 'italic' ) : ?>font-style:italic;<?php endif; ?>
+                            }
                             .wppm-table-<?php echo $this->get_id(); ?> a:hover{color: <?php echo esc_attr( $mobile['link_hover_color'] ); ?>;}
                             .wppm-table-<?php echo $this->get_id(); ?> th, .wppm-table-<?php echo $this->get_id(); ?> td{
                                 <?php echo $cell_border_m; ?>
