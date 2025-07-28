@@ -303,7 +303,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         break;
                 }
 		?>
-                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>">
+                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" data-tooltip-width="<?php echo esc_attr( $styles['tooltip_max_width'] ); ?>" data-tooltip-speed="<?php echo esc_attr( $styles['tooltip_speed'] ); ?>">
                         <style>
                         .wppm-widget-<?php echo $this->get_id(); ?> {
                             width: <?php echo esc_attr( $settings['table_width'] ); ?>;
@@ -364,6 +364,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             color: <?php echo esc_attr( $styles['tooltip_text_color'] ); ?>;
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
                             box-shadow: <?php echo esc_attr( $styles['tooltip_shadow'] ); ?>;
+                            max-width: <?php echo esc_attr( $styles['tooltip_max_width'] ); ?>;
+                            transition: opacity <?php echo intval( $styles['tooltip_speed'] ); ?>ms;
                         }
                         .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more-wrapper {
                             text-align: <?php echo esc_attr( $styles['show_more_align'] ); ?>;
@@ -394,6 +396,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                 border-radius: <?php echo esc_attr( $mobile['tooltip_border_radius'] ); ?>;
                                 box-shadow: <?php echo esc_attr( $mobile['tooltip_shadow'] ); ?>;
                                 background: <?php echo wppm_hex_to_rgba( $mobile['tooltip_bg_color'], $mobile['tooltip_opacity'] ); ?>;
+                                max-width: <?php echo esc_attr( $mobile['tooltip_max_width'] ); ?>;
+                                transition: opacity <?php echo intval( $mobile['tooltip_speed'] ); ?>ms;
                             }
                             .wppm-table-<?php echo $this->get_id(); ?> {
                                 <?php echo $table_mobile; ?>

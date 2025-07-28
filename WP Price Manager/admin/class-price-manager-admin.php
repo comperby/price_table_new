@@ -673,6 +673,16 @@ class Price_Manager_Admin {
                             <td><input type="text" name="tooltip_shadow" id="tooltip_shadow" value="<?php echo esc_attr( $options['tooltip_shadow' . $prefix] ?? '' ); ?>">
                                 <p class="description">CSS box-shadow</p></td>
                         </tr>
+                        <tr>
+                            <th><label for="tooltip_max_width"><?php _e( 'Макс. ширина', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_max_width" id="tooltip_max_width" value="<?php echo esc_attr( $options['tooltip_max_width' . $prefix] ?? '' ); ?>">
+                                <p class="description">px/em</p></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_speed"><?php _e( 'Скорость эффекта', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_speed" id="tooltip_speed" value="<?php echo esc_attr( $options['tooltip_speed' . $prefix] ?? '' ); ?>">
+                                <p class="description">ms</p></td>
+                        </tr>
                     <?php elseif ( $active_tab === 'button' ) : ?>
                         <tr>
                             <th><label for="show_more_text"><?php _e( 'Текст кнопки', 'wp-price-manager' ); ?></label></th>

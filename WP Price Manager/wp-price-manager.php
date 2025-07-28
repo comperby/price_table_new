@@ -102,6 +102,8 @@ function wppm_install() {
         'tooltip_border_radius' => '4px',
         'tooltip_opacity'       => '1',
         'tooltip_shadow'        => '0 2px 8px rgba(0,0,0,0.3)',
+        'tooltip_max_width'     => '300px',
+        'tooltip_speed'         => '300',
         'show_more_text'        => 'Показать все',
         'show_less_text'        => 'Свернуть',
         'show_more_bg'          => '#0073aa',
