@@ -42,7 +42,7 @@ function wppm_handle_ajax() {
                 'column_titles' => $titles,
                 'show_all'      => $show_all,
             ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
-            if ( false === $result && ! empty( $wpdb->last_error ) && strpos( $wpdb->last_error, 'doesn' ) !== false ) {
+            if ( false === $result && ! empty( $wpdb->last_error ) && ( strpos( $wpdb->last_error, 'doesn' ) !== false || strpos( $wpdb->last_error, 'Unknown column' ) !== false ) ) {
                 if ( function_exists( 'wppm_install' ) ) {
                     wppm_install();
                     $result = $wpdb->insert( $table, array(

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $wppm_db_version;
-$wppm_db_version = '1.2';
+$wppm_db_version = '1.3';
 
 define( 'WPPM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPPM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
