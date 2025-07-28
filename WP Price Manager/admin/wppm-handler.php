@@ -40,10 +40,26 @@ function wppm_add_category() {
         'column_titles' => $titles,
         'show_all'     => $show_all,
     ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
+    if ( false === $result && ! empty( $wpdb->last_error ) && strpos( $wpdb->last_error, 'doesn' ) !== false ) {
+        if ( function_exists( 'wppm_install' ) ) {
+            wppm_install();
+            $result = $wpdb->insert( $table, array(
+                'name' => $name,
+                'display_order' => $order,
+                'custom_table' => $custom,
+                'column_count' => $count,
+                'column_titles' => $titles,
+                'show_all'     => $show_all,
+            ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
+        }
+    }
     if ( $result ) {
         delete_transient( 'wppm_categories' );
     }
     $msg = $result ? __( 'Категория добавлена.', 'wp-price-manager' ) : __( 'Ошибка добавления категории.', 'wp-price-manager' );
+    if ( ! $result && ! empty( $wpdb->last_error ) ) {
+        $msg .= ' ' . $wpdb->last_error;
+    }
     wp_redirect( admin_url( 'admin.php?page=price-manager-categories&msg=' . urlencode( $msg ) ) );
     exit;
 }

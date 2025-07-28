@@ -42,11 +42,28 @@ function wppm_handle_ajax() {
                 'column_titles' => $titles,
                 'show_all'      => $show_all,
             ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
+            if ( false === $result && ! empty( $wpdb->last_error ) && strpos( $wpdb->last_error, 'doesn' ) !== false ) {
+                if ( function_exists( 'wppm_install' ) ) {
+                    wppm_install();
+                    $result = $wpdb->insert( $table, array(
+                        'name'          => $name,
+                        'display_order' => $display_order,
+                        'custom_table'  => $custom,
+                        'column_count'  => $count,
+                        'column_titles' => $titles,
+                        'show_all'      => $show_all,
+                    ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
+                }
+            }
             if ( $result ) {
                 delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория добавлена.', 'wp-price-manager' ) );
             } else {
-                $response = array( 'success' => false, 'message' => __( 'Ошибка добавления категории.', 'wp-price-manager' ) );
+                $error_msg = __( 'Ошибка добавления категории.', 'wp-price-manager' );
+                if ( ! empty( $wpdb->last_error ) ) {
+                    $error_msg .= ' ' . $wpdb->last_error;
+                }
+                $response = array( 'success' => false, 'message' => $error_msg );
             }
             break;
 
