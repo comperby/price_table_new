@@ -91,6 +91,10 @@ class Price_Manager_Admin {
                         <th><label for="custom_table"><?php _e( 'Кастом', 'wp-price-manager' ); ?></label></th>
                         <td><input type="checkbox" id="custom_table" name="custom_table" value="1"></td>
                     </tr>
+                    <tr>
+                        <th><label for="no_limit"><?php _e( 'Не скрывать услуги', 'wp-price-manager' ); ?></label></th>
+                        <td><input type="checkbox" id="no_limit" name="no_limit" value="1"></td>
+                    </tr>
                     <tr class="wppm-custom-settings">
                         <th><label for="column_count"><?php _e( 'Количество колонок', 'wp-price-manager' ); ?></label></th>
                         <td><input type="number" id="column_count" name="column_count" min="2" value="2"></td>
@@ -534,6 +538,14 @@ class Price_Manager_Admin {
                             <td><input type="text" name="header_text_weight" id="header_text_weight" value="<?php echo esc_attr( $options['header_text_weight' . $prefix] ?? '' ); ?>"></td>
                         </tr>
                         <tr>
+                            <th><label for="service_header"><?php _e( 'Название колонки услуги', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="service_header" id="service_header" value="<?php echo esc_attr( $options['service_header'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="price_header"><?php _e( 'Название колонки цены', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="price_header" id="price_header" value="<?php echo esc_attr( $options['price_header'] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
                             <th><label for="header_alignment"><?php _e( 'Выравнивание текста', 'wp-price-manager' ); ?></label></th>
                             <td>
                                 <select name="header_alignment" id="header_alignment">
@@ -691,6 +703,29 @@ class Price_Manager_Admin {
                             <th><label for="tooltip_max_width"><?php _e( 'Макс. ширина', 'wp-price-manager' ); ?></label></th>
                             <td><input type="text" name="tooltip_max_width" id="tooltip_max_width" value="<?php echo esc_attr( $options['tooltip_max_width' . $prefix] ?? '' ); ?>">
                                 <p class="description">px/em</p></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_height"><?php _e( 'Высота', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_height" id="tooltip_height" value="<?php echo esc_attr( $options['tooltip_height' . $prefix] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_text_size"><?php _e( 'Размер текста', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_text_size" id="tooltip_text_size" value="<?php echo esc_attr( $options['tooltip_text_size' . $prefix] ?? '' ); ?>"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_font"><?php _e( 'Шрифт текста', 'wp-price-manager' ); ?></label></th>
+                            <td>
+                                <select name="tooltip_font" id="tooltip_font">
+                                    <?php $fonts = array( 'Montserrat', 'Arial', 'Georgia', 'Times New Roman' ); ?>
+                                    <?php foreach ( $fonts as $font ) : ?>
+                                        <option value="<?php echo esc_attr( $font ); ?>" <?php selected( $options['tooltip_font' . $prefix] ?? '', $font ); ?>><?php echo esc_html( $font ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="tooltip_scroll_color"><?php _e( 'Цвет полосы прокрутки', 'wp-price-manager' ); ?></label></th>
+                            <td><input type="text" name="tooltip_scroll_color" id="tooltip_scroll_color" value="<?php echo esc_attr( $options['tooltip_scroll_color' . $prefix] ?? '' ); ?>" class="wppm-color-field"></td>
                         </tr>
                         <tr>
                             <th><label for="tooltip_speed"><?php _e( 'Скорость эффекта', 'wp-price-manager' ); ?></label></th>

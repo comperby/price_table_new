@@ -17,6 +17,7 @@ function wppm_handle_ajax() {
             $name  = sanitize_text_field( $_POST['category_name'] );
             $display_order = isset( $_POST['display_order'] ) ? intval( $_POST['display_order'] ) : 0;
             $custom  = isset( $_POST['custom_table'] ) ? 1 : 0;
+            $show_all = isset( $_POST['no_limit'] ) ? 1 : 0;
             $count   = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
             if ( $custom && isset( $_POST['column_titles'] ) ) {
                 $titles_arr = array();
@@ -39,7 +40,8 @@ function wppm_handle_ajax() {
                 'custom_table'  => $custom,
                 'column_count'  => $count,
                 'column_titles' => $titles,
-            ), array( '%s', '%d', '%d', '%d', '%s' ) );
+                'show_all'      => $show_all,
+            ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
             if ( $result ) {
                 delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория добавлена.', 'wp-price-manager' ) );
@@ -51,8 +53,9 @@ function wppm_handle_ajax() {
         case 'edit_category':
             $id   = intval( $_POST['id'] );
             $name = sanitize_text_field( $_POST['category_name'] );
+            $show_all = isset( $_POST['no_limit'] ) ? 1 : 0;
             $table = $wpdb->prefix . 'wppm_categories';
-            $result = $wpdb->update( $table, array( 'name' => $name ), array( 'id' => $id ), array( '%s' ), array( '%d' ) );
+            $result = $wpdb->update( $table, array( 'name' => $name, 'show_all' => $show_all ), array( 'id' => $id ), array( '%s', '%d' ), array( '%d' ) );
             if ( $result !== false ) {
                 delete_transient( 'wppm_categories' );
                 $response = array( 'success' => true, 'message' => __( 'Категория обновлена.', 'wp-price-manager' ) );

@@ -16,6 +16,7 @@ function wppm_add_category() {
     $name  = sanitize_text_field( $_POST['category_name'] );
     $order = intval( $_POST['display_order'] );
     $custom = isset( $_POST['custom_table'] ) ? 1 : 0;
+    $show_all = isset( $_POST['no_limit'] ) ? 1 : 0;
     $count  = $custom ? max( 2, intval( $_POST['column_count'] ) ) : 2;
     if ( $custom && isset( $_POST['column_titles'] ) ) {
         $titles = array();
@@ -37,7 +38,8 @@ function wppm_add_category() {
         'custom_table' => $custom,
         'column_count' => $count,
         'column_titles' => $titles,
-    ), array( '%s', '%d', '%d', '%d', '%s' ) );
+        'show_all'     => $show_all,
+    ), array( '%s', '%d', '%d', '%d', '%s', '%d' ) );
     if ( $result ) {
         delete_transient( 'wppm_categories' );
     }
@@ -75,6 +77,10 @@ function wppm_edit_category_form() {
                     <th><label for="display_order"><?php _e( 'Порядок отображения', 'wp-price-manager' ); ?></label></th>
                     <td><input type="number" id="display_order" name="display_order" value="<?php echo esc_attr($category['display_order']); ?>" required></td>
                 </tr>
+                <tr>
+                    <th><label for="no_limit"><?php _e( 'Не скрывать услуги', 'wp-price-manager' ); ?></label></th>
+                    <td><input type="checkbox" id="no_limit" name="no_limit" value="1" <?php checked( $category['show_all'], 1 ); ?>></td>
+                </tr>
             </table>
             <p class="submit"><input type="submit" class="button button-primary" value="<?php _e( 'Сохранить изменения', 'wp-price-manager' ); ?>"></p>
         </form>
@@ -95,10 +101,12 @@ function wppm_edit_category() {
     $id = intval( $_POST['category_id'] );
     $name = sanitize_text_field( $_POST['category_name'] );
     $order = intval( $_POST['display_order'] );
+    $show_all = isset( $_POST['no_limit'] ) ? 1 : 0;
     $result = $wpdb->update( $table, array(
         'name' => $name,
         'display_order' => $order,
-    ), array( 'id' => $id ), array( '%s', '%d' ), array( '%d' ) );
+        'show_all' => $show_all,
+    ), array( 'id' => $id ), array( '%s', '%d', '%d' ), array( '%d' ) );
     if ( $result !== false ) {
         delete_transient( 'wppm_categories' );
     }
@@ -522,13 +530,19 @@ function wppm_save_style_settings() {
         'even_row_bg_color', 'odd_row_bg_color', 'text_font', 'text_size', 'text_weight', 'text_padding', 'text_color', 'header_text_size', 'header_text_weight', 'link_color', 'link_hover_color', 'link_underline', 'link_style', 'link_hover_speed', 'row_height', 'row_hover_bg_color', 'row_hover_speed', 'row_alignment',
         'price_suffix',
         'icon_char', 'icon_color', 'icon_bg_color', 'icon_size', 'icon_offset_x', 'icon_offset_y',
-        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius', 'tooltip_opacity', 'tooltip_shadow',
+        'tooltip_bg_color', 'tooltip_text_color', 'tooltip_border_radius', 'tooltip_opacity', 'tooltip_shadow', 'tooltip_max_width', 'tooltip_height', 'tooltip_text_size', 'tooltip_font', 'tooltip_scroll_color',
         'show_more_text', 'show_more_bg', 'show_more_color',
         'show_more_padding', 'show_more_radius', 'show_more_font_size', 'show_more_width', 'show_more_height', 'show_more_font_family', 'show_more_font_weight', 'show_more_align', 'show_less_text', 'show_more_speed', 'show_limit', 'use_google_font'
     ) as $key ) {
         if ( isset( $_POST[ $key ] ) ) {
             $options[ $key . $suffix ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
         }
+    }
+    if ( isset( $_POST['service_header'] ) ) {
+        $options['service_header'] = sanitize_text_field( wp_unslash( $_POST['service_header'] ) );
+    }
+    if ( isset( $_POST['price_header'] ) ) {
+        $options['price_header'] = sanitize_text_field( wp_unslash( $_POST['price_header'] ) );
     }
     update_option( 'wppm_style_settings', $options );
     $tab    = isset( $_POST['current_tab'] ) ? sanitize_text_field( $_POST['current_tab'] ) : 'table';

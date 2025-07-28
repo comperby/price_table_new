@@ -243,6 +243,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                 global $wpdb;
                 $srv_table = $wpdb->prefix . 'wppm_services';
                 $cat_id = intval( $settings['selected_category'] );
+                $cat_show_all = 0;
                 if ( $cat_id ) {
                         $services = $wpdb->get_results( $wpdb->prepare(
                                 "SELECT s.*, pg.default_price, pg.name as pg_name
@@ -251,6 +252,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                  WHERE s.category_id = %d ORDER BY s.display_order ASC",
                                  $cat_id
                         ), ARRAY_A );
+                        $cat_show_all = intval( $wpdb->get_var( $wpdb->prepare( "SELECT show_all FROM {$wpdb->prefix}wppm_categories WHERE id=%d", $cat_id ) ) );
                         $total_services = count( $services );
                 } else {
                         $services = [];
@@ -303,7 +305,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         break;
                 }
 		?>
-                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-limit-mobile="<?php echo esc_attr( $mobile['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" data-tooltip-width="<?php echo esc_attr( $styles['tooltip_max_width'] ); ?>" data-tooltip-speed="<?php echo esc_attr( $styles['tooltip_speed'] ); ?>">
+                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-limit-mobile="<?php echo esc_attr( $mobile['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" data-tooltip-width="<?php echo esc_attr( $styles['tooltip_max_width'] ); ?>" data-tooltip-speed="<?php echo esc_attr( $styles['tooltip_speed'] ); ?>" data-nohide="<?php echo $cat_show_all; ?>">
                         <style>
                         .wppm-widget-<?php echo $this->get_id(); ?> {
                             width: <?php echo esc_attr( $settings['table_width'] ); ?>;
@@ -367,6 +369,11 @@ class Elementor_Price_List_Widget extends Widget_Base {
                             border-radius: <?php echo esc_attr( $styles['tooltip_border_radius'] ); ?>;
                             box-shadow: <?php echo esc_attr( $styles['tooltip_shadow'] ); ?>;
                             max-width: <?php echo esc_attr( $styles['tooltip_max_width'] ); ?>;
+                            height: <?php echo esc_attr( $styles['tooltip_height'] ); ?>;
+                            font-size: <?php echo esc_attr( $styles['tooltip_text_size'] ); ?>;
+                            font-family: <?php echo esc_attr( $styles['tooltip_font'] ); ?>;
+                            overflow-y: auto;
+                            scrollbar-color: <?php echo esc_attr( $styles['tooltip_scroll_color'] ); ?> transparent;
                             transition: opacity <?php echo intval( $styles['tooltip_speed'] ); ?>ms;
                         }
                         .wppm-widget-<?php echo $this->get_id(); ?> .wppm-show-more-wrapper {
@@ -399,6 +406,11 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                 box-shadow: <?php echo esc_attr( $mobile['tooltip_shadow'] ); ?>;
                                 background: <?php echo wppm_hex_to_rgba( $mobile['tooltip_bg_color'], $mobile['tooltip_opacity'] ); ?>;
                                 max-width: <?php echo esc_attr( $mobile['tooltip_max_width'] ); ?>;
+                                height: <?php echo esc_attr( $mobile['tooltip_height'] ); ?>;
+                                font-size: <?php echo esc_attr( $mobile['tooltip_text_size'] ); ?>;
+                                font-family: <?php echo esc_attr( $mobile['tooltip_font'] ); ?>;
+                                overflow-y: auto;
+                                scrollbar-color: <?php echo esc_attr( $mobile['tooltip_scroll_color'] ); ?> transparent;
                                 transition: opacity <?php echo intval( $mobile['tooltip_speed'] ); ?>ms;
                             }
                             .wppm-table-<?php echo $this->get_id(); ?> {
@@ -441,7 +453,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         <tr>
                                                 <?php
                                                 $cat_info = $wpdb->get_row( $wpdb->prepare( "SELECT custom_table,column_count,column_titles FROM {$wpdb->prefix}wppm_categories WHERE id = %d", $cat_id ), ARRAY_A );
-                                                $headers = array( __( 'Услуга', 'wp-price-manager' ), __( 'Цена', 'wp-price-manager' ) );
+                                                $headers = array( $styles['service_header'], $styles['price_header'] );
                                                 $header_descs = array( '', '' );
                                                 $column_count = 2;
                                                 $custom = false;
@@ -482,7 +494,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         <?php
                                         $limit_desktop = intval( $styles['show_limit'] );
                                         $limit_mobile  = intval( $mobile['show_limit'] );
-                                        $initial_limit = min( $limit_desktop, $limit_mobile );
+                                        $initial_limit = $cat_show_all ? PHP_INT_MAX : min( $limit_desktop, $limit_mobile );
                                         if ( ! empty( $services ) ) :
                                         foreach ( $services as $index => $service ) : ?>
                                                 <?php
@@ -531,7 +543,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
 				</tbody>
                         </table>
                         <?php $max_limit = max( $limit_desktop, $limit_mobile ); ?>
-                        <?php if ( $total_services > $max_limit ) : ?>
+                        <?php if ( ! $cat_show_all && $total_services > $max_limit ) : ?>
                             <div class="wppm-show-more-wrapper">
                                 <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>">
                                     <?php echo esc_html( $styles['show_more_text'] ); ?>

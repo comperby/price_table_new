@@ -74,8 +74,11 @@ jQuery(document).ready(function($){
     }
 
     function applyLimit($container){
-        var limit = getLimit($container);
         var rows = $container.find('tbody tr');
+        var limit = getLimit($container);
+        if($container.data('nohide') == 1){
+            limit = rows.length;
+        }
         rows.each(function(i){
             var $row = $(this);
             if(i >= limit){
@@ -85,7 +88,7 @@ jQuery(document).ready(function($){
             }
         });
         var btn = $container.find('.wppm-show-more');
-        if(rows.length <= limit){
+        if($container.data('nohide') == 1 || rows.length <= limit){
             btn.hide();
             $container.removeClass('wppm-expanded');
         }else{
