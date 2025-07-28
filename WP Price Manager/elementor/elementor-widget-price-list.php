@@ -384,7 +384,11 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                             $val = $extras[0] ?? '';
                                                             echo esc_html( $val );
                                                         } else {
-                                                            echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a>';
+                                                            if ( ! empty( $service['link'] ) ) {
+                                                                echo '<a href="' . esc_url( $service['link'] ) . '" target="_blank">' . esc_html( $service['name'] ) . '</a>';
+                                                            } else {
+                                                                echo esc_html( $service['name'] );
+                                                            }
                                                         }
                                                         if ( ! empty( $service['description'] ) ) {
                                                             echo ' <span class="wppm-info-icon" data-description="' . esc_attr( $service['description'] ) . '">' . $icon_content . '</span>';
