@@ -199,7 +199,67 @@ function wppm_frontend_enqueue_scripts() {
     wp_enqueue_style( 'wppm-common-css', WPPM_PLUGIN_URL . 'css/common.css' );
     wp_enqueue_style( 'wppm-front-end-css', WPPM_PLUGIN_URL . 'css/front-end.css' );
     $styles = wppm_get_style_settings();
-    $css  = '.wppm-tooltip{'
+    $border_css  = esc_attr( $styles['border_width'] ) . ' ' . esc_attr( $styles['border_style'] ) . ' ' . esc_attr( $styles['border_color'] );
+    $border_css_m = esc_attr( $styles['border_width_mobile'] ) . ' ' . esc_attr( $styles['border_style_mobile'] ) . ' ' . esc_attr( $styles['border_color_mobile'] );
+    $cell_border  = $border_css;
+    $cell_border_m = $border_css_m;
+    switch ( $styles['border_apply'] ) {
+        case 'outer':
+            $table_border = $border_css;
+            $cell_border  = 'none';
+            break;
+        case 'inner':
+            $table_border = 'none';
+            break;
+        case 'vertical':
+            $table_border = 'none';
+            $cell_border  = 'border-left:' . $border_css . ';border-right:' . $border_css;
+            break;
+        case 'horizontal':
+            $table_border = 'none';
+            $cell_border  = 'border-top:' . $border_css . ';border-bottom:' . $border_css;
+            break;
+        default:
+            $table_border = $border_css;
+            break;
+    }
+    switch ( $styles['border_apply_mobile'] ) {
+        case 'outer':
+            $table_border_m = $border_css_m;
+            $cell_border_m  = 'none';
+            break;
+        case 'inner':
+            $table_border_m = 'none';
+            break;
+        case 'vertical':
+            $table_border_m = 'none';
+            $cell_border_m  = 'border-left:' . $border_css_m . ';border-right:' . $border_css_m;
+            break;
+        case 'horizontal':
+            $table_border_m = 'none';
+            $cell_border_m  = 'border-top:' . $border_css_m . ';border-bottom:' . $border_css_m;
+            break;
+        default:
+            $table_border_m = $border_css_m;
+            break;
+    }
+    $css  = '.wppm-price-list-widget table{' 
+           . 'border-collapse:collapse;border-spacing:0;width:100%;font-family:' . $styles['text_font'] . ';font-size:' . $styles['text_size'] . ';color:' . $styles['text_color'] . ';font-weight:' . $styles['text_weight'] . ';border-radius:' . $styles['border_radius'] . ';border:' . $table_border . ';' 
+           . '}' 
+           . '.wppm-price-list-widget th,.wppm-price-list-widget td{' 
+           . 'padding:' . $styles['text_padding'] . ';border:' . $cell_border . ';text-align:' . $styles['row_alignment'] . ';height:' . $styles['row_height'] . ';' 
+           . '}' 
+           . '.wppm-price-list-widget th{' 
+           . 'background:' . $styles['header_bg_color'] . ';color:' . $styles['header_text_color'] . ';height:' . $styles['header_height'] . ';text-align:' . $styles['header_alignment'] . ';font-size:' . $styles['header_text_size'] . ';font-weight:' . $styles['header_text_weight'] . ';' 
+           . '}' 
+           . '.wppm-price-list-widget tbody tr:nth-child(even){background:' . $styles['even_row_bg_color'] . ';}' 
+           . '.wppm-price-list-widget tbody tr:nth-child(odd){background:' . $styles['odd_row_bg_color'] . ';}' 
+           . '.wppm-price-list-widget tbody tr:hover{background:' . $styles['row_hover_bg_color'] . ';transition:background ' . $styles['row_hover_speed'] . ';}' 
+           . '.wppm-price-list-widget a{' 
+           . 'color:' . $styles['link_color'] . ';text-decoration:' . ( $styles['link_underline'] ? 'underline' : 'none' ) . ';font-style:' . ( $styles['link_style'] === 'italic' ? 'italic' : 'normal' ) . ';font-weight:' . ( $styles['link_style'] === 'bold' ? 'bold' : 'normal' ) . ';' 
+           . '}' 
+           . '.wppm-price-list-widget a:hover{color:' . $styles['link_hover_color'] . ';transition:color ' . $styles['link_hover_speed'] . ';}' 
+           . '.wppm-tooltip{' 
            . 'background:' . wppm_hex_to_rgba( $styles['tooltip_bg_color'], $styles['tooltip_opacity'] ) . ';'
            . 'color:' . $styles['tooltip_text_color'] . ';'
            . 'border-radius:' . $styles['tooltip_border_radius'] . ';'
@@ -211,18 +271,32 @@ function wppm_frontend_enqueue_scripts() {
            . 'scrollbar-color:' . $styles['tooltip_scroll_color'] . ' transparent;'
            . 'transition:opacity ' . intval( $styles['tooltip_speed'] ) . 'ms;'
            . '}';
-    $css .= '@media(max-width:768px){.wppm-tooltip{'
-           . 'background:' . wppm_hex_to_rgba( $styles['tooltip_bg_color_mobile'], $styles['tooltip_opacity_mobile'] ) . ';'
-           . 'color:' . $styles['tooltip_text_color_mobile'] . ';'
-           . 'border-radius:' . $styles['tooltip_border_radius_mobile'] . ';'
-           . 'box-shadow:' . $styles['tooltip_shadow_mobile'] . ';'
-           . 'max-width:' . $styles['tooltip_max_width_mobile'] . ';'
-           . 'height:' . $styles['tooltip_height_mobile'] . ';'
-           . 'font-size:' . $styles['tooltip_text_size_mobile'] . ';'
-           . 'font-family:' . $styles['tooltip_font_mobile'] . ';'
-           . 'scrollbar-color:' . $styles['tooltip_scroll_color_mobile'] . ' transparent;'
-           . 'transition:opacity ' . intval( $styles['tooltip_speed_mobile'] ) . 'ms;'
-           . '}}';
+    $css .= '@media(max-width:768px){' 
+           . '.wppm-price-list-widget table{' 
+           . 'border-collapse:collapse;border-spacing:0;width:100%;font-family:' . $styles['text_font_mobile'] . ';font-size:' . $styles['text_size_mobile'] . ';color:' . $styles['text_color_mobile'] . ';font-weight:' . $styles['text_weight_mobile'] . ';border-radius:' . $styles['border_radius_mobile'] . ';border:' . $table_border_m . ';}' 
+           . '.wppm-price-list-widget th,.wppm-price-list-widget td{' 
+           . 'padding:' . $styles['text_padding_mobile'] . ';border:' . $cell_border_m . ';text-align:' . $styles['row_alignment_mobile'] . ';height:' . $styles['row_height_mobile'] . ';}' 
+           . '.wppm-price-list-widget th{' 
+           . 'background:' . $styles['header_bg_color_mobile'] . ';color:' . $styles['header_text_color_mobile'] . ';height:' . $styles['header_height_mobile'] . ';text-align:' . $styles['header_alignment_mobile'] . ';font-size:' . $styles['header_text_size_mobile'] . ';font-weight:' . $styles['header_text_weight_mobile'] . ';}' 
+           . '.wppm-price-list-widget tbody tr:nth-child(even){background:' . $styles['even_row_bg_color_mobile'] . ';}' 
+           . '.wppm-price-list-widget tbody tr:nth-child(odd){background:' . $styles['odd_row_bg_color_mobile'] . ';}' 
+           . '.wppm-price-list-widget tbody tr:hover{background:' . $styles['row_hover_bg_color_mobile'] . ';transition:background ' . $styles['row_hover_speed_mobile'] . ';}' 
+           . '.wppm-price-list-widget a{' 
+           . 'color:' . $styles['link_color_mobile'] . ';text-decoration:' . ( $styles['link_underline_mobile'] ? 'underline' : 'none' ) . ';font-style:' . ( $styles['link_style_mobile'] === 'italic' ? 'italic' : 'normal' ) . ';font-weight:' . ( $styles['link_style_mobile'] === 'bold' ? 'bold' : 'normal' ) . ';}' 
+           . '.wppm-price-list-widget a:hover{color:' . $styles['link_hover_color_mobile'] . ';transition:color ' . $styles['link_hover_speed_mobile'] . ';}' 
+           . '.wppm-tooltip{' 
+           . 'background:' . wppm_hex_to_rgba( $styles['tooltip_bg_color_mobile'], $styles['tooltip_opacity_mobile'] ) . ';' 
+           . 'color:' . $styles['tooltip_text_color_mobile'] . ';' 
+           . 'border-radius:' . $styles['tooltip_border_radius_mobile'] . ';' 
+           . 'box-shadow:' . $styles['tooltip_shadow_mobile'] . ';' 
+           . 'max-width:' . $styles['tooltip_max_width_mobile'] . ';' 
+           . 'height:' . $styles['tooltip_height_mobile'] . ';' 
+           . 'font-size:' . $styles['tooltip_text_size_mobile'] . ';' 
+           . 'font-family:' . $styles['tooltip_font_mobile'] . ';' 
+           . 'scrollbar-color:' . $styles['tooltip_scroll_color_mobile'] . ' transparent;' 
+           . 'transition:opacity ' . intval( $styles['tooltip_speed_mobile'] ) . 'ms;' 
+           . '}'; 
+    $css .= '}';
     wp_add_inline_style( 'wppm-front-end-css', $css );
     if ( empty( $styles['use_google_font'] ) || $styles['use_google_font'] === '1' ) {
         wp_enqueue_style( 'wppm-fonts', 'https://fonts.googleapis.com/css?family=Montserrat&display=swap', array(), null );
