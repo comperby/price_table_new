@@ -12,13 +12,7 @@
     display: none;
 }
 
-.wppm-price-list-widget tbody tr:hover {
-    transition: background 0.3s;
-}
 
-.wppm-price-list-widget a {
-    transition: color 0.3s;
-}
 
 @media(max-width:768px){
     .wppm-price-list-widget th { position: relative; }
