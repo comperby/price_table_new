@@ -130,9 +130,9 @@ jQuery(document).ready(function($) {
                     var desc = res.descs && res.descs[i] ? res.descs[i] : '';
                     var icon = desc ? '<span class="wppm-info-icon" data-description="'+desc+'">'+(wppm_ajax_obj.icon_html||'?')+'</span>' : '';
                     container.append(
-                        '<div class="wppm-extra-field"><label>'+title+' '+icon+'</label>'+
-                        '<input type="text" name="extras['+i+']" placeholder="'+title+'" value="'+val+'">'+
-                        '<input type="text" name="extras_desc['+i+']" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
+                        '<div class="wppm-extra-field"><label for="wppm-extra-'+i+'">'+title+' '+icon+'</label>'+
+                        '<input type="text" id="wppm-extra-'+i+'" name="extras['+i+']" placeholder="'+title+'" value="'+val+'">'+
+                        '<input type="text" id="wppm-extra-desc-'+i+'" name="extras_desc['+i+']" class="wppm-extra-desc" data-index="'+i+'" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" value="'+desc+'"></div>'
                     );
                 });
                 container.append('<div class="wppm-save-desc-wrapper"><button type="button" id="wppm-save-desc" class="button" data-cat="'+res.id+'">'+(wppm_ajax_obj.save_desc_label||'Сохранить описания')+'</button></div>');
@@ -156,8 +156,8 @@ jQuery(document).ready(function($) {
         container.empty();
         for(var i=1;i<=count;i++){
             container.append(
-                '<input type="text" name="column_titles['+i+']" placeholder="'+i+'" /> '
-                + '<input type="text" name="column_desc['+i+']" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" /><br>'
+                '<input type="text" id="wppm-col-title-'+i+'" name="column_titles['+i+']" placeholder="'+i+'" /> '
+                + '<input type="text" id="wppm-col-desc-'+i+'" name="column_desc['+i+']" placeholder="'+(wppm_ajax_obj.desc_placeholder||'Описание')+'" /><br>'
             );
         }
     }
@@ -258,7 +258,7 @@ jQuery(document).ready(function($) {
         row.addClass('editing');
         var nameCell = row.find('.cat-name');
         var current = nameCell.text();
-        nameCell.html('<input type="text" name="edit_cat_name" class="edit-cat-name" value="'+current+'">');
+        nameCell.html('<input type="text" id="wppm-edit-cat-name-'+row.data('id')+'" name="edit_cat_name" class="edit-cat-name" value="'+current+'">');
         var actions = row.find('.cat-actions');
         actions.data('orig', actions.html());
         actions.html('<button class="save-category button button-primary" data-id="'+row.data('id')+'">'+wppm_ajax_obj.save_label+'</button>');
@@ -402,12 +402,13 @@ jQuery(document).ready(function($) {
         var row = $(this).closest('tr');
         if(row.hasClass('editing')) return;
         row.addClass('editing');
-        row.find('.srv-name').html('<input type="text" name="srv_edit_name" class="srv-edit-name" value="'+row.data('name')+'">');
-        row.find('.srv-description').html('<textarea class="srv-edit-description">'+row.data('description')+'</textarea>');
-        row.find('.srv-link').html('<input type="url" name="srv_edit_link" class="srv-edit-link" value="'+row.data('link')+'">');
-        row.find('.srv-price').html('<input type="text" name="srv_edit_price" class="srv-edit-price" value="'+row.data('price')+'">');
-        row.find('.srv-category').html('<input type="text" name="srv_edit_category" class="srv-edit-category" value="'+row.data('category')+'">');
-        row.find('.srv-price-group').html('<input type="text" name="srv_edit_price_group" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
+        var rowId = row.data('id');
+        row.find('.srv-name').html('<input type="text" id="wppm-edit-name-'+rowId+'" name="srv_edit_name" class="srv-edit-name" value="'+row.data('name')+'">');
+        row.find('.srv-description').html('<textarea id="wppm-edit-desc-'+rowId+'" class="srv-edit-description">'+row.data('description')+'</textarea>');
+        row.find('.srv-link').html('<input type="url" id="wppm-edit-link-'+rowId+'" name="srv_edit_link" class="srv-edit-link" value="'+row.data('link')+'">');
+        row.find('.srv-price').html('<input type="text" id="wppm-edit-price-'+rowId+'" name="srv_edit_price" class="srv-edit-price" value="'+row.data('price')+'">');
+        row.find('.srv-category').html('<input type="text" id="wppm-edit-cat-'+rowId+'" name="srv_edit_category" class="srv-edit-category" value="'+row.data('category')+'">');
+        row.find('.srv-price-group').html('<input type="text" id="wppm-edit-pg-'+rowId+'" name="srv_edit_price_group" class="srv-edit-price-group" value="'+row.data('price-group')+'">');
         var extrasData = row.data('extras');
         if (typeof extrasData === 'string') {
             try { extrasData = JSON.parse(extrasData); } catch(e){ extrasData = []; }
@@ -415,7 +416,7 @@ jQuery(document).ready(function($) {
         if (!Array.isArray(extrasData)) extrasData = [];
         row.find('td.srv-extra').each(function(idx){
             var val = extrasData[idx] || '';
-            $(this).html('<input type="text" name="srv_edit_extra['+idx+']" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
+            $(this).html('<input type="text" id="wppm-edit-extra-'+rowId+'-'+idx+'" name="srv_edit_extra['+idx+']" class="srv-edit-extra" data-index="'+idx+'" value="'+val+'">');
         });
         var actions = row.find('.srv-actions');
         actions.data('orig', actions.html());
