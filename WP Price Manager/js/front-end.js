@@ -67,13 +67,50 @@ jQuery(document).ready(function($){
         $tooltip.fadeOut(fade);
     });
 
+    function getLimit($container){
+        var d = parseInt($container.data('limit'),10) || 0;
+        var m = parseInt($container.data('limit-mobile'),10) || d;
+        return $(window).width() <= 768 ? m : d;
+    }
+
+    function applyLimit($container){
+        var limit = getLimit($container);
+        var rows = $container.find('tbody tr');
+        rows.each(function(i){
+            var $row = $(this);
+            if(i >= limit){
+                $row.addClass('wppm-hidden-row').hide();
+            }else{
+                $row.removeClass('wppm-hidden-row').show();
+            }
+        });
+        var btn = $container.find('.wppm-show-more');
+        if(rows.length <= limit){
+            btn.hide();
+            $container.removeClass('wppm-expanded');
+        }else{
+            btn.show().text(btn.data('more'));
+            $container.removeClass('wppm-expanded');
+        }
+    }
+
+    $('.wppm-price-list-widget').each(function(){
+        applyLimit($(this));
+    });
+
+    $(window).on('resize', function(){
+        $('.wppm-price-list-widget').each(function(){
+            applyLimit($(this));
+        });
+    });
+
     $('.wppm-show-more').on('click', function(){
         var $btn = $(this);
         var container = $btn.closest('.wppm-price-list-widget');
         var speed = container.data('speed') || '0.3s';
         var duration = parseFloat(speed);
         if(speed.indexOf('ms') === -1){ duration *= 1000; }
-        var limit = parseInt(container.data('limit'), 10) || 0;
+        var limit = getLimit(container);
         var rows = container.find('tbody tr').slice(limit);
         if(container.hasClass('wppm-expanded')){
             rows.each(function(){

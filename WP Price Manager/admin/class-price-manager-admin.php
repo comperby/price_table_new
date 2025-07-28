@@ -454,14 +454,14 @@ class Price_Manager_Admin {
                 <a href="?page=price-manager-style&tab=<?php echo esc_attr( $active_tab ); ?>&device=mobile" class="nav-tab <?php echo $device === 'mobile' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Мобильная', 'wp-price-manager' ); ?></a>
             </h2>
             <h2 class="nav-tab-wrapper">
-                <a href="?page=price-manager-style&tab=table" class="nav-tab <?php echo $active_tab === 'table' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Таблица', 'wp-price-manager' ); ?></a>
-                <a href="?page=price-manager-style&tab=header" class="nav-tab <?php echo $active_tab === 'header' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Хедер', 'wp-price-manager' ); ?></a>
-                <a href="?page=price-manager-style&tab=rows" class="nav-tab <?php echo $active_tab === 'rows' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Строки', 'wp-price-manager' ); ?></a>
-                <a href="?page=price-manager-style&tab=icon" class="nav-tab <?php echo $active_tab === 'icon' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Значок', 'wp-price-manager' ); ?></a>
-                <a href="?page=price-manager-style&tab=tooltip" class="nav-tab <?php echo $active_tab === 'tooltip' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Описание', 'wp-price-manager' ); ?></a>
-                <a href="?page=price-manager-style&tab=button" class="nav-tab <?php echo $active_tab === 'button' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Кнопка', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=table&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'table' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Таблица', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=header&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'header' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Хедер', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=rows&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'rows' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Строки', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=icon&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'icon' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Значок', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=tooltip&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'tooltip' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Описание', 'wp-price-manager' ); ?></a>
+                <a href="?page=price-manager-style&tab=button&device=<?php echo esc_attr( $device ); ?>" class="nav-tab <?php echo $active_tab === 'button' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Кнопка', 'wp-price-manager' ); ?></a>
             </h2>
-            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+            <form method="post" id="wppm-style-form" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="wppm_save_style_settings">
                 <input type="hidden" name="current_tab" value="<?php echo esc_attr( $active_tab ); ?>">
                 <input type="hidden" name="device" value="<?php echo esc_attr( $device ); ?>">

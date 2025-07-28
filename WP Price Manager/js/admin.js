@@ -60,6 +60,28 @@ jQuery(document).ready(function($) {
 
     $('.wppm-color-field').wpColorPicker();
 
+    // Warn about unsaved changes on the style page
+    if($('#wppm-style-form').length){
+        var wppmUnsaved = false;
+        $('#wppm-style-form').on('change input', 'input,select,textarea', function(){
+            wppmUnsaved = true;
+        }).on('submit', function(){
+            wppmUnsaved = false;
+        });
+        $(window).on('beforeunload', function(){
+            if(wppmUnsaved){
+                return wppm_ajax_obj.unsaved_msg;
+            }
+        });
+        $('.wppm-device-tabs a, .nav-tab-wrapper a').on('click', function(e){
+            if(wppmUnsaved){
+                if(!confirm(wppm_ajax_obj.unsaved_msg)){
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+
     var wppmCategories = [];
     var wppmPriceGroups = [];
 

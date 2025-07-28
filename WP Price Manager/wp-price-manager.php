@@ -175,7 +175,8 @@ function wppm_admin_enqueue_scripts( $hook ) {
             'save_label'        => __( 'Сохранить', 'wp-price-manager' ),
             'save_desc_label'   => __( 'Сохранить описания', 'wp-price-manager' ),
             'desc_placeholder'  => __( 'Описание колонки', 'wp-price-manager' ),
-            'icon_html'         => $icon_content
+            'icon_html'         => $icon_content,
+            'unsaved_msg'       => __( 'Изменения не сохранены. Покинуть страницу?', 'wp-price-manager' )
         ) );
     }
 }

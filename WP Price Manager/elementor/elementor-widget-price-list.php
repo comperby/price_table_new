@@ -303,7 +303,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                         break;
                 }
 		?>
-                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" data-tooltip-width="<?php echo esc_attr( $styles['tooltip_max_width'] ); ?>" data-tooltip-speed="<?php echo esc_attr( $styles['tooltip_speed'] ); ?>">
+                <div class="wppm-price-list-widget wppm-widget-<?php echo $this->get_id(); ?>" data-cat="<?php echo intval( $cat_id ); ?>" data-limit="<?php echo esc_attr( $styles['show_limit'] ); ?>" data-limit-mobile="<?php echo esc_attr( $mobile['show_limit'] ); ?>" data-speed="<?php echo esc_attr( $styles['show_more_speed'] ); ?>" data-tooltip-width="<?php echo esc_attr( $styles['tooltip_max_width'] ); ?>" data-tooltip-speed="<?php echo esc_attr( $styles['tooltip_speed'] ); ?>">
                         <style>
                         .wppm-widget-<?php echo $this->get_id(); ?> {
                             width: <?php echo esc_attr( $settings['table_width'] ); ?>;
@@ -479,8 +479,12 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                         </tr>
                                 </thead>
                                 <tbody>
-                                        <?php if ( ! empty( $services ) ) : ?>
-                                        <?php foreach ( $services as $index => $service ) : ?>
+                                        <?php
+                                        $limit_desktop = intval( $styles['show_limit'] );
+                                        $limit_mobile  = intval( $mobile['show_limit'] );
+                                        $initial_limit = min( $limit_desktop, $limit_mobile );
+                                        if ( ! empty( $services ) ) :
+                                        foreach ( $services as $index => $service ) : ?>
                                                 <?php
                                                 $display_price = ( $service['manual_price'] ? $service['price'] : ( $service['default_price'] ? $service['default_price'] : $service['price'] ) );
                                                 if ( ! empty( $styles['price_suffix'] ) ) {
@@ -488,7 +492,7 @@ class Elementor_Price_List_Widget extends Widget_Base {
                                                 }
                                                 $extras_data = json_decode( $service['extras'], true );
                                                 $extras = is_array( $extras_data ) ? array_values( $extras_data ) : [];
-                                                $row_class = $index >= intval( $styles['show_limit'] ) ? ' class="wppm-hidden-row"' : '';
+                                                $row_class = $index >= $initial_limit ? ' class="wppm-hidden-row"' : '';
                                                 $is_fa = strpos( $styles['icon_char'], 'fa' ) === 0;
                                                 $icon_content = $is_fa ? '<i class="' . esc_attr( $styles['icon_char'] ) . '"></i>' : esc_html( $styles['icon_char'] );
                                                 ?>
@@ -526,7 +530,8 @@ class Elementor_Price_List_Widget extends Widget_Base {
 					<?php endif; ?>
 				</tbody>
                         </table>
-                        <?php if ( $total_services > intval( $styles['show_limit'] ) ) : ?>
+                        <?php $max_limit = max( $limit_desktop, $limit_mobile ); ?>
+                        <?php if ( $total_services > $max_limit ) : ?>
                             <div class="wppm-show-more-wrapper">
                                 <button type="button" class="wppm-show-more" data-more="<?php echo esc_attr( $styles['show_more_text'] ); ?>" data-less="<?php echo esc_attr( $styles['show_less_text'] ); ?>">
                                     <?php echo esc_html( $styles['show_more_text'] ); ?>
